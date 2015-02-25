@@ -1,0 +1,12 @@
+@(people: List[Person])
+
+@main("List of my colleagues") {
+
+    <h1>Colleagues</h1>
+
+    <ul>
+    @people.map { p =>
+        <li>@p.name</li>
+    }
+    </ul>
+}
