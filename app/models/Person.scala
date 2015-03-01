@@ -1,5 +1,8 @@
 package models
 
+/**
+ * TODO use it as future template
+ */
 case class Person(name: String)
 
 object Person {
