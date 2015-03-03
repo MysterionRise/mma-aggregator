@@ -2,11 +2,11 @@ name := "mma-aggregator"
 
 version := "0.1-SNAPSHOT"
 
-//libraryDependencies ++= Seq(
-//  jdbc,
-//  anorm,
-//  cache
-//)
+libraryDependencies ++= Seq(
+  jdbc,
+  anorm,
+  cache
+)
 
 scalaVersion := "2.10.3"
 
