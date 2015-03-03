@@ -1,10 +1,7 @@
 package models
 
-import play.api.Play
-import play.api.Play.current
-import com.novus.salat.dao._
-import com.mongodb.casbah.Imports._
-import com.novus.salat.global._
+import anorm._
+import play.api.db.DB
 
 sealed trait Frequency
 
@@ -15,21 +12,31 @@ case object Weekly extends Frequency
 case object Monthly extends Frequency
 
 case class Subscription(
-                         id: ObjectId,
                          email: String,
                          frequency: Frequency
                          )
 
-class SubscriptionDao extends SalatDAO[Subscription, ObjectId](collection = MongoConnection()(Play.current.configuration.getString("mongo.database").get)("subscriptions"))
+object Subscription {
 
-object Subscription extends ModelCompanion[Subscription, ObjectId] {
+  val connection = DB.getConnection()
 
-  val dao = new SubscriptionDao
+  //  def getAll = List(Subscription("test@test.example.com", Daily), Subscription("test@test.gmail.com", Monthly))
 
-//  def findOneByUsername(username: String): Option[Subscription] = dao.findOne(MongoDBObject("username" -> username))
-//
-//  def findByCountry(country: String) = dao.find(MongoDBObject("address.country" -> country))
+  def getAll: List[Subscription] = {
 
-  def getAll = findAll().toList
+    val l: List[Subscription] = List()
+
+    try {
+      val stmt = connection.createStatement
+      val rs = stmt.executeQuery("SELECT test@test.com as email ")
+      while (rs.next()) {
+        val s = new Subscription(rs.getString("email"), Daily)
+        l :+ s
+      }
+      return l
+    } finally {
+      connection.close()
+    }
+  }
 }
 
