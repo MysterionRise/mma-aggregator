@@ -1,0 +1,14 @@
+@(subscriptions: List[Subscription])
+
+@main("MMA Aggregator") {
+
+    <ul class="list-group">
+
+    @subscriptions.map { s =>
+        <li class="list-group-item">
+            <span class="badge">@s.frequency</span>
+            @s.email
+        </li>
+    }
+    </ul>
+}
