@@ -1,0 +1,1 @@
+web: target/universal/stage/bin/mma-aggregator -Dhttp.port=${PORT}
