@@ -16,3 +16,5 @@ dist
 /.sbtserver
 project/.sbtserver
 project/.sbtserver.lock
+projectFilesBackup/
+
