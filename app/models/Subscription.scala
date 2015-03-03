@@ -28,7 +28,7 @@ object Subscription {
     val l: List[Subscription] = List()
     var conn: Connection = null
     try {
-      conn = DB.getConnection()
+      conn = DB.getConnection("mydb")
       val stmt = conn.createStatement
       val rs = stmt.executeQuery("SELECT test@test.com as email ")
       while (rs.next()) {
