@@ -11,11 +11,10 @@ version := "0.1-SNAPSHOT"
 scalaVersion := "2.10.3"
 
 libraryDependencies ++= Seq(
-  "org.mongodb" % "casbah_2.10" % "2.8.0",
-  "com.novus" % "salat_2.10" % "1.9.9",
+  "org.mongodb" %% "casbah" % "2.8.0",
+  "com.novus" %% "salat" % "1.9.9",
   "com.sendgrid" % "sendgrid-java" % "2.1.0",
-  "se.radley" % "play-plugins-salat_2.10" % "1.5.0"
-
+  "se.radley" %% "play-plugins-salat" % "1.5.0"
 )
 
 play.Project.playScalaSettings
