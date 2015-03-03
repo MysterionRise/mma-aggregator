@@ -8,8 +8,6 @@ libraryDependencies ++= Seq(
   cache
 )
 
-scalaVersion := "2.10.3"
-
 libraryDependencies += "org.postgresql" % "postgresql" % "9.4-1201-jdbc41"
 
 play.Project.playScalaSettings
