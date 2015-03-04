@@ -4,6 +4,7 @@ import play.api.Play.current
 import play.api.mvc._
 import play.api.db._
 import anorm.{Row, SQL}
+import java.sql.Connection
 
 sealed trait Frequency
 
@@ -22,7 +23,7 @@ object Subscription {
 
   def getAll: List[Subscription] = {
 
-    val conn = DB.getConnection()
+    implicit val conn = DB.getConnection()
     val subscriptions = SQL("Select email,frequency from subscriptions")().collect {
       case Row(name: String, "daily") => new Subscription(name, Daily)
       case Row(name: String, "weekly") => new Subscription(name, Weekly)
