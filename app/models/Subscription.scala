@@ -1,9 +1,7 @@
 package models
 
 import java.sql.Connection
-import anorm._
-import play.api.db.DB
-import play.api.Play.current
+import play.api.db._
 
 sealed trait Frequency
 
@@ -25,20 +23,22 @@ object Subscription {
   def getAll: List[Subscription] = {
 
     val l: List[Subscription] = List()
-    var conn: Connection = null
-    try {
-      conn = DB.getConnection("mydb")
-      val stmt = conn.createStatement
-      val rs = stmt.executeQuery("SELECT test@test.com as email ")
-      while (rs.next()) {
-        val s = new Subscription(rs.getString("email"), Daily)
-        l :+ s
-      }
-    } finally {
-      if (conn != null) {
-        conn.close()
-      }
-    }
+
+    val ds = DB.getDataSource()
+//    var conn: Connection = null
+//    try {
+//      conn = DB.getConnection("mydb")
+//      val stmt = conn.createStatement
+//      val rs = stmt.executeQuery("SELECT test@test.com as email ")
+//      while (rs.next()) {
+//        val s = new Subscription(rs.getString("email"), Daily)
+//        l :+ s
+//      }
+//    } finally {
+//      if (conn != null) {
+//        conn.close()
+//      }
+//    }
     return l
   }
 }
