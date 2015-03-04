@@ -2,6 +2,7 @@ package models
 
 import java.sql.Connection
 import play.api.db._
+import play.api.Play.current
 
 sealed trait Frequency
 
