@@ -3,6 +3,7 @@ package models
 import play.api.Play.current
 import play.api.mvc._
 import play.api.db._
+import anorm.{Row, SQL}
 
 sealed trait Frequency
 
@@ -19,38 +20,15 @@ case class Subscription(
 
 object Subscription {
 
-  //  def getAll = List(Subscription("test@test.example.com", Daily), Subscription("test@test.gmail.com", Monthly))
-
   def getAll: List[Subscription] = {
 
-    val l: List[Subscription] = List()
-
     val conn = DB.getConnection()
-    try {
-      val stmt = conn.createStatement
-      val rs = stmt.executeQuery("SELECT 9 as testkey ")
-      while (rs.next()) {
-        val s = new Subscription(rs.getString("testkey"), Daily)
-        l :+ s
-      }
-    } finally {
-      conn.close()
+    val subscriptions = SQL("Select email,frequency from subscriptions")().collect {
+      case Row(name: String, "daily") => new Subscription(name, Daily)
+      case Row(name: String, "weekly") => new Subscription(name, Weekly)
+      case Row(name: String, "monthly") => new Subscription(name, Monthly)
     }
-    //    var conn: Connection = null
-    //    try {
-    //      conn = DB.getConnection("mydb")
-    //      val stmt = conn.createStatement
-    //      val rs = stmt.executeQuery("SELECT test@test.com as email ")
-    //      while (rs.next()) {
-    //        val s = new Subscription(rs.getString("email"), Daily)
-    //        l :+ s
-    //      }
-    //    } finally {
-    //      if (conn != null) {
-    //        conn.close()
-    //      }
-    //    }
-    return l
+    return subscriptions.toList
   }
 }
 
