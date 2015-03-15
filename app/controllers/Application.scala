@@ -12,4 +12,8 @@ object Application extends Controller {
   def subscriptions() = Action {
     Ok(views.html.subscriptions(Subscription.getAll))
   }
+
+  def kagan() = Action {
+    Ok(views.html.kagan())
+  }
 }
