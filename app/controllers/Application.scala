@@ -1,7 +1,8 @@
 package controllers
 
-import models.Subscription
+import models.SubscriptionDAO
 import play.api.mvc._
+
 
 object Application extends Controller {
 
@@ -10,7 +11,7 @@ object Application extends Controller {
   }
 
   def subscriptions() = Action {
-    Ok(views.html.subscriptions(Subscription.getAll))
+    Ok(views.html.subscriptions(SubscriptionDAO.findAll))
   }
 
   def kagan() = Action {

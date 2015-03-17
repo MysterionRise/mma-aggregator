@@ -5,7 +5,6 @@ import scala.slick.driver.PostgresDriver.simple._
 class Users(tag: Tag) extends Table[(Int, String, String, String, String, Int)](tag, "users") {
   def id = column[Int]("user_id", O.PrimaryKey)
 
-  // This is the primary key column
   def name = column[String]("name")
 
   def email = column[String]("email")
