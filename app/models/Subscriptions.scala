@@ -29,7 +29,7 @@ class Subscriptions(tag: Tag) extends Table[Subscription](tag, "subscriptions") 
 
   //  // Every table needs a * projection with the same type as the table's type parameter
   //  def * = id.? ~ email <> (Subscription.apply _, Subscription.unapply _)
-  override def * = (id, email, frequency) <>(Subscription.tupled, Subscription.unapply _)
+  override def * = (id, email, frequency) <> (Subscription.tupled, Subscription.unapply _)
 }
 
 object SubscriptionDAO {

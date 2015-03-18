@@ -1,8 +1,21 @@
+@(users: List[User])
 
 @main("Kagan test") {
 
+    <ul class="list-group">
+
+    @users.map { s =>
+        <li class="list-group-item">
+            <span class="badge">@s.name</span>
+            @s.email
+        </li>
+    }
+    </ul>
 
     <form class="form-horizontal">
-
+        <label for="inputEmail" class="col-lg-2 control-label">Email</label>
+        <div class="col-lg-10">
+            <input type="text" class="form-control" id="inputEmail" placeholder="Email">
+        </div>
     </form>
 }

@@ -1,8 +1,12 @@
 package models
 
+import play.api.db.DB
+import play.api.Play.current
 import scala.slick.driver.PostgresDriver.simple._
 
-class Users(tag: Tag) extends Table[(Int, String, String, String, String, Int)](tag, "users") {
+case class User(id: Int, name: String, email: String, gender: String, nationality: String, age: Int)
+
+class Users(tag: Tag) extends Table[User](tag, "users") {
   def id = column[Int]("user_id", O.PrimaryKey)
 
   def name = column[String]("name")
@@ -15,8 +19,14 @@ class Users(tag: Tag) extends Table[(Int, String, String, String, String, Int)](
 
   def age = column[Int]("age")
 
-  // Every table needs a * projection with the same type as the table's type parameter
-  def * = (id, name, email, gender, nationality, age)
+  override def * = (id, name, email, gender, nationality, age) <>(User.tupled, User.unapply _)
 }
-//
-//val users = TableQuery[Users]
+
+object UserDAO {
+  lazy val database = Database.forDataSource(DB.getDataSource())
+
+  def findAll = database.withSession { implicit db: Session =>
+    val users = TableQuery[Users]
+    users.list
+  }
+}
