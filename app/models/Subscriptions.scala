@@ -27,8 +27,6 @@ class Subscriptions(tag: Tag) extends Table[Subscription](tag, "subscriptions") 
 
   def frequency = column[Frequency]("frequency")
 
-  //  // Every table needs a * projection with the same type as the table's type parameter
-  //  def * = id.? ~ email <> (Subscription.apply _, Subscription.unapply _)
   override def * = (id, email, frequency) <> (Subscription.tupled, Subscription.unapply _)
 }
 

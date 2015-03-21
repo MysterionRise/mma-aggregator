@@ -1,6 +1,6 @@
 package controllers
 
-import models.{UserDAO, SubscriptionDAO}
+import models.{TestDAO, SubscriptionDAO}
 import play.api.mvc._
 
 
@@ -14,7 +14,7 @@ object Application extends Controller {
     Ok(views.html.subscriptions(SubscriptionDAO.findAll))
   }
 
-  def users() = Action {
-    Ok(views.html.kagan(UserDAO.findAll))
+  def tests() = Action {
+    Ok(views.html.tests(TestDAO.findAll))
   }
 }
