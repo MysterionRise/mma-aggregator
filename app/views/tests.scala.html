@@ -10,8 +10,53 @@
                 <fieldset>
                     <legend>User information</legend>
                     <div class="form-group">
-                        <label for="email" class="col-lg-2 control-label">Email</label>
+                        @*<label for="email" class="col-lg-2 control-label">Email</label>*@
                         <div class="col-lg-10">
+                        @inputText(
+                            testForm("email"),
+                            '_label -> null,
+                            'class -> "form-control",
+                            'placeholder -> "Email"
+                        )
+                        </div>
+
+                        <div class="col-lg-10">
+                        @inputText(
+                            testForm("name"),
+                            '_label -> null,
+                            'class -> "form-control",
+                            'placeholder -> "Name"
+                        )
+                        </div>
+
+                        <div class="col-lg-10">
+                        @inputText(
+                            testForm("nationality"),
+                            '_label -> null,
+                            'class -> "form-control",
+                            'placeholder -> "Nationality"
+                        )
+                        </div>
+
+                        <div class="col-lg-10">
+                        @inputText(
+                            testForm("age"),
+                            '_label -> null,
+                            'class -> "form-control",
+                            'placeholder -> "Age"
+                        )
+                        </div>
+
+                        <div class="col-lg-10">
+                        @inputText(
+                            testForm("gender"),
+                            '_label -> null,
+                            'class -> "form-control",
+                            'placeholder -> "Gender"
+                        )
+                        </div>
+
+                            <!--<div class="col-lg-10">
                             <input type="text" class="form-control" id="email" name="email" placeholder="Email">
                         </div>
                     </div>
@@ -36,8 +81,8 @@
                     <label for="gender" class="col-lg-2 control-label">Gender</label>
                     <div class="col-lg-10">
                         <input type="text" class="form-control" id="gender" name="gender" placeholder="Gender">
+                    </div>-->
                     </div>
-                </div>
 
 
                     <div class="form-group">

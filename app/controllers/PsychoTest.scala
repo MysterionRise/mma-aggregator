@@ -14,23 +14,22 @@ object PsychoTest extends Controller {
   val userMapping =
     mapping(
       "email" -> email,
-      "name" -> nonEmptyText,
-      "nationality" -> nonEmptyText,
-      "gender" -> nonEmptyText,
-      "age" -> number
+      "name" -> nonEmptyText(maxLength = 200),
+      "nationality" -> nonEmptyText(maxLength = 200),
+      "gender" -> nonEmptyText(maxLength = 200),
+      "age" -> number(min = 0)
     )(UserReq.apply)(UserReq.unapply)
 
   val testForm: Form[UserReq] = Form(userMapping)
 
   def startTest() = Action { implicit req =>
     testForm.bindFromRequest.fold(
-      errors => Ok(views.html.index(errors.toString)),
+      errors =>
+        BadRequest(views.html.tests(List.empty, errors)),
       user => {
         UserDAO.addUser(
           new User(None, user.name, user.email, user.gender, user.nationality, user.age)
         )
-        // add user to db
-//        Redirect("/", 200)
         Ok(views.html.index("User was added"))
       }
     )
