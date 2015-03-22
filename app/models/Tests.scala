@@ -12,7 +12,7 @@ class Tests(tag: Tag) extends Table[Test](tag, "tests") {
 
   def name = column[String]("name")
 
-  def description = column[String]("description")
+  def description = column[String]("description", O.Nullable)
 
   override def * = (id, name, description.?) <> (Test.tupled, Test.unapply _)
 }
