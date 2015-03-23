@@ -1,4 +1,2 @@
-This is your new Play application
+Play2 application playground
 =====================================
-
-This file will be packaged with your application, when using `play dist`.
