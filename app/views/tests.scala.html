@@ -55,46 +55,21 @@
                             'placeholder -> "Gender"
                         )
                         </div>
-
-                            <!--<div class="col-lg-10">
-                            <input type="text" class="form-control" id="email" name="email" placeholder="Email">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="name" class="col-lg-2 control-label">Name</label>
-                        <div class="col-lg-10">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Name">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="nationality" class="col-lg-2 control-label">Nationality</label>
-                        <div class="col-lg-10">
-                            <input type="text" class="form-control" id="nationality" name="nationality" placeholder="Nationality">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="age" class="col-lg-2 control-label">Age</label>
-                        <div class="col-lg-10">
-                            <input type="number" class="form-control" id="age" name="age" placeholder="Age">
-                        </div>
-                    </div><div class="form-group">
-                    <label for="gender" class="col-lg-2 control-label">Gender</label>
-                    <div class="col-lg-10">
-                        <input type="text" class="form-control" id="gender" name="gender" placeholder="Gender">
-                    </div>-->
                     </div>
 
 
                     <div class="form-group">
-                        <label for="select" class="col-lg-2 control-label">Select test</label>
                         <div class="col-lg-10">
-                            <select class="form-control" id="select">
-                            @tests.map { test =>
-                                <option>
-                                    @test.name
-                                </option>
-                            }
-                            </select>
+                        @select(
+                            testForm("test"),
+                            options(
+                                tests.map(test =>
+                                    test.name
+                                )
+                            ),
+                            'class -> "form-control",
+                            '_label -> "Select test"
+                        )
                         </div>
                     </div>
                     <div class="form-group">
