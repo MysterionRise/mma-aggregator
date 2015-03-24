@@ -1,6 +1,6 @@
 package controllers
 
-import models.{UserDAO, User}
+import models.{TestDAO, UserDAO, User}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc.{Call, Action}
@@ -26,14 +26,17 @@ object PsychoTest extends Controller {
   def startTest() = Action { implicit req =>
     testForm.bindFromRequest.fold(
       errors =>
-        BadRequest(views.html.tests(List.empty, errors)),
+        BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
         val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age)
         UserDAO.addUser(
           addedUser
         )
         System.out.println(user.testName)
-        Ok(views.html.kaganTest(addedUser))
+        user.testName match {
+          case "Kagan test" => Ok(views.html.kaganTest(addedUser))
+          case _ => Ok(views.html.tests(TestDAO.findAll, PsychoTest.testForm))
+        }
       }
     )
 

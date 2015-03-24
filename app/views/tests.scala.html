@@ -1,6 +1,7 @@
 @(tests: List[Test], testForm: Form[UserReq])
 
 @import helper._
+@import org.mystic.MyHelpers._
 
 @main("Psychologies tests") {
     <div class="row">
@@ -10,49 +11,53 @@
                 <fieldset>
                     <legend>User information</legend>
                     <div class="form-group">
-                        @*<label for="email" class="col-lg-2 control-label">Email</label>*@
                         <div class="col-lg-10">
                         @inputText(
                             testForm("email"),
-                            '_label -> null,
+                            '_label -> "Email",
                             'class -> "form-control",
-                            'placeholder -> "Email"
+                            'placeholder -> "Email",
+                            '_showConstraints -> false
                         )
                         </div>
 
                         <div class="col-lg-10">
                         @inputText(
                             testForm("name"),
-                            '_label -> null,
+                            '_label -> "Name",
                             'class -> "form-control",
-                            'placeholder -> "Name"
+                            'placeholder -> "Name",
+                            '_showConstraints -> false
                         )
                         </div>
 
                         <div class="col-lg-10">
                         @inputText(
                             testForm("nationality"),
-                            '_label -> null,
+                            '_label -> "Nationality",
                             'class -> "form-control",
-                            'placeholder -> "Nationality"
+                            'placeholder -> "Nationality",
+                            '_showConstraints -> false
                         )
                         </div>
 
                         <div class="col-lg-10">
                         @inputText(
                             testForm("age"),
-                            '_label -> null,
+                            '_label -> "Age",
                             'class -> "form-control",
-                            'placeholder -> "Age"
+                            'placeholder -> "Age",
+                            '_showConstraints -> false
                         )
                         </div>
 
                         <div class="col-lg-10">
                         @inputText(
                             testForm("gender"),
-                            '_label -> null,
+                            '_label -> "Gender",
                             'class -> "form-control",
-                            'placeholder -> "Gender"
+                            'placeholder -> "Gender",
+                            '_showConstraints -> false
                         )
                         </div>
                     </div>
@@ -68,7 +73,8 @@
                                 )
                             ),
                             'class -> "form-control",
-                            '_label -> "Select test"
+                            '_label -> null,
+                            '_showConstraints -> false
                         )
                         </div>
                     </div>
