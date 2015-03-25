@@ -1,5 +1,7 @@
 @(user: User)
 
+@import org.mystic.Kagan._
+
 @main("Kagan Test") {
 
     <h2>Hello, @user.name!</h2>
@@ -11,5 +13,15 @@
             top, and select it by clicking the mouse. For initial training you will see two demonstration cards. Further
             tasks are not so simple. Find a picture as soon as possible, as much as possible similar to this one at the
             top, and immediately select it. After your choice, the next task will be presented to you automatically.</p>
+    </div>
+
+    <div style="text-align:center">
+        <img src="@routes.Assets.at("images/training-session/1/0.jpg")">
+    </div>
+
+    <div class="jumbotron">
+    @for(i <- 1 to 8) {
+        <img src="@routes.Assets.at("images/training-session/1/" + i + ".jpg")" onclick="javascript:">
+    }
     </div>
 }
