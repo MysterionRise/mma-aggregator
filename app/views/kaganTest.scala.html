@@ -1,7 +1,5 @@
 @(user: User)
 
-@import org.mystic.Kagan._
-
 @main("Kagan Test") {
 
     <h2>Hello, @user.name!</h2>
@@ -15,13 +13,15 @@
             top, and immediately select it. After your choice, the next task will be presented to you automatically.</p>
     </div>
 
-    <div style="text-align:center">
+    <div style="text-align : center">
         <img src="@routes.Assets.at("images/training-session/1/0.jpg")">
     </div>
 
     <div class="jumbotron">
     @for(i <- 1 to 8) {
-        <img src="@routes.Assets.at("images/training-session/1/" + i + ".jpg")" onclick="javascript:">
+        <a href="@{org.mystic.Kagan.onClick(i)}">
+            <img src="@routes.Assets.at("images/training-session/1/" + i + ".jpg")">
+        </a>
     }
     </div>
 }

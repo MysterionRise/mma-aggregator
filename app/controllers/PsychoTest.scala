@@ -29,9 +29,9 @@ object PsychoTest extends Controller {
         BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
         val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age)
-        UserDAO.addUser(
-          addedUser
-        )
+//        UserDAO.addUser(
+//          addedUser
+//        )
         System.out.println(user.testName)
         user.testName match {
           case "Kagan test" => Ok(views.html.kaganTest(addedUser))
