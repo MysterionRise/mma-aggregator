@@ -1,5 +1,9 @@
 @(user: User)
 
+@kaganClock(i: Int) = @{
+    System.out.println("You choose " + i + " picture")
+}
+
 @main("Kagan Test") {
 
     <h2>Hello, @user.name!</h2>
@@ -19,9 +23,7 @@
 
     <div class="jumbotron">
     @for(i <- 1 to 8) {
-        <a href="@{org.mystic.Kagan.onClick(i)}">
-            <img src="@routes.Assets.at("images/training-session/1/" + i + ".jpg")">
-        </a>
-    }
+        <img src="@routes.Assets.at("images/training-session/1/" + i + ".jpg")" onclick="@kaganClock(i)">
+        }
     </div>
 }
