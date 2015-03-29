@@ -23,15 +23,20 @@ object PsychoTest extends Controller {
 
   val testForm: Form[UserReq] = Form(userMapping)
 
+  def onClick() = Action {
+    System.out.println("Clicked on ")
+    Ok
+  }
+
   def startTest() = Action { implicit req =>
     testForm.bindFromRequest.fold(
       errors =>
         BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
         val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age)
-//        UserDAO.addUser(
-//          addedUser
-//        )
+        UserDAO.addUser(
+          addedUser
+        )
         System.out.println(user.testName)
         user.testName match {
           case "Kagan test" => Ok(views.html.kaganTest(addedUser))

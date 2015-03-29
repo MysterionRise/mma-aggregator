@@ -23,7 +23,9 @@
 
     <div class="jumbotron">
     @for(i <- 1 to 8) {
-        <img src="@routes.Assets.at("images/training-session/1/" + i + ".jpg")" onclick="@kaganClock(i)">
+        <a href="@routes.PsychoTest.onClick()">
+            <img src="@routes.Assets.at("images/training-session/1/" + i + ".jpg")">
+        </a>
         }
     </div>
 }
