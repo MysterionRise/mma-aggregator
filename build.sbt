@@ -15,7 +15,9 @@ lazy val exampleServer = (project in file("psycho-test-server")).settings(
     "com.typesafe.slick" %% "slick" % "2.1.0",
     "com.typesafe.play" %% "play-slick" % "0.8.1"
   ),
-  EclipseKeys.skipParents in ThisBuild := false).
+  herokuAppName in Compile := "mma-aggregator",
+  herokuSkipSubProjects in Compile := false
+).
   enablePlugins(PlayScala).
   aggregate(clients.map(projectToRef): _*).
   dependsOn(exampleSharedJvm)
