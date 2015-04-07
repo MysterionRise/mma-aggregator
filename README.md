@@ -8,6 +8,11 @@ $ sbt
 $ open http://localhost:9000
 ```
 
+## How to deploy to Heroku
+```
+sbt stage deployHeroku
+```
+
 ## Features
 
 The application uses the [sbt-play-scalajs](https://github.com/vmunier/sbt-play-scalajs) sbt plugin and the [play-scalajs-scripts](https://github.com/vmunier/play-scalajs-scripts) library.
