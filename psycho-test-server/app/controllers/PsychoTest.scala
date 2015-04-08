@@ -32,7 +32,6 @@ object PsychoTest extends Controller {
 //        UserDAO.addUser(
 //          addedUser
 //        )
-        System.out.println(user.testName)
         user.testName match {
           case "Kagan test" => Ok(views.html.kaganTest(addedUser))
           case _ => Ok(views.html.tests(TestDAO.findAll, PsychoTest.testForm))
