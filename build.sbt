@@ -15,7 +15,7 @@ lazy val exampleServer = (project in file("psycho-test-server")).settings(
     "com.typesafe.slick" %% "slick" % "2.1.0",
     "com.typesafe.play" %% "play-slick" % "0.8.1"
   ),
-  herokuAppName in Compile := "mma-aggregator",
+  herokuAppName in Compile := "psycho-test-framework",
   herokuSkipSubProjects in Compile := false
 ).
   enablePlugins(PlayScala).

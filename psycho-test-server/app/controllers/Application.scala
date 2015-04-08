@@ -11,7 +11,7 @@ object Application extends Controller {
     TestDAO.createSchema
     SubscriptionDAO.createSchema
     UserDAO.createSchema
-    Ok(views.html.index("Your new application is ready."))
+    Ok(views.html.index("Go to /tests and start to check all tests we have!"))
   }
 
   def users() = Action {

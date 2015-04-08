@@ -24,6 +24,11 @@ object ScalaJSCode extends js.JSApp {
                 |e.screenY ${e1.screenY}
          """.stripMargin
       }
+      e.onclick = {
+        (e1: dom.MouseEvent) =>
+          System.out.println( s"""Clicked on ${e.id}""")
+          id.textContent = s"""Clicked on ${e.id}"""
+      }
     }
   }
 }
