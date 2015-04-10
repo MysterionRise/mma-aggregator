@@ -1,6 +1,6 @@
 package controllers
 
-import models.{TestDAO, UserDAO, User}
+import models.{Image, TestDAO, UserDAO, User}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc.{Call, Action}
@@ -33,7 +33,13 @@ object PsychoTest extends Controller {
 //          addedUser
 //        )
         user.testName match {
-          case "Kagan test" => Ok(views.html.kaganTest(addedUser))
+          case "Kagan test" => {
+            val kaganImages = new Array[Image](8)
+            for (i <- 1 to 8) {
+              kaganImages(i - 1) = new Image("training-session", 1, i)
+            }
+            Ok(views.html.kaganTest(addedUser, kaganImages))
+          }
           case _ => Ok(views.html.tests(TestDAO.findAll, PsychoTest.testForm))
         }
       }
