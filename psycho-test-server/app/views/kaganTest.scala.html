@@ -5,7 +5,7 @@
     <h2>Hello, @user.name!</h2>
 
     <div class="alert alert-dismissible alert-warning">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        @*<button type="button" class="close" data-dismiss="alert">&times;</button>*@
         <h4>Instruction</h4>
         <p>Now you'll see a picture and a few similar to it. You need to find the exact same picture as that that on
             top, and select it by clicking the mouse. For initial training you will see two demonstration cards. Further
@@ -14,10 +14,10 @@
     </div>
 
     <div style="text-align : center">
-        <img src="@routes.Assets.at("images/training-session/1/0.jpg")">
+        <img id="pattern" src="@routes.Assets.at("images/training-session/1/0.jpg")">
     </div>
 
-    <div class="jumbotron">
+    <div id="kagan-test" class="jumbotron">
         <p id="scalajsShoutOut"></p>
         @for(i <- 1 to 8) {
             <img id="@i" src="@routes.Assets.at("images/training-session/1/" + i + ".jpg")">

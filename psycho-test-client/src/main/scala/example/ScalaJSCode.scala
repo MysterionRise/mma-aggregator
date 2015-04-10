@@ -1,6 +1,6 @@
 package example
 
-import org.scalajs.dom.html.Image
+import org.scalajs.dom.html.{Div, Image}
 import org.scalajs.dom.raw.Element
 
 import scala.scalajs.js
@@ -26,8 +26,14 @@ object ScalaJSCode extends js.JSApp {
       }
       e.onclick = {
         (e1: dom.MouseEvent) =>
-          System.out.println( s"""Clicked on ${e.id}""")
-          id.textContent = s"""Clicked on ${e.id}"""
+          SharedMessages.addToDB(e.id)
+          val div: Div = dom.document.getElementById("kagan-test").asInstanceOf[Div]
+          val pattern: Image = dom.document.getElementById("pattern").asInstanceOf[Image]
+          val src = pattern.src
+          val ind = src.lastIndexOf("0.jpg")
+          pattern.src = src + "123.jpg"
+          div.innerHTML = ""
+        // need to show next page
       }
     }
   }
