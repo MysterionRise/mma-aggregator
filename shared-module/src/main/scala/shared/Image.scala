@@ -1,3 +1,3 @@
 package shared
 
-case class Image(testName: String, roundNumber: Int, imageNumber: Int)
+case class Image(testName: String, var roundNumber: Int, imageNumber: Int)

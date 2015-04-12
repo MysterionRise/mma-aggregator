@@ -30,16 +30,17 @@ object PsychoTest extends Controller {
         BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
         val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age)
-//        UserDAO.addUser(
-//          addedUser
-//        )
+        //        UserDAO.addUser(
+        //          addedUser
+        //        )
         user.testName match {
           case "Kagan test" => {
             val kaganImages = new Array[Image](8)
             for (i <- 1 to 8) {
               kaganImages(i - 1) = new Image("training-session", 1, i)
             }
-            Ok(views.html.kaganTest(addedUser, kaganImages))
+            val pattern = new Image("training-session", 1, 0)
+            Ok(views.html.kaganTest(addedUser, pattern, kaganImages))
           }
           case _ => Ok(views.html.tests(TestDAO.findAll, PsychoTest.testForm))
         }

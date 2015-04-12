@@ -5,30 +5,10 @@ import org.scalajs.dom.raw.Element
 
 import scala.scalajs.js
 import org.scalajs.dom
-import shared.SharedMessages
+import shared.SharedCode._
 import shared.{Image => TestImage}
 
 object ScalaJSCode extends js.JSApp {
-
-  def constructImage(s: String): TestImage = {
-    val paths = s.split("/")
-    val len = paths.length
-    return new TestImage(paths(len - 3), Integer.parseInt(paths(len - 2)), Integer.parseInt(paths(len - 1).split("\\.")(0)))
-  }
-
-  def constructSrc(prefix: String, t: TestImage): String = {
-    return prefix + "/" + t.testName + "/" + (t.roundNumber + 1) + "/" + t.imageNumber + ".jpg"
-  }
-
-  def getPrefix(s: String): String = {
-    val paths = s.split("/")
-    val len = paths.length
-    var res = ""
-    for (i <- 0 until len - 3) {
-      res += paths(i) + "/"
-    }
-    return res
-  }
 
   def main(): Unit = {
     val id: Element = dom.document.getElementById("scalajsShoutOut")
@@ -47,18 +27,20 @@ object ScalaJSCode extends js.JSApp {
       }
       e.onclick = {
         (e1: dom.MouseEvent) =>
-          SharedMessages.addToDB(e.id)
           val div: Div = dom.document.getElementById("kagan-test").asInstanceOf[Div]
           val pattern: Image = dom.document.getElementById("pattern").asInstanceOf[Image]
           val img: TestImage = constructImage(pattern.src)
+          img.roundNumber += 1 // move to next round
           pattern.src = constructSrc(getPrefix(pattern.src), img)
           // TODO fix
           for (i <- 1 to 8) {
             val prevImg: Image = dom.document.getElementById(i.toString).asInstanceOf[Image]
             val img: TestImage = constructImage(prevImg.src)
+            img.roundNumber += 1 // move to next round
+
             prevImg.src = constructSrc(getPrefix(prevImg.src), img)
+            // todo check if image exist or not
           }
-        // need to show next page
       }
     }
   }
