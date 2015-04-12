@@ -1,4 +1,4 @@
-@(user: User, images: Array[Image])
+@(user: User, images: Array[shared.Image])
 
 @main("Kagan Test") {
 
@@ -13,13 +13,13 @@
     </div>
 
     <div style="text-align : center">
+        <p id="scalajsShoutOut"></p>
         <img id="pattern" src="@routes.Assets.at("images/training-session/1/0.jpg")">
     </div>
 
     <div id="kagan-test" class="jumbotron">
-        <p id="scalajsShoutOut"></p>
         @for(i <- 0 until images.length) {
-            <img id="@i" src="@routes.Assets.at("images/" + images(i).testName + "/" +
+            <img id="@{i + 1}" src="@routes.Assets.at("images/" + images(i).testName + "/" +
                     images(i).roundNumber + "/" + images(i).imageNumber + ".jpg")">
             }
     </div>

@@ -1,11 +1,12 @@
 package controllers
 
-import models.{Image, TestDAO, UserDAO, User}
+import models.{TestDAO, UserDAO, User}
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc.{Call, Action}
 import play.mvc.Controller
 import play.api.mvc.Results._
+import shared.Image
 
 case class UserReq(email: String, name: String, nationality: String, gender: String, age: Int, testName: String)
 
