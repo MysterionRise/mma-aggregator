@@ -1,17 +1,6 @@
 package shared
 
-import scala.collection.mutable
-
 object SharedCode {
-  val reports = new mutable.HashMap[String, String]()
-
-  def saveToDB(userID: String, imageID: Int, roundNumber: Int, time: Long) = {
-    reports.put(userID ,s""" ${userID} clicked on image ${imageID} in round ${roundNumber}""")
-  }
-
-  def getReport(userID: String): String = {
-    reports.getOrElse(userID, "Empty report!")
-  }
 
   def constructImage(s: String): Image = {
     val paths = s.split("/")

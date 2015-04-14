@@ -3,7 +3,7 @@ package controllers
 import models.{TestDAO, UserDAO, User}
 import play.api.data._
 import play.api.data.Forms._
-import play.api.mvc.{Call, Action}
+import play.api.mvc.{DiscardingCookie, Call, Action}
 import play.mvc.Controller
 import play.api.mvc.Results._
 import shared.Image
@@ -40,7 +40,7 @@ object PsychoTest extends Controller {
               kaganImages(i - 1) = new Image("kagan", 1, i)
             }
             val pattern = new Image("kagan", 1, 0)
-            Ok(views.html.kaganTest(addedUser, pattern, kaganImages))
+            Ok(views.html.kaganTest(addedUser, pattern, kaganImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case _ => Ok(views.html.tests(TestDAO.findAll, PsychoTest.testForm))
         }
@@ -49,7 +49,7 @@ object PsychoTest extends Controller {
 
   }
 
-  def finishTest(id: String) = Action {
-    Ok(views.html.index(id + "|" + shared.SharedCode.getReport(id)))
+  def finishTest(id: String) = Action { implicit req =>
+    Ok(views.html.index(id))
   }
 }
