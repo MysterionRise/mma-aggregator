@@ -37,9 +37,9 @@ object PsychoTest extends Controller {
           case "Kagan test" => {
             val kaganImages = new Array[Image](8)
             for (i <- 1 to 8) {
-              kaganImages(i - 1) = new Image("training-session", 1, i)
+              kaganImages(i - 1) = new Image("kagan", 1, i)
             }
-            val pattern = new Image("training-session", 1, 0)
+            val pattern = new Image("kagan", 1, 0)
             Ok(views.html.kaganTest(addedUser, pattern, kaganImages))
           }
           case _ => Ok(views.html.tests(TestDAO.findAll, PsychoTest.testForm))
@@ -49,4 +49,7 @@ object PsychoTest extends Controller {
 
   }
 
+  def finishTest(id: String) = Action {
+    Ok(views.html.index(id + "|" + shared.SharedCode.getReport(id)))
+  }
 }

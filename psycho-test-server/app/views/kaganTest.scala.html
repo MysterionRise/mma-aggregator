@@ -2,9 +2,9 @@
 
 @main("Kagan Test") {
 
-    <!-- TODO how to pass user to code, that will save everything in DB?-->
+    <!-- TODO remove user.name and replace with user.id -->
 
-    <h2>Hello, @user.name!</h2>
+    <h2 id="user" data-user-id="@user.name">Hello, @user.name!</h2>
 
     <div class="alert alert-warning">
         <h4>Instruction</h4>
