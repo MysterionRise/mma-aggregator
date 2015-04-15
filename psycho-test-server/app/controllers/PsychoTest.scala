@@ -49,7 +49,8 @@ object PsychoTest extends Controller {
 
   }
 
-  def finishTest(id: String) = Action { implicit req =>
-    Ok(views.html.index(id))
+  def finishTest(report: String) = Action { implicit req =>
+    // todo ADD report to DB
+    Ok(views.html.index(report))
   }
 }
