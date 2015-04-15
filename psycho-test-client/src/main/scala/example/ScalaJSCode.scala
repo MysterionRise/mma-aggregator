@@ -23,9 +23,9 @@ object ScalaJSCode extends js.JSApp {
           val pattern: Image = dom.document.getElementById("pattern").asInstanceOf[Image]
           val img: TestImage = constructImage(pattern.src)
           if (img.roundNumber == 1) {
-            dom.document.cookie += s"""PLAY_SESSION=${userID}-clicked-on-${img.imageNumber}-in-round-${img.roundNumber}"""
+            dom.document.cookie += s"""PLAY_SESSION=${userID}|${img.imageNumber}|${img.roundNumber}|${System.currentTimeMillis()}"""
           } else {
-            dom.document.cookie += s"""${userID}-clicked-on-${img.imageNumber}-in-round-${img.roundNumber}"""
+            dom.document.cookie += s"""${userID}|${img.imageNumber}|${img.roundNumber}|${System.currentTimeMillis()}"""
           }
           img.roundNumber += 1 // move to next round
           img.roundNumber match {
