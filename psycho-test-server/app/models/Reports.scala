@@ -1,12 +1,10 @@
 package models
 
-
 import play.api.db.DB
 import play.api.Play.current
 import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.jdbc.meta.MTable
 
-// TODO [PSQLException: ERROR: value too long for type character varying(254)]
 case class Report(id: Option[Int], userID: String, report: String)
 
 class Reports(tag: Tag) extends Table[Report](tag, "reports") {
@@ -14,7 +12,7 @@ class Reports(tag: Tag) extends Table[Report](tag, "reports") {
 
   def name = column[String]("user_id")
 
-  def report = column[String]("report")
+  def report = column[String]("report", O.DBType("VARCHAR(1000)"))
 
   override def * = (id.?, name, report) <> (Report.tupled, Report.unapply _)
 }
