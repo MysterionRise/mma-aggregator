@@ -1,6 +1,6 @@
 package controllers
 
-import models.{TestDAO, UserDAO, User}
+import models._
 import play.api.data._
 import play.api.data.Forms._
 import play.api.mvc.{DiscardingCookie, Call, Action}
@@ -54,7 +54,9 @@ object PsychoTest extends Controller {
   }
 
   def finishTest(report: String) = Action { implicit req =>
-    // todo ADD report to DB
-    Ok(views.html.index(extractUserName(report) + "###" + report))
+      // todo ADD report to DB
+    val userID = extractUserName(report)
+    ReportDAO.addReport(new Report(None, userID, report))
+    Ok(views.html.index(userID + "###" + report))
   }
 }
