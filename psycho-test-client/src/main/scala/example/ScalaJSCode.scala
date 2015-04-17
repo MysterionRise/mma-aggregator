@@ -33,19 +33,11 @@ object ScalaJSCode extends js.JSApp {
           img.roundNumber += 1 // move to next round
           img.roundNumber match {
             case 2 => {
-              if (e.id.equals("1")) {
-                success.textContent = "You successfully answer the question!"
-              } else {
-                error.textContent = " Your answer is INCORRECT!"
-              }
+              provideFeedback(success, error, e, "1")
               constructNewRound(pattern, img)
             }
             case 3 => {
-              if (e.id.equals("5")) {
-                success.textContent = "You successfully answer the question!"
-              } else {
-                error.textContent = " Your answer is INCORRECT!"
-              }
+              provideFeedback(success, error, e, "5")
               constructNewRound(pattern, img)
             }
             case x if x > 14 => {
@@ -58,6 +50,14 @@ object ScalaJSCode extends js.JSApp {
             }
           }
       }
+    }
+  }
+
+  def provideFeedback(success: Element, error: Element, e: Image, correctID: String): Unit = {
+    if (e.id.equals(correctID)) {
+      success.textContent = "You successfully answer the question!"
+    } else {
+      error.textContent = " Your answer is INCORRECT!"
     }
   }
 
