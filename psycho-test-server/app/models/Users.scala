@@ -5,7 +5,7 @@ import play.api.Play.current
 import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.jdbc.meta.MTable
 
-case class User(id: Option[Int], name: String, email: String, gender: String, nationality: String, age: Int)
+case class User(var id: Option[Int], name: String, email: String, gender: String, nationality: String, age: Int)
 
 class Users(tag: Tag) extends Table[User](tag, "users") {
   def id = column[Int]("user_id", O.PrimaryKey, O.AutoInc)
@@ -37,7 +37,8 @@ object UserDAO {
     users.list
   }
 
-  def addUser(user: User) = database.withSession { implicit db: Session =>
-    users.insert(user)
+  def addUser(user: User): Int = database.withSession { implicit db: Session =>
+    val userId =(users returning users.map(_.id)) += user
+    return userId
   }
 }
