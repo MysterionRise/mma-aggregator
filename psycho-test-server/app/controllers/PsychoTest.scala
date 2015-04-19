@@ -30,8 +30,8 @@ object PsychoTest extends Controller {
         BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
         val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age)
-        val id = UserDAO.addUser(addedUser)
-        addedUser.id = Some(id)
+//        val id = UserDAO.addUser(addedUser)
+//        addedUser.id = Some(id)
         user.testName match {
           case "Kagan test" => {
             val kaganImages = new Array[Image](8)
@@ -40,6 +40,10 @@ object PsychoTest extends Controller {
             }
             val pattern = new Image("kagan", 1, 0)
             Ok(views.html.kaganTest(addedUser, pattern, kaganImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+          }
+          case "Ultra rapid recognition" => {
+            // TODO add more stuff to pass here
+            Ok(views.html.ultraRapidTest(addedUser)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case _ => Ok(views.html.tests(TestDAO.findAll, PsychoTest.testForm))
         }
