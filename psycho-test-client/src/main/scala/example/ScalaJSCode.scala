@@ -11,6 +11,13 @@ import shared.{Image => TestImage}
 object ScalaJSCode extends js.JSApp {
 
   def main(): Unit = {
+
+    dom.document.onkeypress = {
+      (e: dom.KeyboardEvent) =>
+        if (e.charCode == 32) {
+          dom.document.getElementById("ultra-test").textContent = "SPACE PRESSED!"
+        }
+    }
     val success: Element = dom.document.getElementById("success")
     val error: Element = dom.document.getElementById("error")
     for (i <- 1 to 8) {
