@@ -1,6 +1,6 @@
 package example
 
-import org.scalajs.dom.html.{Div, Image, Heading}
+import org.scalajs.dom.html.{Button, Div, Image, Heading}
 import org.scalajs.dom.raw.Element
 
 import scala.scalajs.js
@@ -12,9 +12,20 @@ object ScalaJSCode extends js.JSApp {
 
   def main(): Unit = {
 
+    var testingStarted = false
+    val btn = dom.document.getElementById("rapid-button").asInstanceOf[Button]
+    btn.onclick = {
+      (e: dom.MouseEvent) =>
+        testingStarted = true
+        val question: Div = dom.document.getElementById("ultra-rapid").asInstanceOf[Div]
+        question.innerHTML = "<img src=\"/assets/images/ultraRapid/518.jpg\">"
+
+      //TODO
+    }
+
     dom.document.onkeypress = {
       (e: dom.KeyboardEvent) =>
-        if (e.charCode == 32) {
+        if (testingStarted && e.charCode == 32) {
           dom.document.getElementById("ultra-test").textContent = "SPACE PRESSED!"
         }
     }
