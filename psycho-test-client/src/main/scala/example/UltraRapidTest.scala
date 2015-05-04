@@ -1,6 +1,7 @@
 package example
 
 import org.scalajs.dom
+import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html._
 import org.scalajs.dom.raw.Element
 import example.ScalaJSCode._
@@ -26,47 +27,27 @@ object UltraRapidTest {
     }
   }
 
-  def showImage(div: Div): Function0[Any] = new Function0[Any] {
+  def showImage(div: Div, imageName: String): Function0[Any] = new Function0[Any] {
     override def apply(): Any = {
-      div.innerHTML = "<img src=\"/assets/images/ultraRapid/518.jpg\">"
+      div.innerHTML = "<img src=\"/assets/images/ultraRapid/" + imageName + "\">"
       dom.window.setTimeout(askQuestion(div), 33)
     }
   }
 
   def doTest() = {
-    var testingStarted = false
     val btn = getElementById[Button]("rapid-button")
     btn.onclick = {
       (e: dom.MouseEvent) =>
-        val question = getElementById[Div]("ultra-rapid")
+        for (i <- 0 until 5) {
+          val question = getElementById[Div]("ultra-rapid")
 
-        // fixation cross
-        val canvas = getElementById[Canvas]("ultra-canvas")
-        val ctx = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
+          val canvas = getElementById[Canvas]("ultra-canvas")
+          val ctx = canvas.getContext("2d").asInstanceOf[CanvasRenderingContext2D]
 
-        ctx.fillStyle = "gray"
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-        ctx.beginPath()
-        ctx.strokeStyle = "white"
-        val centerX = canvas.width / 2
-        val centerY = canvas.height / 2
-        ctx.moveTo(centerX, centerY)
-        ctx.lineTo(centerX + 50, centerY + 50)
-        ctx.stroke()
-        ctx.moveTo(centerX, centerY)
-        ctx.lineTo(centerX - 50, centerY + 50)
-
-        ctx.stroke()
-        ctx.moveTo(centerX, centerY)
-        ctx.lineTo(centerX + 50, centerY - 50)
-
-        ctx.stroke()
-        ctx.moveTo(centerX, centerY)
-        ctx.lineTo(centerX - 50, centerY - 50)
-
-        ctx.stroke()
-        ctx.closePath()
-        dom.window.setTimeout(showImage(question), 500)
+          drawFixationCross(canvas, ctx)
+          dom.window.setTimeout(showImage(question, "518.jpg"), 500)
+          clearDiv(question)
+        }
     }
 
     dom.document.onkeypress = {
@@ -76,6 +57,31 @@ object UltraRapidTest {
 
         }
     }
+  }
+
+  def drawFixationCross(canvas: Canvas, ctx: CanvasRenderingContext2D): Unit = {
+    ctx.fillStyle = "gray"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    ctx.beginPath()
+    ctx.strokeStyle = "white"
+    val centerX = canvas.width / 2
+    val centerY = canvas.height / 2
+    ctx.moveTo(centerX, centerY)
+    ctx.lineTo(centerX + 50, centerY + 50)
+    ctx.stroke()
+    ctx.moveTo(centerX, centerY)
+    ctx.lineTo(centerX - 50, centerY + 50)
+
+    ctx.stroke()
+    ctx.moveTo(centerX, centerY)
+    ctx.lineTo(centerX + 50, centerY - 50)
+
+    ctx.stroke()
+    ctx.moveTo(centerX, centerY)
+    ctx.lineTo(centerX - 50, centerY - 50)
+
+    ctx.stroke()
+    ctx.closePath()
   }
 
   private def clearDiv(div: Div): Function0[Any] = {
