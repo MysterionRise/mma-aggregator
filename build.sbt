@@ -28,10 +28,13 @@ lazy val exampleClient = (project in file("psycho-test-client")).settings(
   persistLauncher in Test := false,
   sourceMapsDirectories += exampleSharedJs.base / "..",
   unmanagedSourceDirectories in Compile := Seq((scalaSource in Compile).value),
+  jsDependencies += "org.webjars" % "react" % "0.12.1" / "react-with-addons.js" commonJSName "React",
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.8.0"
+    "org.scala-js" %%% "scalajs-dom" % "0.8.0",
+    "com.github.japgolly.scalajs-react" %%% "core" % "0.8.4"
   )).
   enablePlugins(ScalaJSPlugin, ScalaJSPlay).
+
   dependsOn(exampleSharedJs)
 
 lazy val exampleShared = (crossProject.crossType(CrossType.Pure) in file("shared-module")).
