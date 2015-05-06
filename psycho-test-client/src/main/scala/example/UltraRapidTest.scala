@@ -8,6 +8,7 @@ import example.ScalaJSCode._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.all._
 
+import scala.scalajs.js
 import scala.scalajs.js.Function0
 
 object UltraRapidTest {
@@ -39,14 +40,34 @@ object UltraRapidTest {
     }
   }
 
+  case class State(imageName: String)
+
+  class Backend($: BackendScope[_, State]) {
+    var interval: js.UndefOr[js.timers.SetIntervalHandle] =
+      js.undefined
+
+    def tick() =
+      $.modState(s => {
+        val sp = s.imageName.split("\\.")
+        val num = Integer.parseInt(sp(0))
+        State((num + 1).toString + "." + sp(1))
+      })
+
+    def start() =
+      interval = js.timers.setInterval(3300)(tick())
+  }
+
+  val Timer = ReactComponentB[Unit]("Timer")
+    .initialState(State("551.jpg"))
+    .backend(new Backend(_))
+    .render($ => img(src := "/assets/images/ultraRapid/" + $.state.imageName))
+    .componentDidMount(_.backend.start())
+    .componentWillUnmount(_.backend.interval foreach js.timers.clearInterval)
+    .buildU
+
   def doTest() = {
-    // Method 2: Importing everything without prefix into namespace.
     val question = getElementById[Div]("ultra-rapid")
-    val vdom = a(
-      className := "google",
-      href := "https://www.google.com",
-      span("GOOGLE!"))
-    React.render(vdom, question)
+    React.render(Timer(), question)
     //    //    val btn = getElementById[Button]("rapid-button")
     //    //    btn.onclick = {
     //    //      (e: dom.MouseEvent) =>
