@@ -1,6 +1,5 @@
 package example
 
-import org.scalajs.dom
 import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html._
 import org.scalajs.dom.raw.Element
