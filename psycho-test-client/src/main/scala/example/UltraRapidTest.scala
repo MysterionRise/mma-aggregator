@@ -53,7 +53,7 @@ object UltraRapidTest {
       })
 
     def start() =
-      interval = js.timers.setInterval(3300)(tick())
+      interval = js.timers.setInterval(33)(tick())
   }
 
   val Timer = ReactComponentB[Unit]("Timer")
