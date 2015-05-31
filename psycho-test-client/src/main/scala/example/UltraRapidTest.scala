@@ -39,34 +39,69 @@ object UltraRapidTest {
     }
   }
 
-  case class State(imageName: String)
+
+  /**
+   *
+   * @param imageName - image name, could be empty
+   * @param whatToShow 1 - fixation cross, 2 - image, 3 - question, 4 - rest time
+   *                   subject for refactoring
+   */
+  case class State(imageName: String, whatToShow: Int)
 
   class Backend($: BackendScope[_, State]) {
     var interval: js.UndefOr[js.timers.SetIntervalHandle] =
       js.undefined
 
-    def tick() =
+    def showPicture() =
       $.modState(s => {
         val sp = s.imageName.split("\\.")
         val num = Integer.parseInt(sp(0))
-        State((num + 1).toString + "." + sp(1))
+        State((num + 1).toString + "." + sp(1), s.interval, s.whatToShow + 1)
+        // todo check if more pictures available
       })
 
-    def start() =
-      interval = js.timers.setInterval(33)(tick())
+    def init() =
+    // todo create new report
+      interval = js.timers.setInterval($.state.interval)(showPicture())
   }
 
-  val Timer = ReactComponentB[Unit]("Timer")
-    .initialState(State("551.jpg"))
+  //  val testApp = ReactComponentB[Unit]("TestApp")
+  //    .initialState(State("551.jpg", 1333, 1))
+  //    .backend(new Backend(_))
+  //    .render((P, S, B) =>
+  //    img(src := "/assets/images/ultraRapid/" + S.imageName))
+  //    .componentDidMount(_.backend.init()) // executed during first render
+  //    .componentWillUnmount(_.backend.interval foreach js.timers.clearInterval) // executed before clean up
+  //    .buildU
+
+
+  val testApp = ReactComponentB[Unit]("TestApp")
+    .initialState(State("", 0))
     .backend(new Backend(_))
-    .render($ => img(src := "/assets/images/ultraRapid/" + $.state.imageName))
-    .componentDidMount(_.backend.start())
-    .componentWillUnmount(_.backend.interval foreach js.timers.clearInterval)
+    .render((P, S, B) => div(
+    h1("This is a test!")
+  ))
+    .componentDidMount(f => {
+
+  })
+
+    //    scope.mo
+    //    // make ajax call here to get pics from instagram
+    //    import scalajs.js.Dynamic.{global => g}
+    //    val url = "https://api.instagram.com/v1/media/popular?client_id=642176ece1e7445e99244cec26f4de1f&callback=?"
+    //    g.jsonp(url, (result: js.Dynamic) => {
+    //      if (result != js.undefined && result.data != js.undefined) {
+    //        val data = result.data.asInstanceOf[js.Array[js.Dynamic]]
+    //        val pics = data.toList.map(item => Picture(item.id.toString, item.link.toString, item.images.low_resolution.url.toString, if (item.caption != null) item.caption.text.toString else ""))
+    //        scope.modState(_ => State(pics, Nil))
+    //      }
+    //    })
+    //  })
     .buildU
 
   def doTest() = {
     val question = getElementById[Div]("ultra-rapid")
-    React.render(Timer(), question)
+    React.render(testApp(), question)
     //    //    val btn = getElementById[Button]("rapid-button")
     //    //    btn.onclick = {
     //    //      (e: dom.MouseEvent) =>
