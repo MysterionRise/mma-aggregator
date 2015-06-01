@@ -1,5 +1,6 @@
 package example
 
+import org.scalajs.dom
 import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html._
 import org.scalajs.dom.raw.Element
@@ -9,6 +10,7 @@ import japgolly.scalajs.react.vdom.all._
 
 import scala.scalajs.js
 import scala.scalajs.js.Function0
+import scala.util.Random
 
 object UltraRapidTest {
 
@@ -39,7 +41,6 @@ object UltraRapidTest {
     }
   }
 
-
   /**
    *
    * @param imageName - image name, could be empty
@@ -48,60 +49,81 @@ object UltraRapidTest {
    */
   case class State(imageName: String, whatToShow: Int)
 
+  private val LEN: Int = 4
+
   class Backend($: BackendScope[_, State]) {
     var interval: js.UndefOr[js.timers.SetIntervalHandle] =
       js.undefined
 
-    def showPicture() =
+    def showPicture(): Unit =
       $.modState(s => {
-        val sp = s.imageName.split("\\.")
-        val num = Integer.parseInt(sp(0))
-        State((num + 1).toString + "." + sp(1), s.interval, s.whatToShow + 1)
+        s.whatToShow match {
+          case 0 => {
+            js.timers.clearInterval(interval.get)
+            interval = js.timers.setInterval(33)(showPicture())
+            State(s.imageName, (s.whatToShow + 1) % LEN)
+          }
+          case 1 => {
+            js.timers.clearInterval(interval.get)
+            interval = js.timers.setInterval(1000)(showPicture())
+            State(s.imageName, (s.whatToShow + 1) % LEN)
+          }
+          case 2 => {
+            js.timers.clearInterval(interval.get)
+            interval = js.timers.setInterval(new Random().nextInt(500) + 500)(showPicture())
+            val sp = s.imageName.split("\\.")
+            val num = Integer.parseInt(sp(0))
+            State((num + 1).toString + "." + sp(1), (s.whatToShow + 1) % LEN)
+          }
+          case 3 => {
+            js.timers.clearInterval(interval.get)
+            interval = js.timers.setInterval(750)(showPicture())
+            State(s.imageName, (s.whatToShow + 1) % LEN)
+          }
+        }
         // todo check if more pictures available
       })
 
     def init() =
     // todo create new report
-      interval = js.timers.setInterval($.state.interval)(showPicture())
+      interval = js.timers.setInterval(750)(showPicture())
   }
 
-  //  val testApp = ReactComponentB[Unit]("TestApp")
-  //    .initialState(State("551.jpg", 1333, 1))
-  //    .backend(new Backend(_))
-  //    .render((P, S, B) =>
-  //    img(src := "/assets/images/ultraRapid/" + S.imageName))
-  //    .componentDidMount(_.backend.init()) // executed during first render
-  //    .componentWillUnmount(_.backend.interval foreach js.timers.clearInterval) // executed before clean up
-  //    .buildU
-
-
   val testApp = ReactComponentB[Unit]("TestApp")
-    .initialState(State("", 0))
+    .initialState(State("551.jpg", 0))
     .backend(new Backend(_))
-    .render((P, S, B) => div(
-    h1("This is a test!")
-  ))
-    .componentDidMount(f => {
-
+    .render((P, S, B) => S.whatToShow match {
+    case 0 => img(src := "/assets/images/cross.png")
+    case 1 => img(src := "/assets/images/ultraRapid/" + S.imageName)
+    case 2 => {
+      dom.document.onkeypress = {
+        (e: dom.KeyboardEvent) =>
+          if (e.charCode == 32) {
+            getElementById[Element]("ultra-test").textContent = "SPACE PRESSED!"
+          }
+      }
+      p("Did you see animal here?")
+    }
+    case 3 => {
+      getElementById[Element]("ultra-test").textContent = ""
+      h1("Take a rest, plz")
+    }
+    case _ => h1("Something goes wrong!")
   })
-
-    //    scope.mo
-    //    // make ajax call here to get pics from instagram
-    //    import scalajs.js.Dynamic.{global => g}
-    //    val url = "https://api.instagram.com/v1/media/popular?client_id=642176ece1e7445e99244cec26f4de1f&callback=?"
-    //    g.jsonp(url, (result: js.Dynamic) => {
-    //      if (result != js.undefined && result.data != js.undefined) {
-    //        val data = result.data.asInstanceOf[js.Array[js.Dynamic]]
-    //        val pics = data.toList.map(item => Picture(item.id.toString, item.link.toString, item.images.low_resolution.url.toString, if (item.caption != null) item.caption.text.toString else ""))
-    //        scope.modState(_ => State(pics, Nil))
-    //      }
-    //    })
-    //  })
+    .componentDidMount(f => {
+    f.backend.init()
+  })
     .buildU
 
   def doTest() = {
     val question = getElementById[Div]("ultra-rapid")
-    React.render(testApp(), question)
+    val btn = getElementById[Button]("rapid-button")
+    btn.onclick = {
+      (e: dom.MouseEvent) => {
+        React.render(testApp(), question)
+        btn.setAttribute("disabled", "true")
+      }
+    }
     //    //    val btn = getElementById[Button]("rapid-button")
     //    //    btn.onclick = {
     //    //      (e: dom.MouseEvent) =>
