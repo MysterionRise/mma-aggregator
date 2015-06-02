@@ -25,9 +25,9 @@ object KaganTest {
           val pattern = getElementById[Image]("pattern")
           val img: TestImage = constructImage(pattern.src)
           if (img.roundNumber == 1) {
-            dom.document.cookie += s"""PLAY_SESSION=${userID}|${e.id}|${img.roundNumber}|${System.currentTimeMillis()}\n"""
+            dom.document.cookie += s"PLAY_SESSION=${userID}|${e.id}|${img.roundNumber}|${System.currentTimeMillis()}\n"
           } else {
-            dom.document.cookie += s"""|${userID}|${e.id}|${img.roundNumber}|${System.currentTimeMillis()}\n"""
+            dom.document.cookie += s"|${userID}|${e.id}|${img.roundNumber}|${System.currentTimeMillis()}\n"
           }
           img.roundNumber += 1 // move to next round
           img.roundNumber match {

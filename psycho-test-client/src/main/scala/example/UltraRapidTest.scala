@@ -51,15 +51,17 @@ object UltraRapidTest {
         }
       })
 
-    def init(state: State) =
-    // todo create new report
+    def init(state: State) = {
+      // todo create new report
+      dom.document.cookie = ""
       interval = js.timers.setInterval(state.whatToShow.getDuration)(showPicture())
+    }
   }
 
   val testApp = ReactComponentB[Unit]("TestApp")
     .initialState(State("551.jpg", FixationCross(750), 5))
     .backend(new Backend(_))
-    .render((_, S, _) => {
+    .render((_, S, B) => {
     if (S.numberOfQuestions > 0) {
       S.whatToShow match {
         case FixationCross(_) => img(src := "/assets/images/cross.png")
@@ -69,6 +71,14 @@ object UltraRapidTest {
             (e: dom.KeyboardEvent) =>
               if (e.charCode == 32) {
                 getElementById[Element]("ultra-test").textContent = "SPACE PRESSED!"
+                val user = getElementById[Heading]("user")
+                val userID: String = user.getAttribute("data-user-id")
+                if (!testingStarted) {
+                  dom.document.cookie += s"PLAY_SESSION=${userID}|clicked!\n"
+                  testingStarted = true
+                } else {
+                  dom.document.cookie += s"|${userID}|clicked!\n"
+                }
                 // TODO add report
               }
           }
@@ -81,9 +91,11 @@ object UltraRapidTest {
         case _ => h1("Something goes wrong!")
       }
     } else {
+      js.timers.clearInterval(B.interval.get)
       div(form(
-        formAction := "/tests/finishTest?report=\"" + dom.document.cookie + "\" method=\"POST\"",
+        action := "/tests/finishTest?report=\"" + dom.document.cookie + "\"",
         `class` := "form-horizontal",
+        method := "POST",
         button(
           id := "finish-test",
           `type` := "submit",
@@ -103,6 +115,7 @@ object UltraRapidTest {
     val btn = getElementById[Button]("rapid-button")
     btn.onclick = {
       (e: dom.MouseEvent) => {
+        dom.document.cookie = ""
         React.render(testApp(), question)
         btn.setAttribute("disabled", "true")
       }
