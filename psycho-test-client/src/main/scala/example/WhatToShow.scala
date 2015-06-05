@@ -6,29 +6,35 @@ abstract class WhatToShow(duration: Int) {
 
   def getDuration = this.duration
 
-  def moveToNext(): WhatToShow
+  def moveToNext(param: Int): WhatToShow
 }
 
 case class FixationCross(duration: Int) extends WhatToShow(duration) {
-  override def moveToNext(): WhatToShow = new ImageQuestion(33)
+  override def moveToNext(param: Int): WhatToShow = new ImageQuestion(33)
 }
 
 case class ImageQuestion(duration: Int) extends WhatToShow(duration) {
-  override def moveToNext(): WhatToShow = new TextQuestion(1000)
+  override def moveToNext(param: Int): WhatToShow = new TextQuestion(1000)
 }
 
 case class TextQuestion(duration: Int) extends WhatToShow(duration) {
-  override def moveToNext(): WhatToShow = new Rest(new Random().nextInt(1500) + 500)
+  override def moveToNext(param: Int): WhatToShow = {
+    param match {
+      case 0 => new IncorrectAnswerCross(1000)
+      case 1 => new CorrectAnswerCross(1000)
+      case _ => new Rest(new Random().nextInt(1500) + 500)
+    }
+  }
 }
 
 case class Rest(duration: Int) extends WhatToShow(duration) {
-  override def moveToNext(): WhatToShow = new FixationCross(500)
+  override def moveToNext(param: Int): WhatToShow = new FixationCross(500)
 }
 
 case class CorrectAnswerCross(duration: Int) extends WhatToShow(duration) {
-  override def moveToNext(): WhatToShow = new Rest(new Random().nextInt(1500) + 500)
+  override def moveToNext(param: Int): WhatToShow = new Rest(new Random().nextInt(1500) + 500)
 }
 
 case class IncorrectAnswerCross(duration: Int) extends WhatToShow(duration) {
-  override def moveToNext(): WhatToShow = new Rest(new Random().nextInt(1500) + 500)
+  override def moveToNext(param: Int): WhatToShow = new Rest(new Random().nextInt(1500) + 500)
 }

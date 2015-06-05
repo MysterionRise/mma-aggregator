@@ -8,16 +8,18 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.all._
 
 import scala.scalajs.js
+import scala.util.Random
 
 object UltraRapidTest {
 
   var testingStarted = false
+  var notClicked = true
 
   /**
    * @param imageName - image name, could be empty
    * @param whatToShow - object that will define what to show
    */
-  case class State(imageName: String, whatToShow: WhatToShow, numberOfQuestions: Int)
+  case class State(imageName: String, whatToShow: WhatToShow, numberOfQuestions: Int, isTesting: Boolean)
 
 
   class Backend(stateController: BackendScope[_, State]) {
@@ -29,20 +31,41 @@ object UltraRapidTest {
       this.interval = js.timers.setInterval(duration)(showPicture())
     }
 
+    def fromBooleanToInt(b: Boolean): Int = if (b) 1 else 0
+
     def showPicture(): Unit =
       stateController.modState(s => {
         s.whatToShow match {
           case r: Rest => {
-            val next = r.moveToNext()
+            val next = r.moveToNext(fromBooleanToInt(s.isTesting))
             clearAndSetInterval(interval, next.getDuration)
             val sp = s.imageName.split("\\.")
             val num = Integer.parseInt(sp(0))
-            State((num + 1).toString + "." + sp(1), next, s.numberOfQuestions - 1)
+            State((num + 1).toString + "." + sp(1), next, s.numberOfQuestions - 1, s.isTesting)
+          }
+          case t: TextQuestion => {
+            if (s.isTesting) {
+              var nextState: WhatToShow = null
+              if (notClicked) {
+                nextState = t.moveToNext(0)
+              } else {
+                nextState = t.moveToNext(1)
+              }
+              notClicked = true
+              // todo fix hardcode, need to actually check if it's ok or not
+//              val nextState = t.moveToNext(new Random().nextInt(2))
+              clearAndSetInterval(interval, nextState.getDuration)
+              State(s.imageName, nextState, s.numberOfQuestions, s.isTesting)
+            } else {
+              val nextState = t.moveToNext(2)
+              clearAndSetInterval(interval, nextState.getDuration)
+              State(s.imageName, nextState, s.numberOfQuestions, s.isTesting)
+            }
           }
           case w: WhatToShow => {
-            val nextState = w.moveToNext
+            val nextState = w.moveToNext(fromBooleanToInt(s.isTesting))
             clearAndSetInterval(interval, nextState.getDuration)
-            State(s.imageName, nextState, s.numberOfQuestions)
+            State(s.imageName, nextState, s.numberOfQuestions, s.isTesting)
           }
         }
       })
@@ -54,14 +77,14 @@ object UltraRapidTest {
   }
 
   val testApp = ReactComponentB[Unit]("TestApp")
-    .initialState(State("551.jpg", FixationCross(500), 5))
+    .initialState(State("551.jpg", FixationCross(500), 5, true))
     .backend(new Backend(_))
     .render((_, S, B) => {
     if (S.numberOfQuestions > 0) {
       S.whatToShow match {
         case FixationCross(_) => img(src := "/assets/images/cross.png")
-        case CorrectAnswerCross(_) => img(src := "/assets/images/cross.png")
-        case IncorrectAnswerCross(_) => img(src := "/assets/images/cross.png")
+        case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
+        case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
         case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.imageName)
         case TextQuestion(_) => {
           dom.document.onkeypress = {
@@ -70,9 +93,11 @@ object UltraRapidTest {
                 getElementById[Element]("ultra-test").textContent = "SPACE PRESSED!"
                 val user = getElementById[Heading]("user")
                 var userID: String = user.getAttribute("data-user-id")
+                // TODO for testing purposes only
                 if (userID.isEmpty) {
                   userID = "123"
                 }
+                notClicked = false
                 if (!testingStarted) {
                   dom.document.cookie += s"PLAY_SESSION=$userID|${S.imageName}\n"
                   testingStarted = true
