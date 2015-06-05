@@ -30,8 +30,8 @@ object PsychoTest extends Controller {
         BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
         val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age)
-        val id = UserDAO.addUser(addedUser)
-        addedUser.id = Some(id)
+//        val id = UserDAO.addUser(addedUser)
+//        addedUser.id = Some(id)
         user.testName match {
           case "Kagan test" => {
             val kaganImages = new Array[Image](8)

@@ -1,7 +1,6 @@
 package example
 
 import org.scalajs.dom
-import org.scalajs.dom.CanvasRenderingContext2D
 import org.scalajs.dom.html._
 import org.scalajs.dom.raw.Element
 import example.ScalaJSCode._
@@ -9,13 +8,10 @@ import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.all._
 
 import scala.scalajs.js
-import scala.scalajs.js.Function0
 
 object UltraRapidTest {
 
   var testingStarted = false
-  var canvas: Canvas = _
-  var ctx: CanvasRenderingContext2D = _
 
   /**
    * @param imageName - image name, could be empty
@@ -24,7 +20,7 @@ object UltraRapidTest {
   case class State(imageName: String, whatToShow: WhatToShow, numberOfQuestions: Int)
 
 
-  class Backend($: BackendScope[_, State]) {
+  class Backend(stateController: BackendScope[_, State]) {
     var interval: js.UndefOr[js.timers.SetIntervalHandle] =
       js.undefined
 
@@ -34,7 +30,7 @@ object UltraRapidTest {
     }
 
     def showPicture(): Unit =
-      $.modState(s => {
+      stateController.modState(s => {
         s.whatToShow match {
           case r: Rest => {
             val next = r.moveToNext()
@@ -52,39 +48,46 @@ object UltraRapidTest {
       })
 
     def init(state: State) = {
-      // todo create new report
       dom.document.cookie = ""
       interval = js.timers.setInterval(state.whatToShow.getDuration)(showPicture())
     }
   }
 
   val testApp = ReactComponentB[Unit]("TestApp")
-    .initialState(State("551.jpg", FixationCross(750), 5))
+    .initialState(State("551.jpg", FixationCross(500), 5))
     .backend(new Backend(_))
     .render((_, S, B) => {
     if (S.numberOfQuestions > 0) {
       S.whatToShow match {
         case FixationCross(_) => img(src := "/assets/images/cross.png")
+        case CorrectAnswerCross(_) => img(src := "/assets/images/cross.png")
+        case IncorrectAnswerCross(_) => img(src := "/assets/images/cross.png")
         case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.imageName)
         case TextQuestion(_) => {
           dom.document.onkeypress = {
             (e: dom.KeyboardEvent) =>
-              if (e.charCode == 32) {
+              if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
                 getElementById[Element]("ultra-test").textContent = "SPACE PRESSED!"
                 val user = getElementById[Heading]("user")
-                val userID: String = user.getAttribute("data-user-id")
+                var userID: String = user.getAttribute("data-user-id")
+                if (userID.isEmpty) {
+                  userID = "123"
+                }
                 if (!testingStarted) {
-                  dom.document.cookie += s"PLAY_SESSION=${userID}|clicked!\n"
+                  dom.document.cookie += s"PLAY_SESSION=$userID|${S.imageName}\n"
                   testingStarted = true
                 } else {
-                  dom.document.cookie += s"|${userID}|clicked!\n"
+                  dom.document.cookie += s"|$userID|${S.imageName}\n"
                 }
-                // TODO add report
+                B.showPicture()
               }
           }
           p("Did you see animal here?")
         }
         case Rest(_) => {
+          dom.document.onkeypress = {
+            (e: dom.KeyboardEvent) => {}
+          }
           getElementById[Element]("ultra-test").textContent = ""
           h2("Take a rest, please!")
         }
@@ -92,6 +95,9 @@ object UltraRapidTest {
       }
     } else {
       js.timers.clearInterval(B.interval.get)
+      if (dom.document.cookie.isEmpty) {
+        dom.document.cookie += s"PLAY_SESSION"
+      }
       div(form(
         action := "/tests/finishTest?report=\"" + dom.document.cookie + "\"",
         `class` := "form-horizontal",
@@ -119,33 +125,6 @@ object UltraRapidTest {
         React.render(testApp(), question)
         btn.setAttribute("disabled", "true")
       }
-    }
-  }
-
-  def drawFixationCross(): Function0[Any] = new Function0[Any] {
-    override def apply(): Any = {
-      ctx.fillStyle = "gray"
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-      ctx.beginPath()
-      ctx.strokeStyle = "white"
-      val centerX = canvas.width / 2
-      val centerY = canvas.height / 2
-      ctx.moveTo(centerX, centerY)
-      ctx.lineTo(centerX + 50, centerY + 50)
-      ctx.stroke()
-      ctx.moveTo(centerX, centerY)
-      ctx.lineTo(centerX - 50, centerY + 50)
-
-      ctx.stroke()
-      ctx.moveTo(centerX, centerY)
-      ctx.lineTo(centerX + 50, centerY - 50)
-
-      ctx.stroke()
-      ctx.moveTo(centerX, centerY)
-      ctx.lineTo(centerX - 50, centerY - 50)
-
-      ctx.stroke()
-      ctx.closePath()
     }
   }
 }
