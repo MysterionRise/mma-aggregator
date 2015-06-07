@@ -10,7 +10,7 @@ abstract class WhatToShow(duration: Int) {
 }
 
 case class FixationCross(duration: Int) extends WhatToShow(duration) {
-  override def moveToNext(param: Int): WhatToShow = new ImageQuestion(153)
+  override def moveToNext(param: Int): WhatToShow = new ImageQuestion(33)
 }
 
 case class ImageQuestion(duration: Int) extends WhatToShow(duration) {

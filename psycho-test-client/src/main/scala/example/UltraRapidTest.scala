@@ -112,6 +112,7 @@ object UltraRapidTest {
     }
   }
 
+  // todo generate test stuff
   private val strings = ArrayBuffer("n_1", "n_2", "n_3", "n_51", "n_52",
     "n_53", "y_316", "y_317", "y_318", "y_319", "y_320")
   val testApp = ReactComponentB[Unit]("TestApp")
@@ -136,12 +137,6 @@ object UltraRapidTest {
                   userID = "123"
                 }
                 notClicked = false
-                //                if (!testingStarted) {
-                //                  dom.document.cookie += s"PLAY_SESSION=$userID|${S.imageName}\n"
-                //                  testingStarted = true
-                //                } else {
-                //                  dom.document.cookie += s"|$userID|${S.imageName}\n"
-                //                }
                 B.showPicture()
               }
           }
