@@ -7,6 +7,7 @@ import example.ScalaJSCode._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.all._
 
+import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
 import scala.util.Random
 
@@ -19,7 +20,7 @@ object UltraRapidTest {
    * @param imageName - image name, could be empty
    * @param whatToShow - object that will define what to show
    */
-  case class State(imageName: String, whatToShow: WhatToShow, numberOfQuestions: Int, isTesting: Boolean)
+  case class State(imageName: String, whatToShow: WhatToShow, isTesting: Boolean, images: ArrayBuffer[String])
 
 
   class Backend(stateController: BackendScope[_, State]) {
@@ -33,39 +34,43 @@ object UltraRapidTest {
 
     def fromBooleanToInt(b: Boolean): Int = if (b) 1 else 0
 
+    def getCorectAnswerByName(s: String): Boolean = {
+      s.startsWith("y_")
+    }
+
     def showPicture(): Unit =
       stateController.modState(s => {
         s.whatToShow match {
           case r: Rest => {
             val next = r.moveToNext(fromBooleanToInt(s.isTesting))
             clearAndSetInterval(interval, next.getDuration)
-            val sp = s.imageName.split("\\.")
-            val num = Integer.parseInt(sp(0))
-            State((num + 1).toString + "." + sp(1), next, s.numberOfQuestions - 1, s.isTesting)
+            val idx = new Random().nextInt(s.images.size)
+            State(s.images.remove(idx), next, s.isTesting, s.images.result())
           }
           case t: TextQuestion => {
             if (s.isTesting) {
               var nextState: WhatToShow = null
-              if (notClicked) {
-                nextState = t.moveToNext(0)
-              } else {
+              val correctAnswer = getCorectAnswerByName(s.imageName)
+              if (notClicked && !correctAnswer) {
                 nextState = t.moveToNext(1)
+              } else if (!notClicked && correctAnswer) {
+                nextState = t.moveToNext(1)
+              } else {
+                nextState = t.moveToNext(0)
               }
               notClicked = true
-              // todo fix hardcode, need to actually check if it's ok or not
-//              val nextState = t.moveToNext(new Random().nextInt(2))
               clearAndSetInterval(interval, nextState.getDuration)
-              State(s.imageName, nextState, s.numberOfQuestions, s.isTesting)
+              State(s.imageName, nextState, s.isTesting, s.images)
             } else {
               val nextState = t.moveToNext(2)
               clearAndSetInterval(interval, nextState.getDuration)
-              State(s.imageName, nextState, s.numberOfQuestions, s.isTesting)
+              State(s.imageName, nextState, s.isTesting, s.images)
             }
           }
           case w: WhatToShow => {
             val nextState = w.moveToNext(fromBooleanToInt(s.isTesting))
             clearAndSetInterval(interval, nextState.getDuration)
-            State(s.imageName, nextState, s.numberOfQuestions, s.isTesting)
+            State(s.imageName, nextState, s.isTesting, s.images)
           }
         }
       })
@@ -76,16 +81,18 @@ object UltraRapidTest {
     }
   }
 
+  private val strings = ArrayBuffer("n_1", "n_2", "n_3", "n_51", "n_52",
+    "n_53", "y_316", "y_317", "y_318", "y_319", "y_320")
   val testApp = ReactComponentB[Unit]("TestApp")
-    .initialState(State("551.jpg", FixationCross(500), 5, true))
+    .initialState(State(strings.remove(new Random().nextInt(strings.size)), FixationCross(500), true, strings))
     .backend(new Backend(_))
     .render((_, S, B) => {
-    if (S.numberOfQuestions > 0) {
+    if (!S.images.isEmpty) {
       S.whatToShow match {
         case FixationCross(_) => img(src := "/assets/images/cross.png")
         case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
         case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
-        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.imageName)
+        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.imageName + ".jpg")
         case TextQuestion(_) => {
           dom.document.onkeypress = {
             (e: dom.KeyboardEvent) =>
