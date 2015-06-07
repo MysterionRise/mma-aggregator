@@ -22,8 +22,36 @@ object UltraRapidTest {
    */
   case class State(imageName: String, whatToShow: WhatToShow, isTesting: Boolean, images: ArrayBuffer[String])
 
+  class Report(userName: String) {
+    val answers = new ArrayBuffer[(Int, Int, Int)]()
+
+    def addAnswerToReport(imageId: Int, answerId: Int, questionId: Int) = {
+      answers += ((imageId, answerId, questionId))
+    }
+
+    def createReport(answers: ArrayBuffer[(Int, Int, Int)]): String = {
+      answers.size match {
+        case 0 => ""
+        case n: Int => {
+          val x = answers.head
+          s"$x|" + createReport(answers.tail)
+        }
+      }
+    }
+
+    override def toString: String = {
+      s"$userName|${createReport(answers)}"
+    }
+  }
 
   class Backend(stateController: BackendScope[_, State]) {
+    val user = getElementById[Heading]("user")
+    var userID: String = user.getAttribute("data-user-id")
+    if (userID.isEmpty) {
+      // todo for testing purposes
+      userID = "123"
+    }
+    val report = new Report(userID)
     var interval: js.UndefOr[js.timers.SetIntervalHandle] =
       js.undefined
 
@@ -52,10 +80,13 @@ object UltraRapidTest {
               var nextState: WhatToShow = null
               val correctAnswer = getCorectAnswerByName(s.imageName)
               if (notClicked && !correctAnswer) {
+                report.addAnswerToReport(s.imageName.hashCode, 1, 1)
                 nextState = t.moveToNext(1)
               } else if (!notClicked && correctAnswer) {
+                report.addAnswerToReport(s.imageName.hashCode, 2, 1)
                 nextState = t.moveToNext(1)
               } else {
+                report.addAnswerToReport(s.imageName.hashCode, 3, 1)
                 nextState = t.moveToNext(0)
               }
               notClicked = true
@@ -105,12 +136,12 @@ object UltraRapidTest {
                   userID = "123"
                 }
                 notClicked = false
-                if (!testingStarted) {
-                  dom.document.cookie += s"PLAY_SESSION=$userID|${S.imageName}\n"
-                  testingStarted = true
-                } else {
-                  dom.document.cookie += s"|$userID|${S.imageName}\n"
-                }
+                //                if (!testingStarted) {
+                //                  dom.document.cookie += s"PLAY_SESSION=$userID|${S.imageName}\n"
+                //                  testingStarted = true
+                //                } else {
+                //                  dom.document.cookie += s"|$userID|${S.imageName}\n"
+                //                }
                 B.showPicture()
               }
           }
@@ -131,7 +162,7 @@ object UltraRapidTest {
         dom.document.cookie += s"PLAY_SESSION"
       }
       div(form(
-        action := "/tests/finishTest?report=\"" + dom.document.cookie + "\"",
+        action := "/tests/finishTest?report=\"" + B.report.toString + "\"",
         `class` := "form-horizontal",
         method := "POST",
         button(
