@@ -156,17 +156,19 @@ object UltraRapidTest {
       if (dom.document.cookie.isEmpty) {
         dom.document.cookie += s"PLAY_SESSION"
       }
-      div(form(
-        action := "/tests/finishTest?report=\"" + B.report.toString + "\"",
-        `class` := "form-horizontal",
-        method := "POST",
-        button(
-          id := "finish-test",
-          `type` := "submit",
-          `class` := "btn btn-primary",
-          "Finish Test"
+      div(
+        form(
+          action := "/tests/finishTest?report=\"" + B.report.toString + "\"",
+          `class` := "form-horizontal",
+          method := "POST",
+          button(
+            id := "finish-test",
+            `type` := "submit",
+            `class` := "btn btn-primary",
+            "Finish Test"
+          )
         )
-      ))
+      )
     }
   })
     .componentDidMount(f => {
