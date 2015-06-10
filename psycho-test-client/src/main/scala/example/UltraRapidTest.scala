@@ -176,15 +176,45 @@ object UltraRapidTest {
   })
     .buildU
 
+  val question = getElementById[Div]("ultra-rapid")
+
+  val buttonApp = ReactComponentB[Unit]("StartButton")
+    .initialState("")
+    .backend(new TestBackend(_))
+    .render((_, S, B) => button(
+    `class` := "btn btn-primary",
+    onClick ==> B.startTest,
+    "Start test!"
+  )
+    )
+    .buildU
+
+  val HelloMessage = ReactComponentB[String]("HelloMessage")
+    .render(name => div("Hello, ", name))
+    .build
+
+
+
   def doTest() = {
-    val question = getElementById[Div]("ultra-rapid")
-    val btn = getElementById[Button]("rapid-button")
-    btn.onclick = {
-      (e: dom.MouseEvent) => {
-        dom.document.cookie = ""
-        React.render(testApp(), question)
-        btn.setAttribute("disabled", "true")
-      }
-    }
+
+    //    val btn = getElementById[Button]("rapid-button")
+    React.render(buttonApp(), question)
+    React.render(HelloMessage("Konstantin"), question)
+    //    btn.onclick = {
+    //      (e: dom.MouseEvent) => {
+    //        dom.document.cookie = ""
+    //        React.render(testApp(), question)
+    //        btn.setAttribute("disabled", "true")
+    //      }
+    //    }
   }
+
+  class TestBackend($: BackendScope[_, String]) {
+    def startTest(e: ReactEventI) = {
+      React.render(testApp(), question)
+      $.setState("")
+    }
+
+  }
+
 }

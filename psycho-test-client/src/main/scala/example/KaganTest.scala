@@ -44,14 +44,12 @@ object KaganTest {
               pattern.setAttribute("hidden", "true")
               div.innerHTML = "<form action=/tests/finishTest?report=\"" + dom.document.cookie + "\" method=\"POST\" class=\"form-horizontal\"><button id=\"finish-test\" type=\"submit\" class=\"btn btn-primary\">Finish Test</button></form>"
             }
-            case _ => {
-              constructNewRound(pattern, img)
-            }
+            case _ => constructNewRound(pattern, img)
           }
       }
     }
   }
-  
+
   private def provideFeedback(success: Element, error: Element, e: Image, correctID: String): Unit = {
     if (e.id.equals(correctID)) {
       success.textContent = "You successfully answer the question!"
