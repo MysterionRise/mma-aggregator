@@ -199,7 +199,7 @@ object UltraRapidTest {
 
     //    val btn = getElementById[Button]("rapid-button")
     React.render(buttonApp(), question)
-    React.render(HelloMessage("Konstantin"), question)
+    //React.render(HelloMessage("Konstantin"), question)
     //    btn.onclick = {
     //      (e: dom.MouseEvent) => {
     //        dom.document.cookie = ""
