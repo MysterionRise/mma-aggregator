@@ -123,8 +123,13 @@ object UltraRapidTest {
     }
   }
 
+  def constructArrayBuffer(s: String) = {
+    // TODO fix it to construct from S
+    ArrayBuffer[UltraRapidImage](UltraRapidImage(1, "1/1.jpg"), UltraRapidImage(1, "1/2.jpg"))
+  }
+
+  private lazy val testStrings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
   private lazy val strings = ArrayBuffer[UltraRapidImage]()
-  private lazy val testStrings = ArrayBuffer[UltraRapidImage]()
   private val questionType = 1
 
   val testApp = ReactComponentB[Unit]("TestSession")
@@ -136,7 +141,7 @@ object UltraRapidTest {
         case FixationCross(_) => img(src := "/assets/images/cross.png")
         case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
         case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
-        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName)
         case TextQuestion(_) => {
           dom.document.onkeypress = {
             (e: dom.KeyboardEvent) =>
