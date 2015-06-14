@@ -2,15 +2,12 @@ package example
 
 import org.scalajs.dom
 import org.scalajs.dom.html._
-import org.scalajs.dom.raw.Element
 import example.ScalaJSCode._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.all._
-import shared.{UltraRapidImage, SharedCode}
-
+import shared.{SharedCode, UltraRapidImage}
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
-import scala.util.Random
 
 object UltraRapidTest {
 
@@ -19,7 +16,6 @@ object UltraRapidTest {
   private var questionType = 1
 
   private val topMargin = 200
-  private val random = new Random(System.currentTimeMillis())
 
   /**
    *
@@ -89,7 +85,7 @@ object UltraRapidTest {
           case r: Rest => {
             val next = r.moveToNext(fromBooleanToInt(s.isTesting))
             clearAndSetInterval(interval, next.getDuration)
-            val idx = random.nextInt(s.images.size)
+            val idx = SharedCode.generateRandomValue(s.images.size)
             State(s.images.remove(idx), next, s.isTesting, s.images.result(), s.questionType)
           }
           case t: TextQuestion => {
@@ -135,7 +131,8 @@ object UltraRapidTest {
     for (pair <- pairs) {
       res.append(UltraRapidImage(pair.split(",")(0), pair.split(",")(1)))
     }
-    res.take(10)
+    // todo take only 10 first elements
+    util.Random.shuffle(res).take(20)
   }
 
   private lazy val testStrings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
@@ -151,7 +148,7 @@ object UltraRapidTest {
   }
 
   val testApp = ReactComponentB[Unit]("TestSession")
-    .initialState(State(testStrings.remove(random.nextInt(testStrings.size)), FixationCross(500), true, testStrings, questionType))
+    .initialState(State(testStrings.remove(SharedCode.generateRandomValue(testStrings.size)), FixationCross(500), true, testStrings, questionType))
     .backend(new Backend(_))
     .render((_, S, B) => {
     // todo fix bug with last element
@@ -186,7 +183,7 @@ object UltraRapidTest {
             (e: dom.KeyboardEvent) => {}
           }
           h1()
-//          customP("Take a rest, please!")
+          //          customP("Take a rest, please!")
         }
       }
     } else {

@@ -1,6 +1,10 @@
 package shared
 
+import scala.util.Random
+
 object SharedCode {
+
+  val random = new Random()
 
   def constructImage(s: String): Image = {
     val paths = s.split("/")
@@ -26,4 +30,6 @@ object SharedCode {
   def constructURI(t: Image): String = {
     return constructSrc("images", t)
   }
+
+  def generateRandomValue(n: Int) = random.nextInt(n)
 }
