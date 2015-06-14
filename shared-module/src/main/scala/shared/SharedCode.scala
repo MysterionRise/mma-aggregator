@@ -1,7 +1,5 @@
 package shared
 
-import scala.collection.mutable.ArrayBuffer
-
 object SharedCode {
 
   def constructImage(s: String): Image = {
@@ -27,10 +25,5 @@ object SharedCode {
 
   def constructURI(t: Image): String = {
     return constructSrc("images", t)
-  }
-
-  def generateImages: ArrayBuffer[UltraRapidImage] = {
-    // TODO read files
-    ArrayBuffer("n_1", "n_2", "n_3", "n_51", "n_52", "n_53", "y_316", "y_317", "y_318", "y_319", "y_320")
   }
 }

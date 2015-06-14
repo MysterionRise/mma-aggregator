@@ -19,7 +19,7 @@ object UltraRapidTest {
 
   /**
    *
-   * @param imageName - current image, that we want to show
+   * @param image - current image, that we want to show
    * @param whatToShow - type of showing (fixation cross, question image, text question, rest)
    * @param isTesting - boolean flag representing test session or not
    * @param images - list of images
@@ -31,7 +31,7 @@ object UltraRapidTest {
    *                     5 - is it nature?
    *                     6 - is it urban?
    */
-  case class State(imageName: String, whatToShow: WhatToShow, isTesting: Boolean, images: ArrayBuffer[UltraRapidImage], questionType: Int)
+  case class State(image: UltraRapidImage, whatToShow: WhatToShow, isTesting: Boolean, images: ArrayBuffer[UltraRapidImage], questionType: Int)
 
   class Report(userName: String) {
     val answers = new ArrayBuffer[(Int, Int, Int)]()
@@ -89,30 +89,30 @@ object UltraRapidTest {
           case t: TextQuestion => {
             if (s.isTesting) {
               var nextState: WhatToShow = null
-              val correctAnswer = getCorectAnswerByName(s.imageName)
+              val correctAnswer = getCorectAnswerByName(s.image.imageName)
               if (notClicked && !correctAnswer) {
-                report.addAnswerToReport(s.imageName.hashCode, 1, 1)
+                report.addAnswerToReport(s.image.hashCode, 1, 1)
                 nextState = t.moveToNext(1)
               } else if (!notClicked && correctAnswer) {
-                report.addAnswerToReport(s.imageName.hashCode, 2, 1)
+                report.addAnswerToReport(s.image.hashCode, 2, 1)
                 nextState = t.moveToNext(1)
               } else {
-                report.addAnswerToReport(s.imageName.hashCode, 3, 1)
+                report.addAnswerToReport(s.image.hashCode, 3, 1)
                 nextState = t.moveToNext(0)
               }
               notClicked = true
               clearAndSetInterval(interval, nextState.getDuration)
-              State(s.imageName, nextState, s.isTesting, s.images, s.questionType)
+              State(s.image, nextState, s.isTesting, s.images, s.questionType)
             } else {
               val nextState = t.moveToNext(2)
               clearAndSetInterval(interval, nextState.getDuration)
-              State(s.imageName, nextState, s.isTesting, s.images, s.questionType)
+              State(s.image, nextState, s.isTesting, s.images, s.questionType)
             }
           }
           case w: WhatToShow => {
             val nextState = w.moveToNext(fromBooleanToInt(s.isTesting))
             clearAndSetInterval(interval, nextState.getDuration)
-            State(s.imageName, nextState, s.isTesting, s.images, s.questionType)
+            State(s.image, nextState, s.isTesting, s.images, s.questionType)
           }
         }
       })
@@ -123,8 +123,8 @@ object UltraRapidTest {
     }
   }
 
-  private lazy val strings = SharedCode.generateImages
-  private lazy val testStrings = SharedCode.generateImages
+  private lazy val strings = ArrayBuffer[UltraRapidImage]()
+  private lazy val testStrings = ArrayBuffer[UltraRapidImage]()
   private val questionType = 1
 
   val testApp = ReactComponentB[Unit]("TestSession")
@@ -136,7 +136,7 @@ object UltraRapidTest {
         case FixationCross(_) => img(src := "/assets/images/cross.png")
         case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
         case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
-        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.imageName + ".jpg")
+        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
         case TextQuestion(_) => {
           dom.document.onkeypress = {
             (e: dom.KeyboardEvent) =>
@@ -174,7 +174,7 @@ object UltraRapidTest {
     .buildU
 
   val realSession = ReactComponentB[Unit]("RealtSession")
-    .initialState(State(strings.remove(new Random().nextInt(strings.size)), FixationCross(500), true, strings))
+    .initialState(State(strings.remove(new Random().nextInt(strings.size)), FixationCross(500), true, strings, questionType))
     .backend(new Backend(_))
     .render((_, S, B) => {
     if (!S.images.isEmpty) {
@@ -182,7 +182,7 @@ object UltraRapidTest {
         case FixationCross(_) => img(src := "/assets/images/cross.png")
         case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
         case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
-        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.imageName + ".jpg")
+        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
         case TextQuestion(_) => {
           dom.document.onkeypress = {
             (e: dom.KeyboardEvent) =>
