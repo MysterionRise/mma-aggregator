@@ -12,6 +12,8 @@ package shared
  * @param imageName - physical image name
  *
  */
-case class UltraRapidImage(imageType: Int, imageName: String) {
-
+case class UltraRapidImage(imageType: String, imageName: String) {
+  override def toString: String = {
+    s"$imageType,$imageName;"
+  }
 }

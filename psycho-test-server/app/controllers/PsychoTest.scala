@@ -37,7 +37,7 @@ object PsychoTest extends Controller {
         if (x.isDirectory) {
           for (file <- x.listFiles()) {
             if (file.isFile) {
-              res.append(new UltraRapidImage(1, x.getName + "/" + file.getName))
+              res.append(new UltraRapidImage(x.getName, x.getName + "/" + file.getName))
             }
           }
         }
