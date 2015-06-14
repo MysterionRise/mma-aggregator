@@ -141,10 +141,12 @@ object UltraRapidTest {
   private lazy val testStrings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
 
   def customP(innerText: String): ReactElement = {
-    p(
-      marginTop := topMargin,
-      marginLeft := topMargin,
-      innerText
+    h2(
+      p(
+        marginTop := topMargin,
+        marginLeft := topMargin,
+        innerText
+      )
     )
   }
 
@@ -183,8 +185,8 @@ object UltraRapidTest {
           dom.document.onkeypress = {
             (e: dom.KeyboardEvent) => {}
           }
-          getElementById[Element]("ultra-test").textContent = ""
-          h2("Take a rest, please!")
+          h1()
+//          customP("Take a rest, please!")
         }
       }
     } else {
