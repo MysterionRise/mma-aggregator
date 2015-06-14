@@ -19,6 +19,7 @@ object UltraRapidTest {
   private var questionType = 1
 
   private val topMargin = 200
+  private val random = new Random(System.currentTimeMillis())
 
   /**
    *
@@ -80,13 +81,15 @@ object UltraRapidTest {
       imageName.startsWith(String.valueOf(questionType))
     }
 
+    def extractImageType(image: UltraRapidImage): Int = Integer.parseInt(image.imageType)
+
     def showPicture(): Unit =
       stateController.modState(s => {
         s.whatToShow match {
           case r: Rest => {
             val next = r.moveToNext(fromBooleanToInt(s.isTesting))
             clearAndSetInterval(interval, next.getDuration)
-            val idx = new Random().nextInt(s.images.size)
+            val idx = random.nextInt(s.images.size)
             State(s.images.remove(idx), next, s.isTesting, s.images.result(), s.questionType)
           }
           case t: TextQuestion => {
@@ -94,13 +97,13 @@ object UltraRapidTest {
               var nextState: WhatToShow = null
               val correctAnswer = getCorrectAnswerByName(s.image.imageType, questionType)
               if (notClicked && !correctAnswer) {
-                report.addAnswerToReport(s.image.hashCode, 1, 1)
+                report.addAnswerToReport(extractImageType(s.image), 1, questionType)
                 nextState = t.moveToNext(1)
               } else if (!notClicked && correctAnswer) {
-                report.addAnswerToReport(s.image.hashCode, 2, 1)
+                report.addAnswerToReport(extractImageType(s.image), 2, questionType)
                 nextState = t.moveToNext(1)
               } else {
-                report.addAnswerToReport(s.image.hashCode, 3, 1)
+                report.addAnswerToReport(extractImageType(s.image), 3, questionType)
                 nextState = t.moveToNext(0)
               }
               notClicked = true
@@ -132,7 +135,7 @@ object UltraRapidTest {
     for (pair <- pairs) {
       res.append(UltraRapidImage(pair.split(",")(0), pair.split(",")(1)))
     }
-    res
+    res.take(10)
   }
 
   private lazy val testStrings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
@@ -146,10 +149,11 @@ object UltraRapidTest {
   }
 
   val testApp = ReactComponentB[Unit]("TestSession")
-    .initialState(State(testStrings.remove(new Random().nextInt(testStrings.size)), FixationCross(500), true, testStrings, questionType))
+    .initialState(State(testStrings.remove(random.nextInt(testStrings.size)), FixationCross(500), true, testStrings, questionType))
     .backend(new Backend(_))
     .render((_, S, B) => {
-    if (S.images.size >= 0) {
+    // todo fix bug with last element
+    if (!S.images.isEmpty) {
       S.whatToShow match {
         case FixationCross(_) => img(src := "/assets/images/cross.png")
         case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
@@ -159,7 +163,6 @@ object UltraRapidTest {
           dom.document.onkeypress = {
             (e: dom.KeyboardEvent) =>
               if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                getElementById[Element]("ultra-test").textContent = "SPACE PRESSED!"
                 val user = getElementById[Heading]("user")
                 var userID: String = user.getAttribute("data-user-id")
                 // TODO for testing purposes only
@@ -175,7 +178,6 @@ object UltraRapidTest {
             case 1 => customP("Did you see dog here?")
             case _ => p("We don't have any questions for that type!")
           }
-
         }
         case Rest(_) => {
           dom.document.onkeypress = {
@@ -187,7 +189,19 @@ object UltraRapidTest {
       }
     } else {
       js.timers.clearInterval(B.interval.get)
-      div()
+      div(
+        form(
+          action := "/tests/finishTest?report=\"" + B.report.toString + "\"",
+          `class` := "form-horizontal",
+          method := "POST",
+          button(
+            id := "finish-test",
+            `type` := "submit",
+            `class` := "btn btn-primary",
+            "Finish Test"
+          )
+        )
+      )
     }
   })
     .componentDidMount(f => {
