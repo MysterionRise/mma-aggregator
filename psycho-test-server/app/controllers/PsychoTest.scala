@@ -28,21 +28,22 @@ object PsychoTest extends Controller {
 
   val testForm: Form[UserReq] = Form(userMapping)
 
-  def readAllUltraRapidImages: ArrayBuffer[UltraRapidImage] = {
+  def readAllUltraRapidImages(): ArrayBuffer[UltraRapidImage] = {
     val res = new ArrayBuffer[UltraRapidImage]()
-    val dir = new File("/assets/images/ultraRapid/")
+    // todo weird way to do that
+    val dir = new File("psycho-test-server/public/images/ultraRapid/")
     if (dir.isDirectory) {
       for (x <- dir.listFiles()) {
         if (x.isDirectory) {
           for (file <- x.listFiles()) {
             if (file.isFile) {
-              res.append(new UltraRapidImage(1, file.getName))
+              res.append(new UltraRapidImage(1, x.getName + "/" + file.getName))
             }
           }
         }
       }
     }
-    ArrayBuffer[UltraRapidImage](UltraRapidImage(1, "animals/301"))
+    res
   }
 
   def startTest() = Action { implicit req =>
@@ -51,8 +52,8 @@ object PsychoTest extends Controller {
         BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
         val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age)
-//        val id = UserDAO.addUser(addedUser)
-//        addedUser.id = Some(id)
+        //        val id = UserDAO.addUser(addedUser)
+        //        addedUser.id = Some(id)
         user.testName match {
           case "Kagan test" => {
             val kaganImages = new Array[Image](8)
