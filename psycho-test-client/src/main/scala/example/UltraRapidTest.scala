@@ -157,7 +157,7 @@ object UltraRapidTest {
         case FixationCross(_) => img(src := "/assets/images/cross.png")
         case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
         case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
-        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName)
+        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
         case TextQuestion(_) => {
           dom.document.onkeypress = {
             (e: dom.KeyboardEvent) =>

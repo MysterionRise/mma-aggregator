@@ -30,16 +30,25 @@ object PsychoTest extends Controller {
 
   def readAllUltraRapidImages(): ArrayBuffer[UltraRapidImage] = {
     val res = new ArrayBuffer[UltraRapidImage]()
-    // todo weird way to do that
-    val dir = new File("psycho-test-server/public/images/ultraRapid/")
-    if (dir.isDirectory) {
-      for (x <- dir.listFiles()) {
-        if (x.isDirectory) {
-          for (file <- x.listFiles()) {
-            if (file.isFile) {
-              res.append(new UltraRapidImage(x.getName, x.getName + "/" + file.getName))
-            }
-          }
+    for (i <- 1 to 6) {
+      i match {
+        case 1 => for (j <- 1 to 80) {
+          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
+        }
+        case 2 => for (j <- 1 to 122) {
+          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
+        }
+        case 3 => for (j <- 1 to 105) {
+          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
+        }
+        case 4 => for (j <- 1 to 95) {
+          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
+        }
+        case 5 => for (j <- 1 to 104) {
+          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
+        }
+        case 6 => for (j <- 1 to 99) {
+          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
         }
       }
     }
