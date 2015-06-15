@@ -10,7 +10,7 @@ lazy val exampleServer = (project in file("psycho-test-server")).settings(
   pipelineStages := Seq(scalaJSProd, gzip),
   libraryDependencies ++= Seq(
     "com.vmunier" %% "play-scalajs-scripts" % "0.1.0",
-//    "org.webjars" % "jquery" % "1.11.1",
+    "org.webjars" % "jquery" % "1.11.1",
     "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
     "com.typesafe.slick" %% "slick" % "2.1.0",
     "com.typesafe.play" %% "play-slick" % "0.8.1"

@@ -1,10 +1,13 @@
 package example
 
 import org.scalajs.dom
+import org.scalajs.dom.ext.Image
+import org.scalajs.dom.html
 import org.scalajs.dom.html._
 import example.ScalaJSCode._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.all._
+import org.scalajs.dom.raw.HTMLImageElement
 import shared.{SharedCode, UltraRapidImage}
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
@@ -129,9 +132,14 @@ object UltraRapidTest {
     val res = new ArrayBuffer[UltraRapidImage]()
     val pairs = s.split(";")
     for (pair <- pairs) {
-      res.append(UltraRapidImage(pair.split(",")(0), pair.split(",")(1)))
+      val image = UltraRapidImage(pair.split(",")(0), pair.split(",")(1))
+      res.append(image)
+      val newChild = dom.document.createElement("img").asInstanceOf[Image]
+      newChild.src = "/assets/images/ultraRapid/" + image.imageName + ".jpg"
+      newChild.style.display = "none"
+      getElementById[Body]("body").appendChild(newChild)
     }
-    // todo take only 10 first elements
+    // todo take only 20 first elements
     util.Random.shuffle(res).take(20)
   }
 
@@ -154,7 +162,11 @@ object UltraRapidTest {
     // todo fix bug with last element
     if (!S.images.isEmpty) {
       S.whatToShow match {
-        case FixationCross(_) => img(src := "/assets/images/cross.png")
+        case FixationCross(_) => {
+
+          img(src := "/assets/images/cross.png")
+          //todo fix preloading
+        }
         case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
         case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
         case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
