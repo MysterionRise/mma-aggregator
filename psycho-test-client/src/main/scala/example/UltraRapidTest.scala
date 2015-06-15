@@ -131,19 +131,22 @@ object UltraRapidTest {
   def constructArrayBuffer(s: String) = {
     val res = new ArrayBuffer[UltraRapidImage]()
     val pairs = s.split(";")
+    val div = dom.document.createElement("div").asInstanceOf[Div]
+    div.setAttribute("hidden", "true")
+    div.id = "preload-div"
+    getElementById[Body]("body").appendChild(div)
     for (pair <- pairs) {
       val image = UltraRapidImage(pair.split(",")(0), pair.split(",")(1))
       res.append(image)
       val newChild = dom.document.createElement("img").asInstanceOf[Image]
       newChild.src = "/assets/images/ultraRapid/" + image.imageName + ".jpg"
-      newChild.style.display = "none"
-      getElementById[Body]("body").appendChild(newChild)
+      getElementById[Div]("preload-div").appendChild(newChild)
     }
     // todo take only 20 first elements
     util.Random.shuffle(res).take(20)
   }
 
-  private lazy val testStrings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
+  private val testStrings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
 
   def customP(innerText: String): ReactElement = {
     h2(
@@ -163,7 +166,6 @@ object UltraRapidTest {
     if (!S.images.isEmpty) {
       S.whatToShow match {
         case FixationCross(_) => {
-
           img(src := "/assets/images/cross.png")
           //todo fix preloading
         }
