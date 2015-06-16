@@ -36,16 +36,16 @@ object PsychoTest extends Controller {
         case 2 => for (j <- 1 to 122) {
           res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
         }
-        case 3 => for (j <- 1 to 105) {
+        case 3 => for (j <- 1 to 87) {
           res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
         }
-        case 4 => for (j <- 1 to 95) {
+        case 4 => for (j <- 1 to 119) {
           res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
         }
         case 5 => for (j <- 1 to 104) {
           res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
         }
-        case 6 => for (j <- 1 to 99) {
+        case 6 => for (j <- 1 to 103) {
           res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
         }
       }
