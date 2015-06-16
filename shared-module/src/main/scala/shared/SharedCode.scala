@@ -31,5 +31,13 @@ object SharedCode {
     return constructSrc("images", t)
   }
 
-  def generateRandomValue(n: Int) = random.nextInt(n)
+  /**
+   * @return random number from 1 to n, inclusively
+   */
+  def generateRandomValue(n: Int) = random.nextInt(n + 1) + 1
+
+  /**
+   * @return random index for array of length = len
+   */
+  def generateRandomIndex(len: Int) = random.nextInt(len)
 }

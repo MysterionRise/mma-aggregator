@@ -1,11 +1,9 @@
 package controllers
 
-import java.io.File
-
 import models._
 import play.api.data._
 import play.api.data.Forms._
-import play.api.mvc.{DiscardingCookie, Call, Action}
+import play.api.mvc.{DiscardingCookie, Action}
 import play.mvc.Controller
 import play.api.mvc.Results._
 import shared.{UltraRapidImage, Image}

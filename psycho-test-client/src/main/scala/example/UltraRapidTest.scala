@@ -1,24 +1,23 @@
 package example
 
 import org.scalajs.dom
-import org.scalajs.dom.ext.Image
-import org.scalajs.dom.html
 import org.scalajs.dom.html._
 import example.ScalaJSCode._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.all._
-import org.scalajs.dom.raw.HTMLImageElement
-import shared.{SharedCode, UltraRapidImage}
+import shared.SharedCode._
+import shared.UltraRapidImage
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
 
 object UltraRapidTest {
 
-  private var testingStarted = false
   private var notClicked = true
-  private var questionType = 1
-
   private val topMargin = 200
+  private val testQuestionMargin = 1
+  private val questionMargin = 1
+  private val testQuestionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
+  private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
 
   /**
    *
@@ -34,29 +33,8 @@ object UltraRapidTest {
    *                     5 - is it nature?
    *                     6 - is it urban?
    */
-  case class State(image: UltraRapidImage, whatToShow: WhatToShow, isTesting: Boolean, images: ArrayBuffer[UltraRapidImage], questionType: Int)
-
-  class Report(userName: String) {
-    val answers = new ArrayBuffer[(Int, Int, Int)]()
-
-    def addAnswerToReport(imageId: Int, answerId: Int, questionId: Int) = {
-      answers += ((imageId, answerId, questionId))
-    }
-
-    def createReport(answers: ArrayBuffer[(Int, Int, Int)]): String = {
-      answers.size match {
-        case 0 => ""
-        case n: Int => {
-          val x = answers.head
-          s"$x|" + createReport(answers.tail)
-        }
-      }
-    }
-
-    override def toString: String = {
-      s"$userName|${createReport(answers)}"
-    }
-  }
+  case class State(image: UltraRapidImage, whatToShow: WhatToShow, isTesting: Boolean,
+                   images: ArrayBuffer[UltraRapidImage], questionType: Int, numberOfQuestions: Int)
 
   class Backend(stateController: BackendScope[_, State]) {
     val user = getElementById[Heading]("user")
@@ -69,9 +47,10 @@ object UltraRapidTest {
     var interval: js.UndefOr[js.timers.SetIntervalHandle] =
       js.undefined
 
-    def clearAndSetInterval(interval: js.UndefOr[js.timers.SetIntervalHandle], duration: Int) = {
+    def clearAndSetInterval(interval: js.UndefOr[js.timers.SetIntervalHandle], duration: Int,
+                            questionTypes: ArrayBuffer[Int], questionMargin: Int) = {
       js.timers.clearInterval(interval.get)
-      this.interval = js.timers.setInterval(duration)(showPicture())
+      this.interval = js.timers.setInterval(duration)(showPicture(questionTypes, questionMargin))
     }
 
     def fromBooleanToInt(b: Boolean): Int = if (b) 1 else 0
@@ -82,49 +61,68 @@ object UltraRapidTest {
 
     def extractImageType(image: UltraRapidImage): Int = Integer.parseInt(image.imageType)
 
-    def showPicture(): Unit =
+    def showPicture(questionTypes: ArrayBuffer[Int], questionMargin: Int): Unit =
       stateController.modState(s => {
         s.whatToShow match {
           case r: Rest => {
             val next = r.moveToNext(fromBooleanToInt(s.isTesting))
-            clearAndSetInterval(interval, next.getDuration)
-            val idx = SharedCode.generateRandomValue(s.images.size)
-            State(s.images.remove(idx), next, s.isTesting, s.images.result(), s.questionType)
+            clearAndSetInterval(interval, next.getDuration, questionTypes, questionMargin)
+
+            if (s.numberOfQuestions == questionMargin) {
+              if (questionTypes.length == 0) {
+                State(UltraRapidImage.apply("", ""), next, s.isTesting,
+                  s.images.result(), 0, 0)
+              } else {
+                val qType = questionTypes.remove(0)
+                State(getRandomQuestion(s.images, qType), next, s.isTesting,
+                  s.images.result(), qType, 0)
+              }
+            } else {
+              State(getRandomQuestion(s.images, s.questionType), next, s.isTesting,
+                s.images.result(), s.questionType, s.numberOfQuestions + 1)
+            }
+
           }
           case t: TextQuestion => {
             if (s.isTesting) {
               var nextState: WhatToShow = null
-              val correctAnswer = getCorrectAnswerByName(s.image.imageType, questionType)
+              val correctAnswer = getCorrectAnswerByName(s.image.imageType, s.questionType)
               if (notClicked && !correctAnswer) {
-                report.addAnswerToReport(extractImageType(s.image), 1, questionType)
                 nextState = t.moveToNext(1)
               } else if (!notClicked && correctAnswer) {
-                report.addAnswerToReport(extractImageType(s.image), 2, questionType)
                 nextState = t.moveToNext(1)
               } else {
-                report.addAnswerToReport(extractImageType(s.image), 3, questionType)
                 nextState = t.moveToNext(0)
               }
               notClicked = true
-              clearAndSetInterval(interval, nextState.getDuration)
-              State(s.image, nextState, s.isTesting, s.images, s.questionType)
+              clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
+              State(s.image, nextState, s.isTesting, s.images, s.questionType, s.numberOfQuestions)
             } else {
               val nextState = t.moveToNext(2)
-              clearAndSetInterval(interval, nextState.getDuration)
-              State(s.image, nextState, s.isTesting, s.images, s.questionType)
+              val correctAnswer = getCorrectAnswerByName(s.image.imageType, s.questionType)
+              clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
+              if (notClicked && !correctAnswer) {
+                report.addAnswerToReport(extractImageType(s.image), 1, s.questionType)
+              } else if (!notClicked && correctAnswer) {
+                report.addAnswerToReport(extractImageType(s.image), 2, s.questionType)
+              } else {
+                report.addAnswerToReport(extractImageType(s.image), 3, s.questionType)
+              }
+              notClicked = true
+              State(s.image, nextState, s.isTesting, s.images, s.questionType, s.numberOfQuestions)
             }
           }
           case w: WhatToShow => {
             val nextState = w.moveToNext(fromBooleanToInt(s.isTesting))
-            clearAndSetInterval(interval, nextState.getDuration)
-            State(s.image, nextState, s.isTesting, s.images, s.questionType)
+            clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
+            State(s.image, nextState, s.isTesting, s.images, s.questionType, s.numberOfQuestions)
           }
         }
       })
 
-    def init(state: State) = {
+    def init(state: State, questionTypes: ArrayBuffer[Int], questionMargin: Int) = {
       dom.document.cookie = ""
-      interval = js.timers.setInterval(state.whatToShow.getDuration)(showPicture())
+      interval = js.timers.setInterval(state.whatToShow.getDuration)(showPicture(questionTypes, questionMargin))
     }
   }
 
@@ -142,8 +140,16 @@ object UltraRapidTest {
       newChild.src = "/assets/images/ultraRapid/" + image.imageName + ".jpg"
       getElementById[Div]("preload-div").appendChild(newChild)
     }
-    // todo take only 20 first elements
-    util.Random.shuffle(res).take(20)
+    val cross = dom.document.createElement("img").asInstanceOf[Image]
+    cross.src = "/assets/images/cross.png"
+    getElementById[Div]("preload-div").appendChild(cross)
+    val crossGreen = dom.document.createElement("img").asInstanceOf[Image]
+    crossGreen.src = "/assets/images/cross-correct.png"
+    getElementById[Div]("preload-div").appendChild(crossGreen)
+    val crossRed = dom.document.createElement("img").asInstanceOf[Image]
+    crossRed.src = "/assets/images/cross-incorrect.png"
+    getElementById[Div]("preload-div").appendChild(crossRed)
+    util.Random.shuffle(res)
   }
 
   private val testStrings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
@@ -158,69 +164,28 @@ object UltraRapidTest {
     )
   }
 
-  val testApp = ReactComponentB[Unit]("TestSession")
-    .initialState(State(testStrings.remove(SharedCode.generateRandomValue(testStrings.size)), FixationCross(500), true, testStrings, questionType))
-    .backend(new Backend(_))
-    .render((_, S, B) => {
-    // todo fix bug with last element
-    if (!S.images.isEmpty) {
-      S.whatToShow match {
-        case FixationCross(_) => {
-          img(src := "/assets/images/cross.png")
-          //todo fix preloading
-        }
-        case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
-        case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
-        case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
-        case TextQuestion(_) => {
-          dom.document.onkeypress = {
-            (e: dom.KeyboardEvent) =>
-              if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                val user = getElementById[Heading]("user")
-                var userID: String = user.getAttribute("data-user-id")
-                // TODO for testing purposes only
-                if (userID.isEmpty) {
-                  userID = "123"
-                }
-                notClicked = false
-                B.showPicture()
-              }
-          }
-          // TODO ask proper question
-          questionType match {
-            case 1 => customP("Did you see dog here?")
-            case _ => p("We don't have any questions for that type!")
-          }
-        }
-        case Rest(_) => {
-          dom.document.onkeypress = {
-            (e: dom.KeyboardEvent) => {}
-          }
-          h1()
-          //          customP("Take a rest, please!")
-        }
-      }
-    } else {
-      js.timers.clearInterval(B.interval.get)
-      div(
-        form(
-          action := "/tests/finishTest?report=\"" + B.report.toString + "\"",
-          `class` := "form-horizontal",
-          method := "POST",
-          button(
-            id := "finish-test",
-            `type` := "submit",
-            `class` := "btn btn-primary",
-            "Finish Test"
-          )
-        )
-      )
+  /**
+   * Mapping for targets non-targets in questions
+   */
+  val mapping = new Array[Set[Int]](7)
+  mapping(1) = Set(1, 2, 3)
+  mapping(2) = Set(2, 3, 4)
+  mapping(3) = Set(1, 3, 4)
+  mapping(4) = Set(1, 2, 4)
+  mapping(5) = Set(5, 6)
+  mapping(6) = Set(5, 6)
+
+  def getRandomQuestion(images: ArrayBuffer[UltraRapidImage], qType: Int): UltraRapidImage = {
+    val s = mapping.apply(qType)
+    var idx = generateRandomIndex(images.length)
+    var cnt = 0
+    // todo fix if we don't have targets or non-targets for this type of a question
+    while (!s.contains(Integer.parseInt(images(idx).imageType)) && cnt < images.length) {
+      idx = generateRandomIndex(images.length)
+      cnt += 1
     }
-  })
-    .componentDidMount(f => {
-    f.backend.init(f.state)
-  })
-    .buildU
+    images.remove(idx)
+  }
 
   val question = getElementById[Div]("ultra-rapid")
 
@@ -235,16 +200,135 @@ object UltraRapidTest {
     )
     .buildU
 
-  def doTest() = {
-    React.render(buttonApp(), question)
-  }
-
   class TestBackend($: BackendScope[_, String]) {
     def startTest(e: ReactEventI) = {
+
+      val realTestQType = questionTypes.remove(0)
+      val realTestApp = ReactComponentB[Unit]("RealSession")
+        .initialState(State(getRandomQuestion(testStrings, realTestQType), FixationCross(500), false,
+        testStrings, realTestQType, 0))
+        .backend(new Backend(_))
+        .render((_, S, B) => {
+        if (S.questionType > 0) {
+          S.whatToShow match {
+            case FixationCross(_) => img(src := "/assets/images/cross.png")
+            case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case TextQuestion(_) => {
+              dom.document.onkeypress = {
+                (e: dom.KeyboardEvent) =>
+                  if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
+                    val user = getElementById[Heading]("user")
+                    var userID: String = user.getAttribute("data-user-id")
+                    // TODO for testing purposes only
+                    if (userID.isEmpty) {
+                      userID = "123"
+                    }
+                    notClicked = false
+                    B.showPicture(questionTypes, questionMargin)
+                  }
+              }
+              S.questionType match {
+                case 1 => customP("Did you see dog here?")
+                case 2 => customP("Did you see animal here?")
+                case 3 => customP("Did you see car here?")
+                case 4 => customP("Did you see vehicle here?")
+                case 5 => customP("Did you see nature scene here?")
+                case 6 => customP("Did you see urban scene here?")
+                case _ => p("We don't have any questions for that type!")
+              }
+            }
+            case Rest(_) => {
+              // reduce number of questions to be asked for this type of a question
+              dom.document.onkeypress = {
+                (e: dom.KeyboardEvent) => {}
+              }
+              h1()
+            }
+          }
+        } else {
+          js.timers.clearInterval(B.interval.get)
+          div(
+            form(
+              action := "/tests/finishTest?report=\"" + B.report.toString + "\"",
+              `class` := "form-horizontal",
+              method := "POST",
+              button(
+                id := "finish-test",
+                `type` := "submit",
+                `class` := "btn btn-primary",
+                "Finish Test"
+              )
+            )
+          )
+        }
+      })
+        .componentDidMount(f => {
+        f.backend.init(f.state, questionTypes, questionMargin)
+      })
+        .buildU
+
+      val testQType = testQuestionTypes.remove(0)
+      val testApp = ReactComponentB[Unit]("TestSession")
+        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500), true,
+        testStrings, testQType, 0))
+        .backend(new Backend(_))
+        .render((_, S, B) => {
+        if (S.questionType > 0) {
+          S.whatToShow match {
+            case FixationCross(_) => img(src := "/assets/images/cross.png")
+            case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
+            case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
+            case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case TextQuestion(_) => {
+              dom.document.onkeypress = {
+                (e: dom.KeyboardEvent) =>
+                  if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
+                    val user = getElementById[Heading]("user")
+                    var userID: String = user.getAttribute("data-user-id")
+                    // TODO for testing purposes only
+                    if (userID.isEmpty) {
+                      userID = "123"
+                    }
+                    notClicked = false
+                    B.showPicture(testQuestionTypes, testQuestionMargin)
+                  }
+              }
+              S.questionType match {
+                case 1 => customP("Did you see dog here?")
+                case 2 => customP("Did you see animal here?")
+                case 3 => customP("Did you see car here?")
+                case 4 => customP("Did you see vehicle here?")
+                case 5 => customP("Did you see nature scene here?")
+                case 6 => customP("Did you see urban scene here?")
+                case _ => p("We don't have any questions for that type!")
+              }
+            }
+            case Rest(_) => {
+              // reduce number of questions to be asked for this type of a question
+              dom.document.onkeypress = {
+                (e: dom.KeyboardEvent) => {}
+              }
+              h1()
+            }
+          }
+        } else {
+          js.timers.clearInterval(B.interval.get)
+          // TODO ask to be ready for good testing
+          React.render(realTestApp(), question)
+        }
+      })
+        .componentDidMount(f => {
+        f.backend.init(f.state, testQuestionTypes, testQuestionMargin)
+      })
+        .buildU
       React.render(testApp(), question)
       getElementById[Div]("instruction").innerHTML = ""
       $.setState("")
     }
+  }
+
+  def doTest() = {
+    React.render(buttonApp(), question)
   }
 
 }
