@@ -1,6 +1,5 @@
 # Psycho Tests framework
 
-
 ## Run the application
 ```shell
 $ sbt
