@@ -14,15 +14,16 @@ object UltraRapidTest {
 
   private var notClicked = true
   private val topMargin = 200
-  private val testQuestionMargin = 1
-  private val questionMargin = 1
+  private val testQuestionAmount = 1
+  private val questionAmount = 1
   private val testQuestionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private val socialTestQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
   private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
+  private val socialTestQuestionAmount = 1
+  private val socialQuestionAmount = 1
 
   /**
-   *
    * @param image - current image, that we want to show
    * @param whatToShow - type of showing (fixation cross, question image, text question, rest)
    * @param isTesting - boolean flag representing test session or not
@@ -35,9 +36,7 @@ object UltraRapidTest {
    *                     5 - is it nature?
    *                     6 - is it urban?
    *                     7 - is it indoor scene?
-   *                     8 - is it outdoor scene?
-   *                     9 - is it positive scene?
-   *                     10 - is it negative scene?
+   *                     8 - is it positive interaction on scene?
    */
   case class State(image: UltraRapidImage, whatToShow: WhatToShow, isTesting: Boolean,
                    images: ArrayBuffer[UltraRapidImage], questionType: Int, numberOfQuestions: Int)
@@ -158,7 +157,7 @@ object UltraRapidTest {
                       userID = "123"
                     }
                     notClicked = false
-                    B.showPicture(questionTypes, questionMargin)
+                    B.showPicture(questionTypes, questionAmount)
                   }
               }
               askQuestion(S.questionType)
@@ -188,7 +187,7 @@ object UltraRapidTest {
         }
       })
         .componentDidMount(f => {
-        f.backend.init(f.state, questionTypes, questionMargin)
+        f.backend.init(f.state, questionTypes, questionAmount)
       })
         .buildU
 
@@ -215,7 +214,7 @@ object UltraRapidTest {
                       userID = "123"
                     }
                     notClicked = false
-                    B.showPicture(testQuestionTypes, testQuestionMargin)
+                    B.showPicture(testQuestionTypes, testQuestionAmount)
                   }
               }
               askQuestion(S.questionType)
@@ -235,7 +234,7 @@ object UltraRapidTest {
         }
       })
         .componentDidMount(f => {
-        f.backend.init(f.state, testQuestionTypes, testQuestionMargin)
+        f.backend.init(f.state, testQuestionTypes, testQuestionAmount)
       })
         .buildU
       React.render(testApp(), question)
