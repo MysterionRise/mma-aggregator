@@ -18,8 +18,8 @@ object UltraRapidTest {
   private val questionMargin = 1
   private val testQuestionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
-  private val socialTestQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8, 9, 10))
-  private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8, 9, 10))
+  private val socialTestQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
+  private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
 
   /**
    *
@@ -93,8 +93,6 @@ object UltraRapidTest {
   mapping(6) = Set(5, 6)
   mapping(7) = Set(7, 8, 9, 10)
   mapping(8) = Set(7, 8, 9, 10)
-  mapping(9) = Set(7, 8, 9, 10)
-  mapping(10) = Set(7, 8, 9, 10)
 
   def getRandomQuestion(images: ArrayBuffer[UltraRapidImage], qType: Int): UltraRapidImage = {
     val s = mapping.apply(qType)
@@ -122,6 +120,21 @@ object UltraRapidTest {
     .buildU
 
   class TestBackend($: BackendScope[_, String]) {
+
+    def askQuestion(questionType: Int): ReactElement = {
+      questionType match {
+        case 1 => customP("Did you see dog here?")
+        case 2 => customP("Did you see animal here?")
+        case 3 => customP("Did you see car here?")
+        case 4 => customP("Did you see vehicle here?")
+        case 5 => customP("Did you see nature scene here?")
+        case 6 => customP("Did you see urban scene here?")
+        case 7 => customP("Did you see indoor scene here?")
+        case 8 => customP("Did you see positive interaction here?")
+        case _ => p("We don't have any questions for that type!")
+      }
+    }
+
     def startTest(e: ReactEventI) = {
 
       val realTestQType = questionTypes.remove(0)
@@ -148,15 +161,7 @@ object UltraRapidTest {
                     B.showPicture(questionTypes, questionMargin)
                   }
               }
-              S.questionType match {
-                case 1 => customP("Did you see dog here?")
-                case 2 => customP("Did you see animal here?")
-                case 3 => customP("Did you see car here?")
-                case 4 => customP("Did you see vehicle here?")
-                case 5 => customP("Did you see nature scene here?")
-                case 6 => customP("Did you see urban scene here?")
-                case _ => p("We don't have any questions for that type!")
-              }
+              askQuestion(S.questionType)
             }
             case Rest(_) => {
               dom.document.onkeypress = {
@@ -213,15 +218,7 @@ object UltraRapidTest {
                     B.showPicture(testQuestionTypes, testQuestionMargin)
                   }
               }
-              S.questionType match {
-                case 1 => customP("Did you see dog here?")
-                case 2 => customP("Did you see animal here?")
-                case 3 => customP("Did you see car here?")
-                case 4 => customP("Did you see vehicle here?")
-                case 5 => customP("Did you see nature scene here?")
-                case 6 => customP("Did you see urban scene here?")
-                case _ => p("We don't have any questions for that type!")
-              }
+              askQuestion(S.questionType)
             }
             case Rest(_) => {
               // reduce number of questions to be asked for this type of a question
