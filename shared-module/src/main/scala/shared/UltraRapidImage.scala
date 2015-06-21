@@ -9,6 +9,7 @@ package shared
  * 4 - vehicles
  * 5 - nature
  * 6 - urban
+ * 7 - social
  * @param imageName - physical image name
  *
  */

@@ -48,6 +48,19 @@ object PsychoTest extends Controller {
         case 6 => for (j <- 1 to 103) {
           res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
         }
+        // todo change to proper count
+        case 7 => for (j <- 1 to 0) {
+          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
+        }
+        case 8 => for (j <- 1 to 0) {
+          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
+        }
+        case 9 => for (j <- 1 to 0) {
+          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
+        }
+        case 10 => for (j <- 1 to 0) {
+          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
+        }
       }
     }
     res
@@ -59,8 +72,8 @@ object PsychoTest extends Controller {
         BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
         val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age)
-        val id = UserDAO.addUser(addedUser)
-        addedUser.id = Some(id)
+        //        val id = UserDAO.addUser(addedUser)
+        //        addedUser.id = Some(id)
         user.testName match {
           case "Kagan test" => {
             val kaganImages = new Array[Image](8)
