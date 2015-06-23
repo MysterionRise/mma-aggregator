@@ -21,6 +21,7 @@ object UltraRapidTest {
   private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
   private val socialTestQuestionAmount = 1
   private val socialQuestionAmount = 1
+  private val backend = new Backend(_, true)
 
   /**
    * @param image - current image, that we want to show
@@ -135,15 +136,15 @@ object UltraRapidTest {
 
     def createSocialApp(testQType: Int) = {
       ReactComponentB[Unit]("RealSocialSession")
-        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500), false,
+        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), false,
         testStrings, testQType, 0))
-        .backend(new Backend(_, true))
+        .backend(backend)
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
-            case FixationCross(_) => img(src := "/assets/images/cross.png")
-            case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
-            case TextQuestion(_) => {
+            case FixationCross(_, _) => img(src := "/assets/images/cross.png")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
@@ -159,7 +160,7 @@ object UltraRapidTest {
               }
               askQuestion(S.questionType)
             }
-            case Rest(_) => {
+            case Rest(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
               }
@@ -193,17 +194,17 @@ object UltraRapidTest {
 
     def createTestSocialApp(testQType: Int) = {
       ReactComponentB[Unit]("TestSocialSession")
-        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500), true,
+        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), true,
         testStrings, testQType, 0))
-        .backend(new Backend(_, true))
+        .backend(backend)
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
-            case FixationCross(_) => img(src := "/assets/images/cross.png")
-            case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
-            case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
-            case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
-            case TextQuestion(_) => {
+            case FixationCross(_, _) => img(src := "/assets/images/cross.png")
+            case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png")
+            case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
@@ -219,7 +220,7 @@ object UltraRapidTest {
               }
               askQuestion(S.questionType)
             }
-            case Rest(_) => {
+            case Rest(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
               }
@@ -229,6 +230,7 @@ object UltraRapidTest {
         } else {
           js.timers.clearInterval(B.interval.get)
           // TODO start to ask real social tasks
+          // add pause here
           val testQType = socialQuestionTypes.remove(0)
           val app = createSocialApp(testQType)
           React.render(app.apply(), question)
@@ -244,15 +246,15 @@ object UltraRapidTest {
 
       val realTestQType = questionTypes.remove(0)
       val realTestApp = ReactComponentB[Unit]("RealSession")
-        .initialState(State(getRandomQuestion(testStrings, realTestQType), FixationCross(500), false,
+        .initialState(State(getRandomQuestion(testStrings, realTestQType), FixationCross(500, false), false,
         testStrings, realTestQType, 0))
-        .backend(new Backend(_, true))
+        .backend(backend)
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
-            case FixationCross(_) => img(src := "/assets/images/cross.png")
-            case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
-            case TextQuestion(_) => {
+            case FixationCross(_, _) => img(src := "/assets/images/cross.png")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
@@ -268,7 +270,7 @@ object UltraRapidTest {
               }
               askQuestion(S.questionType)
             }
-            case Rest(_) => {
+            case Rest(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
               }
@@ -278,6 +280,7 @@ object UltraRapidTest {
         } else {
           js.timers.clearInterval(B.interval.get)
           // TODO start to ask social tasks
+          // add pause here
           val testQType = socialTestQuestionTypes.remove(0)
           val app = createTestSocialApp(testQType)
           React.render(app.apply(), question)
@@ -290,17 +293,17 @@ object UltraRapidTest {
 
       val testQType = testQuestionTypes.remove(0)
       val testApp = ReactComponentB[Unit]("TestSession")
-        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500), true,
+        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, false), true,
         testStrings, testQType, 0))
-        .backend(new Backend(_, true))
+        .backend(backend)
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
-            case FixationCross(_) => img(src := "/assets/images/cross.png")
-            case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
-            case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
-            case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
-            case TextQuestion(_) => {
+            case FixationCross(_, _) => img(src := "/assets/images/cross.png")
+            case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png")
+            case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
@@ -316,7 +319,7 @@ object UltraRapidTest {
               }
               askQuestion(S.questionType)
             }
-            case Rest(_) => {
+            case Rest(_, _) => {
               // reduce number of questions to be asked for this type of a question
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
@@ -326,6 +329,7 @@ object UltraRapidTest {
           }
         } else {
           js.timers.clearInterval(B.interval.get)
+          // add pause here
           // TODO ask to be ready for good testing
           React.render(realTestApp(), question)
         }
