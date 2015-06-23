@@ -11,7 +11,7 @@ import example.UltraRapidTest._
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
 
-class Backend(stateController: BackendScope[_, State], var notClicked: Boolean) {
+class Backend(stateController: BackendScope[_, State], var notClicked: Boolean, var report: scala.Option[Report]) {
 
   val user = getElementById[Heading]("user")
   var userID: String = user.getAttribute("data-user-id")
@@ -19,7 +19,6 @@ class Backend(stateController: BackendScope[_, State], var notClicked: Boolean) 
     // todo for testing purposes
     userID = "123"
   }
-  val report = new Report(userID)
   var interval: js.UndefOr[js.timers.SetIntervalHandle] =
     js.undefined
 
@@ -84,11 +83,11 @@ class Backend(stateController: BackendScope[_, State], var notClicked: Boolean) 
             val correctAnswer = getCorrectAnswerByName(s.image.imageType, s.image.imageName, s.questionType)
             clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
             if (notClicked && !correctAnswer) {
-              report.addAnswerToReport(extractImageType(s.image), 1, s.questionType)
+              report.get.addAnswerToReport(extractImageType(s.image), 1, s.questionType)
             } else if (!notClicked && correctAnswer) {
-              report.addAnswerToReport(extractImageType(s.image), 2, s.questionType)
+              report.get.addAnswerToReport(extractImageType(s.image), 2, s.questionType)
             } else {
-              report.addAnswerToReport(extractImageType(s.image), 3, s.questionType)
+              report.get.addAnswerToReport(extractImageType(s.image), 3, s.questionType)
             }
             notClicked = true
             State(s.image, nextState, s.isTesting, s.images, s.questionType, s.numberOfQuestions)
@@ -104,6 +103,10 @@ class Backend(stateController: BackendScope[_, State], var notClicked: Boolean) 
 
   def init(state: State, questionTypes: ArrayBuffer[Int], questionMargin: Int) = {
     dom.document.cookie = ""
+    report match {
+      case None => report = Some(new Report(userID))
+      case _ =>
+    }
     interval = js.timers.setInterval(state.whatToShow.getDuration)(showPicture(questionTypes, questionMargin))
   }
 }

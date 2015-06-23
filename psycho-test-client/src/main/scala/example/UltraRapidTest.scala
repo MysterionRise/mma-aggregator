@@ -21,7 +21,18 @@ object UltraRapidTest {
   private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
   private val socialTestQuestionAmount = 1
   private val socialQuestionAmount = 1
-  private val backend = new Backend(_, true)
+  private var backend: scala.Option[Backend] = None
+
+  private def getBackend(sc: BackendScope[_, State]): Backend = {
+    backend match {
+      case None => backend = Some(new Backend(sc, true, None))
+      case Some(x) => {
+        val b = new Backend(sc, true, Some(x.report.get))
+        backend = Some(b)
+      }
+    }
+    backend.get
+  }
 
   /**
    * @param image - current image, that we want to show
@@ -138,12 +149,12 @@ object UltraRapidTest {
       ReactComponentB[Unit]("RealSocialSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), false,
         testStrings, testQType, 0))
-        .backend(backend)
+        .backend(getBackend(_))
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg", width := 650)
             case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
@@ -196,14 +207,14 @@ object UltraRapidTest {
       ReactComponentB[Unit]("TestSocialSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), true,
         testStrings, testQType, 0))
-        .backend(backend)
+        .backend(getBackend(_))
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png")
             case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png")
             case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg", width := 650)
             case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
@@ -229,17 +240,17 @@ object UltraRapidTest {
           }
         } else {
           js.timers.clearInterval(B.interval.get)
-          // TODO start to ask real social tasks
-          // add pause here
           val testQType = socialQuestionTypes.remove(0)
           val app = createSocialApp(testQType)
-          React.render(app.apply(), question)
+          js.timers.setTimeout(20000)(React.render(app.apply(), question))
+          // TODO give proper russian waiting text
+          h1("Relax for 20 secs before starting real social session!")
         }
       })
         .componentDidMount(f => {
         f.backend.init(f.state, socialTestQuestionTypes, socialTestQuestionAmount)
       })
-      .buildU
+        .buildU
     }
 
     def startTest(e: ReactEventI) = {
@@ -248,7 +259,7 @@ object UltraRapidTest {
       val realTestApp = ReactComponentB[Unit]("RealSession")
         .initialState(State(getRandomQuestion(testStrings, realTestQType), FixationCross(500, false), false,
         testStrings, realTestQType, 0))
-        .backend(backend)
+        .backend(getBackend(_))
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
@@ -279,11 +290,11 @@ object UltraRapidTest {
           }
         } else {
           js.timers.clearInterval(B.interval.get)
-          // TODO start to ask social tasks
-          // add pause here
           val testQType = socialTestQuestionTypes.remove(0)
           val app = createTestSocialApp(testQType)
-          React.render(app.apply(), question)
+          js.timers.setTimeout(20000)(React.render(app.apply(), question))
+          // TODO give proper russian waiting text
+          h1("Relax for 20 secs before starting testing social session!")
         }
       })
         .componentDidMount(f => {
@@ -295,7 +306,7 @@ object UltraRapidTest {
       val testApp = ReactComponentB[Unit]("TestSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, false), true,
         testStrings, testQType, 0))
-        .backend(backend)
+        .backend(sc => getBackend(sc))
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
@@ -330,8 +341,10 @@ object UltraRapidTest {
         } else {
           js.timers.clearInterval(B.interval.get)
           // add pause here
-          // TODO ask to be ready for good testing
-          React.render(realTestApp(), question)
+          js.timers.setTimeout(20000)(React.render(realTestApp(), question))
+          // TODO give proper russian waiting text
+          h1("Relax for 20 secs before starting real session!")
+
         }
       })
         .componentDidMount(f => {
