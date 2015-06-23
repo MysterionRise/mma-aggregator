@@ -6,11 +6,13 @@ import japgolly.scalajs.react.BackendScope
 import org.scalajs.dom
 import org.scalajs.dom.html._
 import shared.UltraRapidImage
+import example.UltraRapidTest._
 
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
 
-class Backend(stateController: BackendScope[_, State]) {
+class Backend(stateController: BackendScope[_, State], var notClicked: Boolean) {
+
   val user = getElementById[Heading]("user")
   var userID: String = user.getAttribute("data-user-id")
   if (userID.isEmpty) {
@@ -22,20 +24,26 @@ class Backend(stateController: BackendScope[_, State]) {
     js.undefined
 
   def clearAndSetInterval(interval: js.UndefOr[js.timers.SetIntervalHandle], duration: Int,
-                          questionTypes: ArrayBuffer[Int], questionMargin: Int) = {
+                          questionTypes: ArrayBuffer[Int], questionMargin: Int): Unit = {
     js.timers.clearInterval(interval.get)
     this.interval = js.timers.setInterval(duration)(showPicture(questionTypes, questionMargin))
   }
 
   def fromBooleanToInt(b: Boolean): Int = if (b) 1 else 0
 
-  def getCorrectAnswerByName(imageName: String, questionType: Int): Boolean = {
-    imageName.startsWith(String.valueOf(questionType))
+  def getCorrectAnswerByName(imageType: String, imageName: String, questionType: Int): Boolean = {
+    if (questionType == 7) {
+      imageName.split("\\.")(0).split("_")(1).equals("1")
+    } else if (questionType == 8) {
+      imageName.split("\\.")(0).split("_")(2).equals("1")
+    } else {
+      imageType.startsWith(String.valueOf(questionType))
+    }
   }
 
   def extractImageType(image: UltraRapidImage): Int = Integer.parseInt(image.imageType)
 
-  def showPicture(questionTypes: ArrayBuffer[Int], questionMargin: Int): Unit =
+  def showPicture(questionTypes: ArrayBuffer[Int], questionMargin: Int) =
     stateController.modState(s => {
       s.whatToShow match {
         case r: Rest => {
@@ -60,7 +68,7 @@ class Backend(stateController: BackendScope[_, State]) {
         case t: TextQuestion => {
           if (s.isTesting) {
             var nextState: WhatToShow = null
-            val correctAnswer = getCorrectAnswerByName(s.image.imageType, s.questionType)
+            val correctAnswer = getCorrectAnswerByName(s.image.imageType, s.image.imageName, s.questionType)
             if (notClicked && !correctAnswer) {
               nextState = t.moveToNext(1)
             } else if (!notClicked && correctAnswer) {
@@ -73,7 +81,7 @@ class Backend(stateController: BackendScope[_, State]) {
             State(s.image, nextState, s.isTesting, s.images, s.questionType, s.numberOfQuestions)
           } else {
             val nextState = t.moveToNext(2)
-            val correctAnswer = getCorrectAnswerByName(s.image.imageType, s.questionType)
+            val correctAnswer = getCorrectAnswerByName(s.image.imageType, s.image.imageName, s.questionType)
             clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
             if (notClicked && !correctAnswer) {
               report.addAnswerToReport(extractImageType(s.image), 1, s.questionType)

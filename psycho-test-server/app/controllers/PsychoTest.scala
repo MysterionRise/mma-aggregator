@@ -28,7 +28,7 @@ object PsychoTest extends Controller {
 
   def readAllUltraRapidImages(): ArrayBuffer[UltraRapidImage] = {
     val res = new ArrayBuffer[UltraRapidImage]()
-    for (i <- 1 to 6) {
+    for (i <- 1 to 7) {
       i match {
         case 1 => for (j <- 1 to 80) {
           res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
@@ -48,18 +48,19 @@ object PsychoTest extends Controller {
         case 6 => for (j <- 1 to 103) {
           res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
         }
-        // todo change to proper count
-        case 7 => for (j <- 1 to 0) {
-          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
-        }
-        case 8 => for (j <- 1 to 0) {
-          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
-        }
-        case 9 => for (j <- 1 to 0) {
-          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
-        }
-        case 10 => for (j <- 1 to 0) {
-          res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j)))
+        case 7 => {
+          for (j <- 1 to 35) {
+            res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j) + "_1_1"))
+          }
+          for (j <- 36 to 54) {
+            res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j) + "_1_2"))
+          }
+          for (j <- 55 to 93) {
+            res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j) + "_2_1"))
+          }
+          for (j <- 94 to 107) {
+            res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i) + "/" + String.valueOf(j) + "_2_2"))
+          }
         }
       }
     }

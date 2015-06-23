@@ -12,7 +12,6 @@ import scala.scalajs.js
 
 object UltraRapidTest {
 
-  private var notClicked = true
   private val topMargin = 200
   private val testQuestionAmount = 1
   private val questionAmount = 1
@@ -90,8 +89,8 @@ object UltraRapidTest {
   mapping(4) = Set(1, 2, 4)
   mapping(5) = Set(5, 6)
   mapping(6) = Set(5, 6)
-  mapping(7) = Set(7, 8, 9, 10)
-  mapping(8) = Set(7, 8, 9, 10)
+  mapping(7) = Set(7)
+  mapping(8) = Set(7)
 
   def getRandomQuestion(images: ArrayBuffer[UltraRapidImage], qType: Int): UltraRapidImage = {
     val s = mapping.apply(qType)
@@ -134,13 +133,11 @@ object UltraRapidTest {
       }
     }
 
-    def startTest(e: ReactEventI) = {
-
-      val realTestQType = questionTypes.remove(0)
-      val realTestApp = ReactComponentB[Unit]("RealSession")
-        .initialState(State(getRandomQuestion(testStrings, realTestQType), FixationCross(500), false,
-        testStrings, realTestQType, 0))
-        .backend(new Backend(_))
+    def createSocialApp(testQType: Int) = {
+      ReactComponentB[Unit]("RealSocialSession")
+        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500), false,
+        testStrings, testQType, 0))
+        .backend(new Backend(_, true))
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
@@ -156,8 +153,8 @@ object UltraRapidTest {
                     if (userID.isEmpty) {
                       userID = "123"
                     }
-                    notClicked = false
-                    B.showPicture(questionTypes, questionAmount)
+                    B.notClicked = false
+                    B.showPicture(socialQuestionTypes, socialQuestionAmount)
                   }
               }
               askQuestion(S.questionType)
@@ -171,6 +168,7 @@ object UltraRapidTest {
           }
         } else {
           js.timers.clearInterval(B.interval.get)
+          // TODO finishing tests
           div(
             form(
               action := "/tests/finishTest?report=\"" + B.report.toString + "\"",
@@ -184,18 +182,20 @@ object UltraRapidTest {
               )
             )
           )
+
         }
       })
         .componentDidMount(f => {
-        f.backend.init(f.state, questionTypes, questionAmount)
+        f.backend.init(f.state, socialQuestionTypes, socialQuestionAmount)
       })
         .buildU
+    }
 
-      val testQType = testQuestionTypes.remove(0)
-      val testApp = ReactComponentB[Unit]("TestSession")
+    def createTestSocialApp(testQType: Int) = {
+      ReactComponentB[Unit]("TestSocialSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500), true,
         testStrings, testQType, 0))
-        .backend(new Backend(_))
+        .backend(new Backend(_, true))
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
@@ -213,7 +213,104 @@ object UltraRapidTest {
                     if (userID.isEmpty) {
                       userID = "123"
                     }
-                    notClicked = false
+                    B.notClicked = false
+                    B.showPicture(socialTestQuestionTypes, socialTestQuestionAmount)
+                  }
+              }
+              askQuestion(S.questionType)
+            }
+            case Rest(_) => {
+              dom.document.onkeypress = {
+                (e: dom.KeyboardEvent) => {}
+              }
+              h1()
+            }
+          }
+        } else {
+          js.timers.clearInterval(B.interval.get)
+          // TODO start to ask real social tasks
+          val testQType = socialQuestionTypes.remove(0)
+          val app = createSocialApp(testQType)
+          React.render(app.apply(), question)
+        }
+      })
+        .componentDidMount(f => {
+        f.backend.init(f.state, socialTestQuestionTypes, socialTestQuestionAmount)
+      })
+      .buildU
+    }
+
+    def startTest(e: ReactEventI) = {
+
+      val realTestQType = questionTypes.remove(0)
+      val realTestApp = ReactComponentB[Unit]("RealSession")
+        .initialState(State(getRandomQuestion(testStrings, realTestQType), FixationCross(500), false,
+        testStrings, realTestQType, 0))
+        .backend(new Backend(_, true))
+        .render((_, S, B) => {
+        if (S.questionType > 0) {
+          S.whatToShow match {
+            case FixationCross(_) => img(src := "/assets/images/cross.png")
+            case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case TextQuestion(_) => {
+              dom.document.onkeypress = {
+                (e: dom.KeyboardEvent) =>
+                  if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
+                    val user = getElementById[Heading]("user")
+                    var userID: String = user.getAttribute("data-user-id")
+                    // TODO for testing purposes only
+                    if (userID.isEmpty) {
+                      userID = "123"
+                    }
+                    B.notClicked = false
+                    B.showPicture(questionTypes, questionAmount)
+                  }
+              }
+              askQuestion(S.questionType)
+            }
+            case Rest(_) => {
+              dom.document.onkeypress = {
+                (e: dom.KeyboardEvent) => {}
+              }
+              h1()
+            }
+          }
+        } else {
+          js.timers.clearInterval(B.interval.get)
+          // TODO start to ask social tasks
+          val testQType = socialTestQuestionTypes.remove(0)
+          val app = createTestSocialApp(testQType)
+          React.render(app.apply(), question)
+        }
+      })
+        .componentDidMount(f => {
+        f.backend.init(f.state, questionTypes, questionAmount)
+      })
+        .buildU
+
+      val testQType = testQuestionTypes.remove(0)
+      val testApp = ReactComponentB[Unit]("TestSession")
+        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500), true,
+        testStrings, testQType, 0))
+        .backend(new Backend(_, true))
+        .render((_, S, B) => {
+        if (S.questionType > 0) {
+          S.whatToShow match {
+            case FixationCross(_) => img(src := "/assets/images/cross.png")
+            case CorrectAnswerCross(_) => img(src := "/assets/images/cross-correct.png")
+            case IncorrectAnswerCross(_) => img(src := "/assets/images/cross-incorrect.png")
+            case ImageQuestion(_) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case TextQuestion(_) => {
+              dom.document.onkeypress = {
+                (e: dom.KeyboardEvent) =>
+                  if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
+                    val user = getElementById[Heading]("user")
+                    var userID: String = user.getAttribute("data-user-id")
+                    // TODO for testing purposes only
+                    if (userID.isEmpty) {
+                      userID = "123"
+                    }
+                    B.notClicked = false
                     B.showPicture(testQuestionTypes, testQuestionAmount)
                   }
               }
@@ -244,7 +341,7 @@ object UltraRapidTest {
   }
 
   def doTest() = {
-    React.render(buttonApp(), question)
+    React.render(buttonApp.apply(), question)
   }
 
 }
