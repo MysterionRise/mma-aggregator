@@ -5,6 +5,7 @@ import org.scalajs.dom.html._
 import example.ScalaJSCode._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.all._
+import org.scalajs.dom.raw.DOMTokenList
 import shared.SharedCode._
 import shared.UltraRapidImage
 import scala.collection.mutable.ArrayBuffer
@@ -54,6 +55,7 @@ object UltraRapidTest {
 
 
   def constructArrayBuffer(s: String) = {
+    val bigDiv = dom.document.getElementById("big").asInstanceOf[Div]
     val res = new ArrayBuffer[UltraRapidImage]()
     val pairs = s.split(";")
     val div = dom.document.createElement("div").asInstanceOf[Div]
@@ -76,6 +78,7 @@ object UltraRapidTest {
     val crossRed = dom.document.createElement("img").asInstanceOf[Image]
     crossRed.src = "/assets/images/cross-incorrect.png"
     getElementById[Div]("preload-div").appendChild(crossRed)
+    js.timers.setTimeout(30000)(bigDiv.setAttribute("hidden", "false"))
     util.Random.shuffle(res)
   }
 

@@ -2,6 +2,17 @@
 
 @main("Ultra rapid recognition") {
 
+<style>
+    .overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: rgba(51,51,51,0.7);
+    z-index: 10;
+    }
+</style>
 <div id="instruction" class="alert alert-warning">
     <h4>Instruction</h4>
 
@@ -20,6 +31,11 @@
 </div>
 
 <div id="images" data-images="@listOfImages"/>
+
+<div id="big" class="progress progress-striped active overlay">
+    <h1>Please wait for loading!</h1>
+    <div id="loading-bar" class="progress-bar" style="width: 0%"></div>
+</div>
 
 <em id="ultra-test"></em>
 <div id="ultra-rapid" class="jumbotron" style="height:600px">
