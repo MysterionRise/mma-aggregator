@@ -24,7 +24,6 @@ object UltraRapidTest {
   private val socialTestQuestionAmount = 1
   private val socialQuestionAmount = 1
   private var backend: scala.Option[Backend] = None
-  private val size = 622
 
   private def getBackend(sc: BackendScope[_, State]): Backend = {
     backend match {
@@ -71,16 +70,19 @@ object UltraRapidTest {
       newChild.src = "/assets/images/ultraRapid/" + image.imageName + ".jpg"
       getElementById[Div]("preload-div").appendChild(newChild)
     }
-    var preloadInterval = js.timers.setInterval(1000)({
+    val preloadInterval = js.timers.setInterval(100)({
       val children = getElementById[Div]("preload-div").children
       var loaded = 0
+      var size = 0
       for (i <- 0 until children.length) {
-        if (children.item(i).isInstanceOf[Image] && children.item(i).asInstanceOf[Image].complete) {
-          loaded += 1
+        if (children.item(i).isInstanceOf[Image]) {
+          size += 1
+          if (children.item(i).asInstanceOf[Image].complete)
+            loaded += 1
         }
+        getElementById[Div]("loading-bar").style.width = s"${(100 * loaded) / size}%"
+        children.length
       }
-      getElementById[Div]("loading-bar").style.width = s"${(100 * loaded) / size}%"
-      children.length
     })
     dom.window.onload = {
       (e: Event) => {
