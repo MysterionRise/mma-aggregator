@@ -24,7 +24,6 @@ object UltraRapidTest {
   private val socialTestQuestionAmount = 1
   private val socialQuestionAmount = 1
   private var backend: scala.Option[Backend] = None
-  private var loaded = 0
   private val size = 622
 
   private def getBackend(sc: BackendScope[_, State]): Backend = {
@@ -74,6 +73,7 @@ object UltraRapidTest {
     }
     var preloadInterval = js.timers.setInterval(1000)({
       val children = getElementById[Div]("preload-div").children
+      var loaded = 0
       for (i <- 0 until children.length) {
         if (children.item(i).isInstanceOf[Image] && children.item(i).asInstanceOf[Image].complete) {
           loaded += 1
