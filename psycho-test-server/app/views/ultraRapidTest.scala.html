@@ -2,6 +2,7 @@
 
 @main("Ultra rapid recognition") {
 
+<h5 id="user" data-user-id="@user.id">Hello, @user.name!</h5>
 <style>
     .overlay {
     position: fixed;
@@ -33,7 +34,6 @@
 <div id="images" data-images="@listOfImages"/>
 
 <div id="big" class="progress progress-striped active overlay">
-    <h1>Please wait for loading!</h1>
     <div id="loading-bar" class="progress-bar" style="width: 0%"></div>
 </div>
 

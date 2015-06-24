@@ -1,6 +1,7 @@
 package example
 
 import org.scalajs.dom
+import org.scalajs.dom.Event
 import org.scalajs.dom.html._
 import example.ScalaJSCode._
 import japgolly.scalajs.react._
@@ -23,6 +24,8 @@ object UltraRapidTest {
   private val socialTestQuestionAmount = 1
   private val socialQuestionAmount = 1
   private var backend: scala.Option[Backend] = None
+  private var loaded = 0
+  private val size = 622
 
   private def getBackend(sc: BackendScope[_, State]): Backend = {
     backend match {
@@ -69,6 +72,22 @@ object UltraRapidTest {
       newChild.src = "/assets/images/ultraRapid/" + image.imageName + ".jpg"
       getElementById[Div]("preload-div").appendChild(newChild)
     }
+    var preloadInterval = js.timers.setInterval(1000)({
+      val children = getElementById[Div]("preload-div").children
+      for (i <- 0 until children.length) {
+        if (children.item(i).isInstanceOf[Image] && children.item(i).asInstanceOf[Image].complete) {
+          loaded += 1
+        }
+      }
+      getElementById[Div]("loading-bar").style.width = s"${(100 * loaded) / size}%"
+      children.length
+    })
+    dom.window.onload = {
+      (e: Event) => {
+        bigDiv.setAttribute("hidden", "false")
+        js.timers.clearInterval(preloadInterval)
+      }
+    }
     val cross = dom.document.createElement("img").asInstanceOf[Image]
     cross.src = "/assets/images/cross.png"
     getElementById[Div]("preload-div").appendChild(cross)
@@ -78,7 +97,6 @@ object UltraRapidTest {
     val crossRed = dom.document.createElement("img").asInstanceOf[Image]
     crossRed.src = "/assets/images/cross-incorrect.png"
     getElementById[Div]("preload-div").appendChild(crossRed)
-    js.timers.setTimeout(30000)(bigDiv.setAttribute("hidden", "false"))
     util.Random.shuffle(res)
   }
 
