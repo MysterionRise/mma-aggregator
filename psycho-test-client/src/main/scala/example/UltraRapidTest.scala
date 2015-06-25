@@ -1,12 +1,14 @@
 package example
 
+import com.github.marklister.base64.Base64._
+import com.github.marklister.base64.Base64.Encoder
+import com.github.marklister.base64.Base64.Decoder
 import org.scalajs.dom
 import org.scalajs.dom.Event
 import org.scalajs.dom.html._
 import example.ScalaJSCode._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.all._
-import org.scalajs.dom.raw.DOMTokenList
 import shared.SharedCode._
 import shared.UltraRapidImage
 import scala.collection.mutable.ArrayBuffer
@@ -51,8 +53,8 @@ object UltraRapidTest {
    *                     7 - is it indoor scene?
    *                     8 - is it positive interaction on scene?
    */
-  case class State(image: UltraRapidImage, whatToShow: WhatToShow, isTesting: Boolean,
-                   images: ArrayBuffer[UltraRapidImage], questionType: Int, numberOfQuestions: Int)
+  case class State(res: (UltraRapidImage, ArrayBuffer[UltraRapidImage]), whatToShow: WhatToShow, isTesting: Boolean,
+                   questionType: Int, numberOfQuestions: Int)
 
 
   def constructArrayBuffer(s: String) = {
@@ -127,7 +129,7 @@ object UltraRapidTest {
   mapping(7) = Set(7)
   mapping(8) = Set(7)
 
-  def getRandomQuestion(images: ArrayBuffer[UltraRapidImage], qType: Int): UltraRapidImage = {
+  def getRandomQuestion(images: ArrayBuffer[UltraRapidImage], qType: Int): (UltraRapidImage, ArrayBuffer[UltraRapidImage]) = {
     val s = mapping.apply(qType)
     var idx = generateRandomIndex(images.length)
     var cnt = 0
@@ -136,7 +138,8 @@ object UltraRapidTest {
       idx = generateRandomIndex(images.length)
       cnt += 1
     }
-    images.remove(idx)
+    val img = images.remove(idx)
+    (img, images)
   }
 
   val question = getElementById[Div]("ultra-rapid")
@@ -171,13 +174,13 @@ object UltraRapidTest {
     def createSocialApp(testQType: Int) = {
       ReactComponentB[Unit]("RealSocialSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), false,
-        testStrings, testQType, 0))
+        testQType, 0))
         .backend(getBackend(_))
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg", width := 650)
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650)
             case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
@@ -206,7 +209,7 @@ object UltraRapidTest {
           // TODO finishing tests
           div(
             form(
-              action := "/tests/finishTest?report=\"" + B.report.toString + "\"",
+              action := "/tests/finishTest?report=\"" + Encoder(B.report.toString.getBytes("UTF-8")).toBase64() + "\"",
               `class` := "form-horizontal",
               method := "POST",
               button(
@@ -229,7 +232,7 @@ object UltraRapidTest {
     def createTestSocialApp(testQType: Int) = {
       ReactComponentB[Unit]("TestSocialSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), true,
-        testStrings, testQType, 0))
+        testQType, 0))
         .backend(getBackend(_))
         .render((_, S, B) => {
         if (S.questionType > 0) {
@@ -237,7 +240,7 @@ object UltraRapidTest {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png")
             case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png")
             case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg", width := 650)
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650)
             case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
@@ -281,13 +284,13 @@ object UltraRapidTest {
       val realTestQType = questionTypes.remove(0)
       val realTestApp = ReactComponentB[Unit]("RealSession")
         .initialState(State(getRandomQuestion(testStrings, realTestQType), FixationCross(500, false), false,
-        testStrings, realTestQType, 0))
+        realTestQType, 0))
         .backend(getBackend(_))
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg")
             case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
@@ -328,7 +331,7 @@ object UltraRapidTest {
       val testQType = testQuestionTypes.remove(0)
       val testApp = ReactComponentB[Unit]("TestSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, false), true,
-        testStrings, testQType, 0))
+        testQType, 0))
         .backend(sc => getBackend(sc))
         .render((_, S, B) => {
         if (S.questionType > 0) {
@@ -336,7 +339,7 @@ object UltraRapidTest {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png")
             case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png")
             case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.image.imageName + ".jpg")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg")
             case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
