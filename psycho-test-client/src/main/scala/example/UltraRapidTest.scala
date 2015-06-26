@@ -1,8 +1,6 @@
 package example
 
-import com.github.marklister.base64.Base64._
 import com.github.marklister.base64.Base64.Encoder
-import com.github.marklister.base64.Base64.Decoder
 import org.scalajs.dom
 import org.scalajs.dom.Event
 import org.scalajs.dom.html._
@@ -18,13 +16,13 @@ object UltraRapidTest {
 
   private val topMargin = 200
   private val testQuestionAmount = 5
-  private val questionAmount = 73
+  private val questionAmount = 70
   private val testQuestionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private val socialTestQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
   private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
   private val socialTestQuestionAmount = 5
-  private val socialQuestionAmount = 80
+  private val socialQuestionAmount = 40
   private var backend: scala.Option[Backend] = None
 
   private def getBackend(sc: BackendScope[_, State]): Backend = {
@@ -159,14 +157,14 @@ object UltraRapidTest {
 
     def askQuestion(questionType: Int): ReactElement = {
       questionType match {
-        case 1 => customP("Did you see dog here?")
-        case 2 => customP("Did you see animal here?")
-        case 3 => customP("Did you see car here?")
-        case 4 => customP("Did you see vehicle here?")
-        case 5 => customP("Did you see nature scene here?")
-        case 6 => customP("Did you see urban scene here?")
-        case 7 => customP("Did you see indoor scene here?")
-        case 8 => customP("Did you see positive interaction here?")
+        case 1 => customP("На этом изображении есть собака?")
+        case 2 => customP("На этом изображении есть животное?")
+        case 3 => customP("На этом изображении есть легковой автомобиль?")
+        case 4 => customP("На этом изображении есть транспортное средство?")
+        case 5 => customP("Это изображение природы?")
+        case 6 => customP("Это изображение человеческих  построек?")
+        case 7 => customP("Событие происходит в помещении?")
+        case 8 => customP("Изображено позитивное взаимодействие людей?")
         case _ => p("We don't have any questions for that type!")
       }
     }
@@ -177,6 +175,12 @@ object UltraRapidTest {
         testQType, 0))
         .backend(getBackend(_))
         .render((_, S, B) => {
+        val user = getElementById[Heading]("user")
+        var userID: String = user.getAttribute("data-user-id")
+        // TODO for testing purposes only
+        if (userID.isEmpty) {
+          userID = "123"
+        }
         if (S.questionType > 0) {
           S.whatToShow match {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png")
@@ -185,12 +189,6 @@ object UltraRapidTest {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                    val user = getElementById[Heading]("user")
-                    var userID: String = user.getAttribute("data-user-id")
-                    // TODO for testing purposes only
-                    if (userID.isEmpty) {
-                      userID = "123"
-                    }
                     B.notClicked = false
                     B.showPicture(socialQuestionTypes, socialQuestionAmount)
                   }
@@ -206,10 +204,10 @@ object UltraRapidTest {
           }
         } else {
           js.timers.clearInterval(B.interval.get)
-          // TODO finishing tests
           div(
             form(
-              action := "/tests/finishTest?report=\"" + Encoder(B.report.toString.getBytes("UTF-8")).toBase64() + "\"",
+              //              action := "/tests/finishTest?report=\"" + Encoder(B.report.toString.getBytes("UTF-8")).toBase64() + "\"",
+              action := "/tests/finishTest?report=\"" + userID + "=" + addnoise(B.report.get.answers.toString) + "\"",
               `class` := "form-horizontal",
               method := "POST",
               button(
@@ -229,6 +227,10 @@ object UltraRapidTest {
         .buildU
     }
 
+    def addnoise(s: String): String = {
+      Encoder(s.getBytes("UTF-8")).toBase64()
+    }
+
     def createTestSocialApp(testQType: Int) = {
       ReactComponentB[Unit]("TestSocialSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), true,
@@ -245,12 +247,6 @@ object UltraRapidTest {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                    val user = getElementById[Heading]("user")
-                    var userID: String = user.getAttribute("data-user-id")
-                    // TODO for testing purposes only
-                    if (userID.isEmpty) {
-                      userID = "123"
-                    }
                     B.notClicked = false
                     B.showPicture(socialTestQuestionTypes, socialTestQuestionAmount)
                   }
@@ -268,9 +264,25 @@ object UltraRapidTest {
           js.timers.clearInterval(B.interval.get)
           val testQType = socialQuestionTypes.remove(0)
           val app = createSocialApp(testQType)
-          js.timers.setTimeout(20000)(React.render(app.apply(), question))
-          // TODO give proper russian waiting text
-          h1("Relax for 20 secs before starting real social session!")
+          val paragraph = getElementById[Paragraph]("countdown")
+          paragraph.textContent = "Осталось: 120 секунд"
+          var cnt = 120
+          val interval = js.timers.setInterval(1000)({
+            paragraph.textContent = "Осталось: " + cnt + " секунд"
+            cnt -= 1
+          })
+          js.timers.setTimeout(120000)({
+            React.render(app.apply(), question)
+            paragraph.setAttribute("hidden", "true")
+            js.timers.clearInterval(interval)
+          })
+          h4("Внимание. Начинается основная серия эксперимента. Напоминаем инструкцию. ", br,
+            "Вы увидите фиксационный крест, и после него на доли секунды появится изображение, " +
+            "которое быстро исчезнет. После этого на экране появится вопрос о содержании этого изображения " +
+            "(пример вопроса: сцена происходит в доме?) " , br,
+            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
+            "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста." , br,
+            "Продолжение теста через 2 минуты")
         }
       })
         .componentDidMount(f => {
@@ -295,12 +307,6 @@ object UltraRapidTest {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                    val user = getElementById[Heading]("user")
-                    var userID: String = user.getAttribute("data-user-id")
-                    // TODO for testing purposes only
-                    if (userID.isEmpty) {
-                      userID = "123"
-                    }
                     B.notClicked = false
                     B.showPicture(questionTypes, questionAmount)
                   }
@@ -318,9 +324,30 @@ object UltraRapidTest {
           js.timers.clearInterval(B.interval.get)
           val testQType = socialTestQuestionTypes.remove(0)
           val app = createTestSocialApp(testQType)
-          js.timers.setTimeout(20000)(React.render(app.apply(), question))
-          // TODO give proper russian waiting text
-          h1("Relax for 20 secs before starting testing social session!")
+          val paragraph = getElementById[Paragraph]("countdown")
+          paragraph.textContent = "Осталось: 120 секунд"
+          var cnt = 120
+          val interval = js.timers.setInterval(1000)({
+            paragraph.textContent = "Осталось: " + cnt + " секунд"
+            cnt -= 1
+          })
+          js.timers.setTimeout(120000)({
+            paragraph.setAttribute("hidden", "true")
+            js.timers.clearInterval(interval)
+            React.render(app.apply(), question)
+          })
+          h4("Инструкция ко второй части эксперимента. " +
+            "Эксперимент состоит из 90 заданий, которые разделены на тренировочную и основную серии. " +
+            "В тренировочной серии Вам будет предложено выполнение 10 заданий с обратной связью о Вашей успешности. " , br,
+            "Вы увидите фиксационный крест, и после него на доли секунды появится изображение, которое быстро исчезнет." +
+            " После этого на экране появится вопрос о содержании этого изображения (пример вопроса: сцена происходит в доме?) " , br,
+            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
+            "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста. " , br,
+            "В тренировочной серии правильность Вашего ответа будет отражена в цвете фиксационного креста, " +
+            "если крест красного цвета – Ваш ответ был неверный, если крест зеленого цвета – Вы ответили правильно." , br,
+            " После тренировочной серии начнется основная, её структура идентична тренировочной, " +
+            "однако в ней не будет предоставляться обратная связь о правильности Ваших ответов. " , br,
+            "Эксперимент начнется через 2 минуты")
         }
       })
         .componentDidMount(f => {
@@ -344,12 +371,6 @@ object UltraRapidTest {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                    val user = getElementById[Heading]("user")
-                    var userID: String = user.getAttribute("data-user-id")
-                    // TODO for testing purposes only
-                    if (userID.isEmpty) {
-                      userID = "123"
-                    }
                     B.notClicked = false
                     B.showPicture(testQuestionTypes, testQuestionAmount)
                   }
@@ -366,10 +387,25 @@ object UltraRapidTest {
           }
         } else {
           js.timers.clearInterval(B.interval.get)
-          // add pause here
-          js.timers.setTimeout(20000)(React.render(realTestApp(), question))
-          // TODO give proper russian waiting text
-          h1("Relax for 20 secs before starting real session!")
+          val paragraph = getElementById[Paragraph]("countdown")
+          paragraph.textContent = "Осталось: 120 секунд"
+          var cnt = 120
+          val interval = js.timers.setInterval(1000)({
+            paragraph.textContent = "Осталось: " + cnt + " секунд"
+            cnt -= 1
+          })
+          js.timers.setTimeout(120000)({
+            paragraph.setAttribute("hidden", "true")
+            js.timers.clearInterval(interval)
+            React.render(realTestApp(), question)
+          })
+          h4("Внимание! " +
+            "Начинается основная серия эксперимента. Напоминаем инструкцию. Вы увидите фиксационный крест, " +
+            "и после него на доли секунды появится изображение-картинка, которая быстро исчезнет. " , br,
+            "После этого на экране появится вопрос о содержании этого изображения (пример вопроса: Это изображение природы?) " , br,
+            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
+            "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста." , br,
+            "Эксперимент начнется через 2 минуты")
 
         }
       })
@@ -378,7 +414,7 @@ object UltraRapidTest {
       })
         .buildU
       React.render(testApp(), question)
-      getElementById[Div]("instruction").innerHTML = ""
+      getElementById[Div]("instruction").innerHTML = "<p id=\"countdown\">TEST</p>"
       $.setState("")
     }
   }

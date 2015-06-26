@@ -12,7 +12,7 @@ class Reports(tag: Tag) extends Table[Report](tag, "reports") {
 
   def name = column[String]("user_id")
 
-  def report = column[String]("report", O.DBType("VARCHAR(1000)"))
+  def report = column[String]("report", O.DBType("VARCHAR(10000)"))
 
   override def * = (id.?, name, report) <> (Report.tupled, Report.unapply _)
 }

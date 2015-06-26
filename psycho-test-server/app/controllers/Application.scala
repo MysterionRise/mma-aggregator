@@ -1,9 +1,6 @@
 package controllers
 
 import models.{ReportDAO, TestDAO, UserDAO}
-import org.jboss.netty.handler.codec.http.{HttpMessageDecoder, HttpMessageEncoder}
-import play.api.data.Form
-import play.api.data.Forms._
 import play.api.mvc._
 
 object Application extends Controller {
