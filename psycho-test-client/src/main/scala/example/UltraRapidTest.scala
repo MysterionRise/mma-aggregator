@@ -11,6 +11,7 @@ import shared.SharedCode._
 import shared.UltraRapidImage
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
+import scala.scalajs.js.timers.SetIntervalHandle
 
 object UltraRapidTest {
 
@@ -24,6 +25,8 @@ object UltraRapidTest {
   private val socialTestQuestionAmount = 5
   private val socialQuestionAmount = 40
   private var backend: scala.Option[Backend] = None
+  private var interval: js.UndefOr[js.timers.SetIntervalHandle] =
+    js.undefined
 
   private def getBackend(sc: BackendScope[_, State]): Backend = {
     backend match {
@@ -267,10 +270,10 @@ object UltraRapidTest {
           val paragraph = getElementById[Paragraph]("countdown")
           paragraph.textContent = "Осталось: 120 секунд"
           var cnt = 120
-          val interval = js.timers.setInterval(1000)({
+          interval = js.timers.setInterval(1000)({
             if (cnt < 0) {
-              paragraph.setAttribute("hidden", "true")
-              js.timers.clearInterval(interval)
+              paragraph.textContent = "_____"
+              clearInterval
               React.render(app.apply(), question)
             } else {
               paragraph.textContent = "Осталось: " + cnt + " секунд"
@@ -328,10 +331,10 @@ object UltraRapidTest {
           val paragraph = getElementById[Paragraph]("countdown")
           paragraph.textContent = "Осталось: 120 секунд"
           var cnt = 120
-          val interval = js.timers.setInterval(1000)({
+          interval = js.timers.setInterval(1000)({
             if (cnt < 0) {
-              paragraph.setAttribute("hidden", "true")
-              js.timers.clearInterval(interval)
+              paragraph.textContent = "_____"
+              clearInterval
               React.render(app.apply(), question)
             } else {
               paragraph.textContent = "Осталось: " + cnt + " секунд"
@@ -392,10 +395,10 @@ object UltraRapidTest {
           val paragraph = getElementById[Paragraph]("countdown")
           paragraph.textContent = "Осталось: 120 секунд"
           var cnt = 120
-          val interval = js.timers.setInterval(1000)({
+          interval = js.timers.setInterval(1000)({
             if (cnt < 0) {
-              paragraph.setAttribute("hidden", "true")
-              js.timers.clearInterval(interval)
+              paragraph.textContent = "_____"
+              clearInterval
               React.render(realTestApp(), question)
             } else {
               paragraph.textContent = "Осталось: " + cnt + " секунд"
@@ -417,13 +420,16 @@ object UltraRapidTest {
       })
         .buildU
       React.render(testApp(), question)
-      getElementById[Div]("instruction").innerHTML = "<p id=\"countdown\">TEST</p>"
+      getElementById[Div]("instruction").innerHTML = "<p id=\"countdown\">_____</p>"
       $.setState("")
     }
   }
 
   def doTest() = {
     React.render(buttonApp.apply(), question)
+  }
+  def clearInterval = {
+    js.timers.clearInterval(interval.get)
   }
 
 }

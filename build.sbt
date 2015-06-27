@@ -1,3 +1,4 @@
+import com.heroku.sbt.HerokuPlugin.autoImport._
 import sbt.Keys._
 import sbt.Project.projectToRef
 
@@ -16,7 +17,14 @@ lazy val exampleServer = (project in file("psycho-test-server")).settings(
     "com.typesafe.play" %% "play-slick" % "0.8.1"
   ),
   herokuAppName in Compile := "psycho-test-framework",
-  herokuSkipSubProjects in Compile := false
+  herokuSkipSubProjects in Compile := false,
+  herokuProcessTypes in Compile := Map(
+    "web" -> "target/universal/stage/bin/exampleserver -Dhttp.port=$PORT -Dhttp.netty.maxInitialLineLength=81920"
+  ),
+  herokuConfigVars in Compile := Map(
+    "JAVA_OPTS" -> "$JAVA_OPTS -Dhttp.netty.maxInitialLineLength=81920s"
+  )
+
 ).
   enablePlugins(PlayScala).
   aggregate(clients.map(projectToRef): _*).
