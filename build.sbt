@@ -20,11 +20,7 @@ lazy val exampleServer = (project in file("psycho-test-server")).settings(
   herokuSkipSubProjects in Compile := false,
   herokuProcessTypes in Compile := Map(
     "web" -> "target/universal/stage/bin/exampleserver -Dhttp.port=$PORT -Dhttp.netty.maxInitialLineLength=81920"
-  ),
-  herokuConfigVars in Compile := Map(
-    "JAVA_OPTS" -> "$JAVA_OPTS -Dhttp.netty.maxInitialLineLength=81920s"
   )
-
 ).
   enablePlugins(PlayScala).
   aggregate(clients.map(projectToRef): _*).
