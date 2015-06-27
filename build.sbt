@@ -49,7 +49,3 @@ lazy val exampleSharedJs = exampleShared.js
 
 // loads the jvm project at sbt startup
 onLoad in Global := (Command.process("project exampleServer", _: State)) compose (onLoad in Global).value
-
-herokuConfigVars in Compile := Map(
-  "JAVA_OPTS" -> "-XX:+UseCompressedOops -Xmx384m -Xss512k -Dhttp.netty.maxInitialLineLength=81920"
-)
