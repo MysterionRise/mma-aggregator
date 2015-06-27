@@ -95,7 +95,7 @@ object PsychoTest extends Controller {
 
   }
 
-  def extractUserName(s: String) = s.substring(12, s.indexOf("="))
+  def extractUserName(s: String) = s.substring(1, s.indexOf("="))
 
   def finishTest(report: String) = Action { implicit req =>
     val userID = extractUserName(report)
