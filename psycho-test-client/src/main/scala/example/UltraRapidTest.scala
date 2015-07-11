@@ -16,14 +16,14 @@ import scala.scalajs.js.timers.SetIntervalHandle
 object UltraRapidTest {
 
   private val topMargin = 200
-  private val testQuestionAmount = 5
-  private val questionAmount = 70
+  private val testQuestionAmount = 1
+  private val questionAmount = 1
   private val testQuestionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private val socialTestQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
   private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
-  private val socialTestQuestionAmount = 5
-  private val socialQuestionAmount = 40
+  private val socialTestQuestionAmount = 1
+  private val socialQuestionAmount = 1
   private var backend: scala.Option[Backend] = None
   private var interval: js.UndefOr[js.timers.SetIntervalHandle] =
     js.undefined
@@ -208,6 +208,7 @@ object UltraRapidTest {
         } else {
           js.timers.clearInterval(B.interval.get)
           div(
+            h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
             form(
               //              action := "/tests/finishTest?report=\"" + Encoder(B.report.toString.getBytes("UTF-8")).toBase64() + "\"",
               action := "/tests/finishTest?report=\"" + userID + "=" + addnoise(B.report.get.answers.toString) + "\"",
