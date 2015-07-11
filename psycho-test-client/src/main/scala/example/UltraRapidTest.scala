@@ -108,11 +108,14 @@ object UltraRapidTest {
   private val testStrings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
 
   def customP(innerText: String): ReactElement = {
-    h2(
+    div(
       p(
-        marginTop := topMargin,
-        marginLeft := topMargin,
-        innerText
+        innerText,
+        position := "absolute",
+        top := "50%",
+        left := "50%",
+        marginRight := "-50%",
+        transform := "translate(-50%, -50%)"
       )
     )
   }
@@ -186,8 +189,8 @@ object UltraRapidTest {
         }
         if (S.questionType > 0) {
           S.whatToShow match {
-            case FixationCross(_, _) => img(src := "/assets/images/cross.png")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650)
+            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650, marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
@@ -243,10 +246,10 @@ object UltraRapidTest {
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
-            case FixationCross(_, _) => img(src := "/assets/images/cross.png")
-            case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png")
-            case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650)
+            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650, marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
@@ -306,8 +309,8 @@ object UltraRapidTest {
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
-            case FixationCross(_, _) => img(src := "/assets/images/cross.png")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg")
+            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
@@ -369,10 +372,10 @@ object UltraRapidTest {
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
-            case FixationCross(_, _) => img(src := "/assets/images/cross.png")
-            case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png")
-            case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg")
+            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
@@ -429,6 +432,7 @@ object UltraRapidTest {
   def doTest() = {
     React.render(buttonApp.apply(), question)
   }
+
   def clearInterval = {
     js.timers.clearInterval(interval.get)
   }
