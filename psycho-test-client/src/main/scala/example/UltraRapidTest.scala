@@ -16,14 +16,14 @@ import scala.scalajs.js.timers.SetIntervalHandle
 object UltraRapidTest {
 
   private val topMargin = 200
-  private val testQuestionAmount = 1
-  private val questionAmount = 1
+  private val testQuestionAmount = 5
+  private val questionAmount = 70
   private val testQuestionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private val socialTestQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
   private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
-  private val socialTestQuestionAmount = 1
-  private val socialQuestionAmount = 1
+  private val socialTestQuestionAmount = 5
+  private val socialQuestionAmount = 40
   private var backend: scala.Option[Backend] = None
   private var interval: js.UndefOr[js.timers.SetIntervalHandle] =
     js.undefined
