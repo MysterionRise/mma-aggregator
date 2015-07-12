@@ -7,6 +7,9 @@ import org.scalajs.dom
 object ScalaJSCode extends js.JSApp {
 
   def main(): Unit = {
+    // todo, need to manage different tests
+    // todo a big problem right now
+    GothshildTest.doTest()
     UltraRapidTest.doTest()
     KaganTest.doTest()
   }

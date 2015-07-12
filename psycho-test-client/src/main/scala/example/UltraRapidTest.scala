@@ -24,6 +24,7 @@ object UltraRapidTest {
   private val socialTestQuestionAmount = 5
   private val socialQuestionAmount = 40
   private var backend: scala.Option[Backend] = None
+  private val question = getElementById[Div]("ultra-rapid")
   private var interval: js.UndefOr[js.timers.SetIntervalHandle] =
     js.undefined
 
@@ -144,8 +145,6 @@ object UltraRapidTest {
     val img = images.remove(idx)
     (img, images)
   }
-
-  val question = getElementById[Div]("ultra-rapid")
 
   val buttonApp = ReactComponentB[Unit]("StartButton")
     .initialState("")
