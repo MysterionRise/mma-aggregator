@@ -5,7 +5,7 @@ import play.api.Play.current
 import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.jdbc.meta.MTable
 
-case class User(var id: Option[Int], name: String, email: String, gender: String, nationality: String, age: Int)
+case class User(var id: Option[Int], name: String, email: String, gender: String, nationality: String, age: Int, testId: String)
 
 class Users(tag: Tag) extends Table[User](tag, "users") {
   def id = column[Int]("user_id", O.PrimaryKey, O.AutoInc)
@@ -20,7 +20,9 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
 
   def age = column[Int]("age")
 
-  override def * = (id.?, name, email, gender, nationality, age) <>(User.tupled, User.unapply _)
+  def testId = column[String]("testId")
+
+  override def * = (id.?, name, email, gender, nationality, age, testId) <>(User.tupled, User.unapply _)
 }
 
 object UserDAO {

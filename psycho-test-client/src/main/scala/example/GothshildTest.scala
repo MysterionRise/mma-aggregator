@@ -1,19 +1,19 @@
 package example
 
 import com.github.marklister.base64.Base64.Encoder
-import org.scalajs.dom
-import org.scalajs.dom.Event
-import org.scalajs.dom.html._
 import example.ScalaJSCode._
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.all._
+import org.scalajs.dom
+import org.scalajs.dom.Event
+import org.scalajs.dom.html._
 import shared.SharedCode._
 import shared.UltraRapidImage
+
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
-import scala.scalajs.js.timers.SetIntervalHandle
 
-object UltraRapidTest {
+object GothshildTest {
 
   private val testQuestionAmount = 5
   private val questionAmount = 70

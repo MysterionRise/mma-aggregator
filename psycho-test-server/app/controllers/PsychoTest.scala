@@ -72,7 +72,7 @@ object PsychoTest extends Controller {
       errors =>
         BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
-        val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age)
+        val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age, user.testName)
         val id = UserDAO.addUser(addedUser)
         addedUser.id = Some(id)
         user.testName match {
@@ -86,6 +86,9 @@ object PsychoTest extends Controller {
           }
           case "Ultra rapid categorization" => {
             // TODO add more stuff to pass here
+            Ok(views.html.ultraRapidTest(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+          }
+          case "Gothshild test" => {
             Ok(views.html.ultraRapidTest(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case _ => Ok(views.html.tests(TestDAO.findAll, PsychoTest.testForm))
