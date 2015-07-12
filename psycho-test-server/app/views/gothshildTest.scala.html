@@ -1,0 +1,22 @@
+@(user: User, listOfImages: scala.collection.mutable.ArrayBuffer[shared.UltraRapidImage])
+
+@main("Gothshild test") {
+
+<h5 id="user" data-user-id="@user.id"/>
+<div id="instruction" class="alert alert-warning">
+    <h4>Инструкция</h4>
+
+    <p>TODO
+</div>
+
+
+<div id="images" data-images="@listOfImages"/>
+
+<div id="big" class="progress progress-striped active overlay">
+    <div id="loading-bar" class="progress-bar" style="height:30px; width: 0%"></div>
+</div>
+
+<em id="ultra-test"></em>
+<div id="ultra-rapid" class="jumbotron" style="height:600px">
+</div>
+}

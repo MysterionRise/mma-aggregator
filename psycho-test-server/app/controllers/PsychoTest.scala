@@ -89,7 +89,8 @@ object PsychoTest extends Controller {
             Ok(views.html.ultraRapidTest(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "Gothshild test" => {
-            Ok(views.html.ultraRapidTest(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+            // TODO add more stuff to pass here
+            Ok(views.html.gothshildTest(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case _ => Ok(views.html.tests(TestDAO.findAll, PsychoTest.testForm))
         }
