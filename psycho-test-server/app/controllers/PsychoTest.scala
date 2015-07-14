@@ -72,10 +72,11 @@ object PsychoTest extends Controller {
       errors =>
         BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
-        val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality, user.age, user.testName)
+        val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality,
+          user.age, Integer.parseInt(user.testName.split("#")(0)))
         val id = UserDAO.addUser(addedUser)
         addedUser.id = Some(id)
-        user.testName match {
+        user.testName.split("#")(1) match {
           case "Kagan test" => {
             val kaganImages = new Array[Image](8)
             for (i <- 1 to 8) {
@@ -103,7 +104,7 @@ object PsychoTest extends Controller {
 
   def finishTest(report: String) = Action { implicit req =>
     val userID = extractUserName(report)
-    ReportDAO.addReport(new Report(None, userID, report.substring(report.indexOf("=") + 1, report.length - 1)))
+    ReportDAO.addReport(new Report(None, Integer.parseInt(userID), report.substring(report.indexOf("=") + 1, report.length - 1)))
     Ok(views.html.index("You successfully finish testing! Go and check more new tests!"))
   }
 }

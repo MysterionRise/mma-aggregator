@@ -5,12 +5,12 @@ import play.api.Play.current
 import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.jdbc.meta.MTable
 
-case class Report(id: Option[Int], userID: String, report: String)
+case class Report(id: Option[Int], userID: Int, report: String)
 
 class Reports(tag: Tag) extends Table[Report](tag, "reports") {
   def id = column[Int]("report_id", O.PrimaryKey, O.AutoInc)
 
-  def name = column[String]("user_id")
+  def name = column[Int]("user_id")
 
   def report = column[String]("report", O.DBType("VARCHAR(10000)"))
 
