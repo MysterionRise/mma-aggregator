@@ -26,13 +26,6 @@ object KaganTest {
           val pattern = getElementById[Image]("pattern")
           val img: TestImage = constructImage(pattern.src)
           report.append(e.id).append("|").append(img.roundNumber).append("|").append(System.currentTimeMillis()).append("|")
-//          if (img.roundNumber == 1) {
-//            report.append(userID).append("=").append(e.id).append("|").append(img.roundNumber).append("|").append(System.currentTimeMillis()).append("|")
-//            //            dom.document.cookie += s"PLAY_SESSION=${userID}|${e.id}|${img.roundNumber}|${System.currentTimeMillis()}\n"
-//          } else {
-//
-//            //            dom.document.cookie += s"|${userID}|${e.id}|${img.roundNumber}|${System.currentTimeMillis()}\n"
-//          }
           img.roundNumber += 1 // move to next round
           img.roundNumber match {
             case 2 => {
