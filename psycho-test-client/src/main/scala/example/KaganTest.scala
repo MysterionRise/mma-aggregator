@@ -1,13 +1,15 @@
 package example
 
+import example.ScalaJSCode._
 import org.scalajs.dom
 import org.scalajs.dom.html._
 import org.scalajs.dom.raw.Element
-import example.ScalaJSCode._
 import shared.SharedCode._
 import shared.{Image => TestImage}
 
 object KaganTest {
+
+  val report: StringBuilder = new StringBuilder
 
   def doTest(): Unit = {
     val success = getElementById[Element]("success")
@@ -16,7 +18,6 @@ object KaganTest {
       val e = getElementById[Image](i.toString)
       e.onclick = {
         (e1: dom.MouseEvent) =>
-          dom.document.cookie = ""
           success.textContent = ""
           error.textContent = ""
           val user = getElementById[Heading]("user")
@@ -24,11 +25,14 @@ object KaganTest {
           val div = getElementById[Div]("kagan-test")
           val pattern = getElementById[Image]("pattern")
           val img: TestImage = constructImage(pattern.src)
-          if (img.roundNumber == 1) {
-            dom.document.cookie += s"PLAY_SESSION=${userID}|${e.id}|${img.roundNumber}|${System.currentTimeMillis()}\n"
-          } else {
-            dom.document.cookie += s"|${userID}|${e.id}|${img.roundNumber}|${System.currentTimeMillis()}\n"
-          }
+          report.append(e.id).append("|").append(img.roundNumber).append("|").append(System.currentTimeMillis()).append("|")
+//          if (img.roundNumber == 1) {
+//            report.append(userID).append("=").append(e.id).append("|").append(img.roundNumber).append("|").append(System.currentTimeMillis()).append("|")
+//            //            dom.document.cookie += s"PLAY_SESSION=${userID}|${e.id}|${img.roundNumber}|${System.currentTimeMillis()}\n"
+//          } else {
+//
+//            //            dom.document.cookie += s"|${userID}|${e.id}|${img.roundNumber}|${System.currentTimeMillis()}\n"
+//          }
           img.roundNumber += 1 // move to next round
           img.roundNumber match {
             case 2 => {
@@ -42,7 +46,7 @@ object KaganTest {
             case x if x > 14 => {
               div.innerHTML = ""
               pattern.setAttribute("hidden", "true")
-              div.innerHTML = "<form action=/tests/finishTest?report=\"" + dom.document.cookie + "\" method=\"POST\" class=\"form-horizontal\"><button id=\"finish-test\" type=\"submit\" class=\"btn btn-primary\">Finish Test</button></form>"
+              div.innerHTML = "<form action=/tests/finishTest?report=\"" + userID + "=" + addnoise(report.toString) + "\" method=\"POST\" class=\"form-horizontal\"><button id=\"finish-test\" type=\"submit\" class=\"btn btn-primary\">Finish Test</button></form>"
             }
             case _ => constructNewRound(pattern, img)
           }

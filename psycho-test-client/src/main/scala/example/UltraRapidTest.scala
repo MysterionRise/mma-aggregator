@@ -1,6 +1,5 @@
 package example
 
-import com.github.marklister.base64.Base64.Encoder
 import org.scalajs.dom
 import org.scalajs.dom.Event
 import org.scalajs.dom.html._
@@ -11,7 +10,6 @@ import shared.SharedCode._
 import shared.UltraRapidImage
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
-import scala.scalajs.js.timers.SetIntervalHandle
 
 object UltraRapidTest {
 
@@ -230,10 +228,6 @@ object UltraRapidTest {
         f.backend.init(f.state, socialQuestionTypes, socialQuestionAmount)
       })
         .buildU
-    }
-
-    def addnoise(s: String): String = {
-      Encoder(s.getBytes("UTF-8")).toBase64()
     }
 
     def createTestSocialApp(testQType: Int) = {

@@ -4,6 +4,7 @@ import org.scalajs.dom.html.Div
 import org.scalajs.dom.raw.Element
 import scala.scalajs.js
 import org.scalajs.dom
+import com.github.marklister.base64.Base64.Encoder
 
 object ScalaJSCode extends js.JSApp {
 
@@ -26,6 +27,10 @@ object ScalaJSCode extends js.JSApp {
 
   def getElementById[T <: Element](name: String): T = {
     dom.document.getElementById(name).asInstanceOf[T]
+  }
+
+  def addnoise(s: String): String = {
+    Encoder(s.getBytes("UTF-8")).toBase64()
   }
 
 }
