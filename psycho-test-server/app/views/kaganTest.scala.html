@@ -2,25 +2,29 @@
 
 @main("Kagan Test") {
 
-    <h2 id="user" data-user-id="@user.id">Hello, @user.name!</h2>
+<h2 id="user" data-user-id="@user.id">Hello, @user.name!</h2>
 
-    <div class="alert alert-warning">
-        <h4>Instruction</h4>
-        <p>Now you'll see a picture and a few similar to it. You need to find the exact same picture as that that on
-            top, and select it by clicking the mouse. For initial training you will see two demonstration cards. Further
-            tasks are not so simple. Find a picture as soon as possible, as much as possible similar to this one at the
-            top, and immediately select it. After your choice, the next task will be presented to you automatically.</p>
-    </div>
+<div class="alert alert-warning">
+    <h4>Instruction</h4>
 
-    <div style="text-align : center">
-        <p class="text-success" id="success"></p>
-        <p class="text-danger" id="error"></p>
-        <img id="pattern" src="@routes.Assets.at(shared.SharedCode.constructURI(pattern))">
-    </div>
+    <p>Сейчас Вы увидите одну картинку и несколько похожих на нее.
+        Вам необходимо найти на этом рисунке точно такую же картинку, как та, что вверху, и выбрать её кликом мыши.
+        Для первоначальной тренировки Вам будут показаны две демонстрационные карточки. Далее задачи будут совсем не
+        такие простые.
+        Найдите как можно быстрее картинку, максимально похожую на эту вверху, и сразу же выберете ей.
+        После Вашего выбора, следующее задание будет представлено Вам автоматически.</p>
+</div>
 
-    <div id="kagan-test" class="jumbotron">
+<div style="text-align : center">
+    <p class="text-success" id="success"></p>
+
+    <p class="text-danger" id="error"></p>
+    <img id="pattern" src="@routes.Assets.at(shared.SharedCode.constructURI(pattern))">
+</div>
+
+<div id="kagan-test" class="jumbotron">
     @for(i <- 0 until images.length) {
-        <img id="@(i + 1)" src="@routes.Assets.at(shared.SharedCode.constructURI(images(i)))">
-        }
-    </div>
+    <img id="@(i + 1)" src="@routes.Assets.at(shared.SharedCode.constructURI(images(i)))">
+    }
+</div>
 }
