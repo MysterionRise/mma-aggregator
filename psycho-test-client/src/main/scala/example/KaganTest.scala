@@ -39,7 +39,7 @@ object KaganTest {
             case x if x > 14 => {
               div.innerHTML = ""
               pattern.setAttribute("hidden", "true")
-              div.innerHTML = "<form action=/tests/finishTest?report=\"" + userID + "=" + addnoise(report.toString) + "\" method=\"POST\" class=\"form-horizontal\"><button id=\"finish-test\" type=\"submit\" class=\"btn btn-primary\">Finish Test</button></form>"
+              div.innerHTML = "<form action=/tests/finishTest?report=\"" + userID + "=" + addNoise(report.toString) + "\" method=\"POST\" class=\"form-horizontal\"><button id=\"finish-test\" type=\"submit\" class=\"btn btn-primary\">Finish Test</button></form>"
             }
             case _ => constructNewRound(pattern, img)
           }

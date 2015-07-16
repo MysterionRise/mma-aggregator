@@ -21,15 +21,17 @@ object ScalaJSCode extends js.JSApp {
     if (ultraRapid != null) {
       UltraRapidTest.doTest()
     }
-    // todo, need to manage different tests
-    // todo a big problem right no
+    val stroop = getElementById[Div]("stroop-test")
+    if (stroop != null) {
+      UltraRapidTest.doTest()
+    }
   }
 
   def getElementById[T <: Element](name: String): T = {
     dom.document.getElementById(name).asInstanceOf[T]
   }
 
-  def addnoise(s: String): String = {
+  def addNoise(s: String): String = {
     Encoder(s.getBytes("UTF-8")).toBase64()
   }
 

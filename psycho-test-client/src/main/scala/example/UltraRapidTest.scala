@@ -210,7 +210,7 @@ object UltraRapidTest {
             h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
             form(
               //              action := "/tests/finishTest?report=\"" + Encoder(B.report.toString.getBytes("UTF-8")).toBase64() + "\"",
-              action := "/tests/finishTest?report=\"" + userID + "=" + addnoise(B.report.get.answers.toString) + "\"",
+              action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.get.answers.toString) + "\"",
               `class` := "form-horizontal",
               method := "POST",
               button(
