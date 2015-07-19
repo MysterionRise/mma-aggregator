@@ -12,6 +12,8 @@ object KaganTest {
   val report: StringBuilder = new StringBuilder
 
   def doTest(): Unit = {
+    val instruction = getElementById[Div]("instruction")
+    instruction.innerHTML = ""
     val success = getElementById[Element]("success")
     val error = getElementById[Element]("error")
     for (i <- 1 to 8) {
