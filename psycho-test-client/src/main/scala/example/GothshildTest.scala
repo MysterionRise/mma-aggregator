@@ -92,6 +92,7 @@ object GothshildTest {
           )
         } else {
           div(
+            h4("Какой из элементов содержится в сложном рисунке?"),
             div(
               `class` := "jumbotron",
               width := "700px",
@@ -102,6 +103,9 @@ object GothshildTest {
               a(img(src := "/assets/images/gothshild/V.jpg"), onClick ==> B.clickV),
               a(img(src := "/assets/images/gothshild/G.jpg"), onClick ==> B.clickG),
               a(img(src := "/assets/images/gothshild/D.jpg"), onClick ==> B.clickD),
+              br,
+              br,
+              br,
               button(
                 `class` := "btn btn-primary",
                 onClick ==> B.skipQuestion,

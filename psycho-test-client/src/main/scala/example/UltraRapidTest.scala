@@ -81,7 +81,8 @@ object UltraRapidTest {
       })
       getElementById[Div]("preload-div").appendChild(newChild)
     }
-    val preloadInterval: SetIntervalHandle = js.timers.setInterval(500)({
+    var preloadInterval: SetIntervalHandle = null
+    preloadInterval = js.timers.setInterval(500)({
       getElementById[Div]("loading-bar").style.width = s"${(100 * loaded) / size}%"
       if (loaded == size) {
         bigDiv.setAttribute("hidden", "false")
