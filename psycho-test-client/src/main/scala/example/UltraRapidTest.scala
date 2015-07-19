@@ -73,6 +73,7 @@ object UltraRapidTest {
       res.append(image)
       val newChild = dom.document.createElement("img").asInstanceOf[Image]
       newChild.src = "/assets/images/ultraRapid/" + image.imageName + ".jpg"
+      // TODO wait till 0.8.2 release
       newChild.addEventListener("load", { e: Event => {
         loaded += 1
         image.preloaded = true
