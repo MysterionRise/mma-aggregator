@@ -62,6 +62,11 @@ object GothshildTest {
       showNextQuestion()
     }
 
+    def skipQuestion(e: ReactEventI) = {
+      report.append(s"${$.state.taskNumber}|SKIP|${System.currentTimeMillis() - time}|")
+      showNextQuestion()
+    }
+
 
     def startTest(e: ReactEventI) = {
       val gTest = ReactComponentB[Unit]("StartButton")
@@ -96,7 +101,12 @@ object GothshildTest {
               a(img(src := "/assets/images/gothshild/B.jpg"), onClick ==> B.clickB),
               a(img(src := "/assets/images/gothshild/V.jpg"), onClick ==> B.clickV),
               a(img(src := "/assets/images/gothshild/G.jpg"), onClick ==> B.clickG),
-              a(img(src := "/assets/images/gothshild/D.jpg"), onClick ==> B.clickD)
+              a(img(src := "/assets/images/gothshild/D.jpg"), onClick ==> B.clickD),
+              button(
+                `class` := "btn btn-primary",
+                onClick ==> B.skipQuestion,
+                "Пропустить задание"
+              )
             ),
             br,
             img(src := s"/assets/images/gothshild/tasks/${S.taskNumber}.jpg", marginLeft := "auto", marginRight := "auto", display := "block")
@@ -104,7 +114,7 @@ object GothshildTest {
         }
         )
         .buildU
-        React.render(gTest.apply(), question)
+      React.render(gTest.apply(), question)
       instruction.innerHTML = ""
       time = System.currentTimeMillis()
     }
