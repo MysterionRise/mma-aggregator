@@ -20,7 +20,7 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
 
   def age = column[Int]("age")
 
-  def testId = column[Int]("testId")
+  def testId = column[Int]("test_id")
 
   override def * = (id.?, name, email, gender, nationality, age, testId) <>(User.tupled, User.unapply _)
 }
