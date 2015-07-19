@@ -51,7 +51,7 @@ class Backend(stateController: BackendScope[_, State], var notClicked: Boolean, 
 
           if (s.numberOfQuestions == questionMargin) {
             if (questionTypes.length == 0) {
-              State((UltraRapidImage.apply("", ""), s.res._2), next, s.isTesting,
+              State((UltraRapidImage("", "", false), s.res._2), next, s.isTesting,
                 0, 0)
             } else {
               val qType = questionTypes.remove(0)

@@ -10,6 +10,7 @@ import shared.SharedCode._
 import shared.UltraRapidImage
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
+import scala.scalajs.js.timers.SetIntervalHandle
 
 object UltraRapidTest {
 
@@ -64,33 +65,28 @@ object UltraRapidTest {
     div.setAttribute("hidden", "true")
     div.id = "preload-div"
     getElementById[Body]("body").appendChild(div)
+    var loaded = 0
+    var size = 0
     for (pair <- pairs) {
-      val image = UltraRapidImage(pair.split(",")(0), pair.split(",")(1))
+      size += 1
+      val image = UltraRapidImage(pair.split(",")(0), pair.split(",")(1), false)
       res.append(image)
       val newChild = dom.document.createElement("img").asInstanceOf[Image]
       newChild.src = "/assets/images/ultraRapid/" + image.imageName + ".jpg"
+      newChild.addEventListener("load", { e: Event => {
+        loaded += 1
+        image.preloaded = true
+      }
+      })
       getElementById[Div]("preload-div").appendChild(newChild)
     }
-    val preloadInterval = js.timers.setInterval(100)({
-      val children = getElementById[Div]("preload-div").children
-      var loaded = 0
-      var size = 0
-      for (i <- 0 until children.length) {
-        if (children.item(i).isInstanceOf[Image]) {
-          size += 1
-          if (children.item(i).asInstanceOf[Image].complete)
-            loaded += 1
-        }
-        getElementById[Div]("loading-bar").style.width = s"${(100 * loaded) / size}%"
-        children.length
-      }
-    })
-    dom.window.onload = {
-      (e: Event) => {
+    val preloadInterval: SetIntervalHandle = js.timers.setInterval(500)({
+      getElementById[Div]("loading-bar").style.width = s"${(100 * loaded) / size}%"
+      if (loaded == size) {
         bigDiv.setAttribute("hidden", "false")
         js.timers.clearInterval(preloadInterval)
       }
-    }
+    })
     val cross = dom.document.createElement("img").asInstanceOf[Image]
     cross.src = "/assets/images/cross.png"
     getElementById[Div]("preload-div").appendChild(cross)
@@ -136,7 +132,7 @@ object UltraRapidTest {
     var idx = generateRandomIndex(images.length)
     var cnt = 0
     // todo fix if we don't have targets or non-targets for this type of a question
-    while (!s.contains(Integer.parseInt(images(idx).imageType)) && cnt < images.length) {
+    while (images(idx).preloaded && !s.contains(Integer.parseInt(images(idx).imageType)) && cnt < images.length) {
       idx = generateRandomIndex(images.length)
       cnt += 1
     }
