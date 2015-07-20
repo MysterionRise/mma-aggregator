@@ -23,7 +23,7 @@ object ScalaJSCode extends js.JSApp {
     }
     val stroop = getElementById[Div]("stroop-test")
     if (stroop != null) {
-      UltraRapidTest.doTest()
+      StroopTest.doTest()
     }
   }
 
