@@ -23,7 +23,7 @@ class Tests(tag: Tag) extends Table[Test](tag, "tests") {
 
 object TestDAO {
 
-  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
   lazy val db = dbConfig.db
   lazy val tests = TableQuery[Tests]
 

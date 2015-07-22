@@ -30,7 +30,7 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
 }
 
 object UserDAO {
-  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
   lazy val db = dbConfig.db
   lazy val users = TableQuery[Users]
 
