@@ -1,6 +1,8 @@
 @(tests: List[Test], testForm: Form[UserReq])
 
 @import helper._
+@import play.api.Play.current
+@import play.api.i18n.Messages.Implicits._
 
     @main("Psychologies tests") {
     <div class="row">

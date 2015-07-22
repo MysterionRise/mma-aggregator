@@ -5,8 +5,8 @@
     <div class="col-lg-10">
         @elements.input
         @if(!elements.errors.isEmpty) {
-            <span class="help-block">@elements.errors(elements.lang).mkString(", ")</span>
+            <span class="help-block">@elements.errors.mkString(", ")</span>
         }
-        <span class="help-block">@elements.infos(elements.lang).mkString(", ")</span>
+        <span class="help-block">@elements.infos.mkString(", ")</span>
     </div>
 </div>

@@ -2,6 +2,8 @@ package controllers
 
 import models.{ReportDAO, TestDAO, UserDAO}
 import play.api.mvc._
+import slick.driver.PostgresDriver.api._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Application extends Controller {
 
@@ -12,11 +14,7 @@ object Application extends Controller {
     Ok(views.html.index("Go to /tests and start to check all tests we have!"))
   }
 
-  def users() = Action {
-    Ok(views.html.subscriptions(UserDAO.findAll))
-  }
-
-  def tests() = Action {
-    Ok(views.html.tests(TestDAO.findAll, PsychoTest.testForm))
+  def tests = Action.async {
+    TestDAO.db.run(TestDAO.tests.result).map(res => Ok(views.html.tests(res.toList, PsychoTest.testForm)))
   }
 }

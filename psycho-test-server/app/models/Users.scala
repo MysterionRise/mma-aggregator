@@ -1,9 +1,13 @@
 package models
 
-import play.api.db.DB
-import play.api.Play.current
-import scala.slick.driver.PostgresDriver.simple._
-import scala.slick.jdbc.meta.MTable
+import play.api.Play
+import play.api.db.slick.DatabaseConfigProvider
+import slick.driver.JdbcProfile
+import slick.driver.PostgresDriver.api._
+import slick.jdbc.meta.MTable
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import scala.util.{Success, Failure}
 
 case class User(var id: Option[Int], name: String, email: String, gender: String, nationality: String, age: Int, testId: Int)
 
@@ -26,21 +30,23 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
 }
 
 object UserDAO {
-  lazy val database = Database.forDataSource(DB.getDataSource())
+  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  lazy val db = dbConfig.db
   lazy val users = TableQuery[Users]
 
-  def createSchema = database.withSession { implicit db: Session =>
-    if (!MTable.getTables.list.exists(_.name.name == users.baseTableRow.tableName)) {
-      users.ddl.create
+  def createSchema = {
+    db.run(MTable.getTables).onComplete {
+      case Success(value) => value.filter(table => table.name.name == users.baseTableRow.tableName).foreach(x => db.run(users.schema.create))
+      case Failure(e) => e.printStackTrace
     }
   }
 
-  def findAll = database.withSession { implicit db: Session =>
-    users.list
-  }
-
-  def addUser(user: User): Int = database.withSession { implicit db: Session =>
-    val userId =(users returning users.map(_.id)) += user
-    return userId
+  def addUser(user: User): Int = {
+    val action = (users returning users.map(_.id)) += user
+    db.run(action).onComplete {
+      case Success(value) => println(value)
+      case Failure(e) => println(e.getStackTrace)
+    }
+    100
   }
 }

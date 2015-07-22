@@ -1,9 +1,13 @@
 package models
 
-import play.api.db.DB
-import play.api.Play.current
-import scala.slick.driver.PostgresDriver.simple._
-import scala.slick.jdbc.meta.MTable
+import play.api.Play
+import play.api.db.slick.DatabaseConfigProvider
+import slick.driver.JdbcProfile
+import slick.driver.PostgresDriver.api._
+import slick.jdbc.meta.MTable
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import scala.util.{Success, Failure}
 
 case class Report(id: Option[Int], userID: Int, report: String)
 
@@ -12,26 +16,24 @@ class Reports(tag: Tag) extends Table[Report](tag, "reports") {
 
   def name = column[Int]("user_id")
 
-  def report = column[String]("report", O.DBType("VARCHAR(10000)"))
+  def report = column[String]("report", O.SqlType("VARCHAR(10000)"))
 
-  override def * = (id.?, name, report) <> (Report.tupled, Report.unapply _)
+  override def * = (id.?, name, report) <>(Report.tupled, Report.unapply _)
 }
 
 object ReportDAO {
-  lazy val database = Database.forDataSource(DB.getDataSource())
+  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  lazy val db = dbConfig.db
   lazy val reports = TableQuery[Reports]
 
-  def createSchema = database.withSession { implicit db: Session =>
-    if (!MTable.getTables.list.exists(_.name.name == reports.baseTableRow.tableName)) {
-      reports.ddl.create
+  def createSchema = {
+    db.run(MTable.getTables).onComplete {
+      case Success(value) =>
+        value.filter(table => table.name.name == reports.baseTableRow.tableName).foreach(x => db.run(reports.schema.create))
+      case Failure(e) => e.printStackTrace
     }
   }
 
-  def findAll = database.withSession { implicit db: Session =>
-    reports.list
-  }
+  def addReport(report: Report) = db.run(DBIO.seq(reports += report))
 
-  def addReport(report: Report) = database.withSession { implicit db: Session =>
-    reports.insert(report)
-  }
 }

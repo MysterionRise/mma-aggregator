@@ -1,9 +1,13 @@
 package models
 
-import play.api.db.DB
-import play.api.Play.current
-import scala.slick.driver.PostgresDriver.simple._
-import scala.slick.jdbc.meta.MTable
+import play.api.Play
+import play.api.db.slick.DatabaseConfigProvider
+import slick.driver.JdbcProfile
+import slick.driver.PostgresDriver.api._
+import slick.jdbc.meta.MTable
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
 
 case class Test(id: Int, name: String, description: Option[String])
 
@@ -12,22 +16,23 @@ class Tests(tag: Tag) extends Table[Test](tag, "tests") {
 
   def name = column[String]("name")
 
-  def description = column[String]("description", O.Nullable)
+  def description = column[Option[String]]("description")
 
-  override def * = (id, name, description.?) <> (Test.tupled, Test.unapply _)
+  override def * = (id, name, description) <>(Test.tupled, Test.unapply _)
 }
 
 object TestDAO {
-  lazy val database = Database.forDataSource(DB.getDataSource())
+
+  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile](Play.current)
+  lazy val db = dbConfig.db
   lazy val tests = TableQuery[Tests]
 
-  def createSchema = database.withSession { implicit db: Session =>
-    if (!MTable.getTables.list.exists(_.name.name == tests.baseTableRow.tableName)) {
-      tests.ddl.create
+  def createSchema = {
+    db.run(MTable.getTables).onComplete {
+      case Success(value) => value.filter(table => table.name.name == tests.baseTableRow.tableName).foreach(x => db.run(tests.schema.create))
+      case Failure(e) => e.printStackTrace
     }
   }
 
-  def findAll = database.withSession { implicit db: Session =>
-    tests.list
-  }
+  def findAll: List[Test] = List()
 }
