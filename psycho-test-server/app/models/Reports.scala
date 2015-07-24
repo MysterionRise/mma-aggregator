@@ -22,9 +22,7 @@ class Reports(tag: Tag) extends Table[Report](tag, "reports") {
 }
 
 object ReportDAO {
-  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
-  lazy val db = dbConfig.db
-  lazy val reports = TableQuery[Reports]
+  val reports = TableQuery[Reports]
 
   def createSchema = {
     db.run(MTable.getTables).onComplete {
