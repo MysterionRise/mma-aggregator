@@ -1,17 +1,11 @@
 package controllers
 
-import javax.inject.Inject
-
 import models.{ReportDAO, TestDAO, UserDAO}
-import play.api.db.slick.DatabaseConfigProvider
 import play.api.mvc._
-import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class Application @Inject()(dbConfigProvider: DatabaseConfigProvider) extends Controller {
-  val dbConfig = dbConfigProvider.get[JdbcProfile]
-  val db = dbConfig.db
+object Application extends Controller {
 
   def index = Action {
     TestDAO.createSchema
@@ -21,6 +15,6 @@ class Application @Inject()(dbConfigProvider: DatabaseConfigProvider) extends Co
   }
 
   def tests = Action.async {
-    db.run(TestDAO.tests.result).map(res => Ok(views.html.tests(res.toList, PsychoTest.testForm)))
+    TestDAO.db.run(TestDAO.tests.result).map(res => Ok(views.html.tests(res.toList, PsychoTest.testForm)))
   }
 }

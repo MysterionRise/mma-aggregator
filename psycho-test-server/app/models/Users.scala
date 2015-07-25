@@ -5,9 +5,9 @@ import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
-import scala.concurrent.ExecutionContext.Implicits.global
 
-import scala.util.{Success, Failure}
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 case class User(var id: Option[Int], name: String, email: String, gender: String, nationality: String, age: Int, testId: Int)
 
@@ -30,21 +30,20 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
 }
 
 object UserDAO {
+  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
   val users = TableQuery[Users]
 
+  def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(dbConfig.db.run(a), 5 seconds )
+
   def createSchema = {
-    db.run(MTable.getTables).onComplete {
-      case Success(value) => value.filter(table => table.name.name == users.baseTableRow.tableName).foreach(x => db.run(users.schema.create))
-      case Failure(e) => e.printStackTrace
-    }
+    val result1 = result(MTable.getTables)
+    result1.foreach(x => println(x))
+    result1.filter(
+      table => table.name.name == users.baseTableRow.tableName).foreach(x => result(users.schema.create))
   }
 
   def addUser(user: User): Int = {
     val action = (users returning users.map(_.id)) += user
-    db.run(action).onComplete {
-      case Success(value) => println(value)
-      case Failure(e) => println(e.getStackTrace)
-    }
-    100
+    result[Int](action)
   }
 }
