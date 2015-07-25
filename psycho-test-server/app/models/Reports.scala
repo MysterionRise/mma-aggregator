@@ -5,9 +5,8 @@ import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import scala.util.{Success, Failure}
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 case class Report(id: Option[Int], userID: Int, report: String)
 
@@ -22,18 +21,17 @@ class Reports(tag: Tag) extends Table[Report](tag, "reports") {
 }
 
 object ReportDAO {
-  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
-  lazy val db = dbConfig.db
-  val reports = TableQuery[Reports]
+  private lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
+  private val reports = TableQuery[Reports]
+
+  def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(dbConfig.db.run(a), 5 seconds)
 
   def createSchema = {
-    db.run(MTable.getTables).onComplete {
-      case Success(value) =>
-        value.filter(table => table.name.name == reports.baseTableRow.tableName).foreach(x => db.run(reports.schema.create))
-      case Failure(e) => e.printStackTrace
-    }
+    val not = result(MTable.getTables(reports.baseTableRow.tableName))
+    println(s"Reports = ${not.size}")
+    if (not.isEmpty) result(reports.schema.create)
   }
 
-  def addReport(report: Report) = db.run(DBIO.seq(reports += report))
+  def addReport(report: Report) = dbConfig.db.run(DBIO.seq(reports += report))
 
 }

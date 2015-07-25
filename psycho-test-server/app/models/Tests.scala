@@ -5,9 +5,9 @@ import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
+import scala.collection.mutable.ArrayBuffer
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 case class Test(id: Int, name: String, description: Option[String])
 
@@ -22,16 +22,21 @@ class Tests(tag: Tag) extends Table[Test](tag, "tests") {
 }
 
 object TestDAO {
-  lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
-  lazy val db = dbConfig.db
+  private lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
   lazy val tests = TableQuery[Tests]
+  lazy val db = dbConfig.db
+
+  def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(dbConfig.db.run(a), 5 seconds)
 
   def createSchema = {
-    db.run(MTable.getTables).onComplete {
-      case Success(value) => value.filter(table => table.name.name == tests.baseTableRow.tableName).foreach(x => db.run(tests.schema.create))
-      case Failure(e) => e.printStackTrace
-    }
+    val not = result(MTable.getTables(tests.baseTableRow.tableName))
+    println(s"Tests = ${not.size}")
+    if (not.isEmpty) result(tests.schema.create)
   }
 
-  def findAll: List[Test] = List()
+  def findAll: List[Test] = {
+    val buffer = new ArrayBuffer[Test]()
+    result(tests.result).foreach(buffer.append(_))
+    buffer.toList
+  }
 }
