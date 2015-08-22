@@ -1,10 +1,11 @@
 package models
 
+import java.net.URI
+
 import play.api.Play
-import play.api.db.slick.DatabaseConfigProvider
-import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -29,10 +30,15 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
 }
 
 object UserDAO {
-  private lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
+  val dbUri = new URI(Play.current.configuration.getString("slick.dbs.default.db.url").get)
+  val username = dbUri.getUserInfo.split(":")(0)
+  val password = dbUri.getUserInfo.split(":")(1)
+  val dbUrl = s"jdbc:postgresql://${dbUri.getHost}:${dbUri.getPort}${dbUri.getPath}"
+  private lazy val db = Database.forURL(dbUrl, driver="org.postgresql.Driver", user = username, password = password)
+
   private val users = TableQuery[Users]
 
-  def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(dbConfig.db.run(a), 5 seconds)
+  def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(db.run(a), 5 seconds)
 
   def createSchema = {
     val not = result(MTable.getTables(users.baseTableRow.tableName))

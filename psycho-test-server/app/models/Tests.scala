@@ -1,13 +1,15 @@
 package models
 
+import java.net.URI
+
 import play.api.Play
-import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 import scala.collection.mutable.ArrayBuffer
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import scala.slick.driver
 
 case class Test(id: Int, name: String, description: Option[String])
 
@@ -22,11 +24,15 @@ class Tests(tag: Tag) extends Table[Test](tag, "tests") {
 }
 
 object TestDAO {
-  private lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
-  lazy val tests = TableQuery[Tests]
-  lazy val db = dbConfig.db
+  val dbUri = new URI(Play.current.configuration.getString("slick.dbs.default.db.url").get)
+  val username = dbUri.getUserInfo.split(":")(0)
+  val password = dbUri.getUserInfo.split(":")(1)
+  val dbUrl = s"jdbc:postgresql://${dbUri.getHost}:${dbUri.getPort}${dbUri.getPath}"
+  lazy val db = Database.forURL(dbUrl, driver="org.postgresql.Driver", user = username, password = password)
 
-  def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(dbConfig.db.run(a), 5 seconds)
+  lazy val tests = TableQuery[Tests]
+
+  def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(db.run(a), 5 seconds)
 
   def createSchema = {
     val not = result(MTable.getTables(tests.baseTableRow.tableName))

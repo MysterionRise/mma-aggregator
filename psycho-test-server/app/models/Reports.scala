@@ -1,10 +1,11 @@
 package models
 
+import java.net.URI
+
 import play.api.Play
-import play.api.db.slick.DatabaseConfigProvider
-import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -21,10 +22,15 @@ class Reports(tag: Tag) extends Table[Report](tag, "reports") {
 }
 
 object ReportDAO {
-  private lazy val dbConfig = DatabaseConfigProvider.get[JdbcProfile]("default")(Play.current)
+  val dbUri = new URI(Play.current.configuration.getString("slick.dbs.default.db.url").get)
+  val username = dbUri.getUserInfo.split(":")(0)
+  val password = dbUri.getUserInfo.split(":")(1)
+  val dbUrl = s"jdbc:postgresql://${dbUri.getHost}:${dbUri.getPort}${dbUri.getPath}"
+  private lazy val db = Database.forURL(dbUrl, driver="org.postgresql.Driver", user = username, password = password)
+
   private val reports = TableQuery[Reports]
 
-  def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(dbConfig.db.run(a), 5 seconds)
+  def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(db.run(a), 5 seconds)
 
   def createSchema = {
     val not = result(MTable.getTables(reports.baseTableRow.tableName))
@@ -32,6 +38,6 @@ object ReportDAO {
     if (not.isEmpty) result(reports.schema.create)
   }
 
-  def addReport(report: Report) = dbConfig.db.run(DBIO.seq(reports += report))
+  def addReport(report: Report) = db.run(DBIO.seq(reports += report))
 
 }
