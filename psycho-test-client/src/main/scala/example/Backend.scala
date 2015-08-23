@@ -14,11 +14,7 @@ import scala.scalajs.js
 class Backend(stateController: BackendScope[_, State], var notClicked: Boolean, var report: scala.Option[Report]) {
 
   val user = getElementById[Heading]("user")
-  var userID: String = user.getAttribute("data-user-id")
-  if (userID.isEmpty) {
-    // todo for testing purposes
-    userID = "123"
-  }
+  val userID: String = user.getAttribute("data-user-id")
   var interval: js.UndefOr[js.timers.SetIntervalHandle] =
     js.undefined
 
