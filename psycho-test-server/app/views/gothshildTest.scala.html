@@ -1,10 +1,12 @@
 @(user: User, images: scala.collection.mutable.ArrayBuffer[shared.UltraRapidImage])
 
+@import play.api.i18n.Messages
+
 @main("Gothshild test") {
 
 <h5 id="user" data-user-id="@user.id"/>
 <div id="instruction" class="alert alert-warning">
-    <h4>Инструкция</h4>
+    <h4>@Messages("instruction")</h4>
     <p>В каждом сложном рисунке содержится один из следующих элементов</p>
     <br>
     <img id="instr1" src="@routes.Assets.at("images/gothshild/instruction-1.jpg")">
