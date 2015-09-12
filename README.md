@@ -26,3 +26,5 @@ The application uses the [sbt-play-scalajs](https://github.com/vmunier/sbt-play-
   - Open your browser dev tool to set breakpoints or to see the guilty line of code when an exception is thrown
   - Source Maps is _disabled in production_ by default to prevent your users from seeing the source files. But it can easily be enabled in production too by setting `emitSourceMaps in fullOptJS := true` in the Scala.js projects.
 
+## How to use it
+TBD
