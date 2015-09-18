@@ -1,0 +1,30 @@
+@(user: User, pattern: shared.Image, images: Array[shared.Image])
+
+@main("Kagan Test") {
+
+<h2 id="user" data-user-id="@user.id">Hello, @user.name!</h2>
+
+<div id="instruction" class="alert alert-warning">
+    <h4>Инструкция</h4>
+
+    <p>Сейчас Вы увидите одну картинку и несколько похожих на нее.
+        Вам необходимо найти на этом рисунке точно такую же картинку, как та, что вверху, и выбрать её кликом мыши.
+        Для первоначальной тренировки Вам будут показаны две демонстрационные карточки. Далее задачи будут совсем не
+        такие простые.
+        Найдите как можно быстрее картинку, максимально похожую на эту вверху, и сразу же выберете ей.
+        После Вашего выбора, следующее задание будет представлено Вам автоматически.</p>
+</div>
+
+<div style="text-align : center">
+    <p class="text-success" id="success"></p>
+
+    <p class="text-danger" id="error"></p>
+    <img id="pattern" src="@routes.Assets.at(shared.SharedCode.constructURI(pattern))">
+</div>
+
+<div id="kagan-test" class="jumbotron">
+    @for(i <- 0 until images.length) {
+    <img id="@(i + 1)" src="@routes.Assets.at(shared.SharedCode.constructURI(images(i)))">
+    }
+</div>
+}
