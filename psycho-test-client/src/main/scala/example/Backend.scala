@@ -1,12 +1,11 @@
 package example
 
 import example.ScalaJSCode._
-import example.UltraRapidTest.State
+import example.UltraRapidTest._
 import japgolly.scalajs.react.BackendScope
 import org.scalajs.dom
 import org.scalajs.dom.html._
 import shared.UltraRapidImage
-import example.UltraRapidTest._
 
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js

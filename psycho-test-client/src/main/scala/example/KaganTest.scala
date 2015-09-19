@@ -13,13 +13,13 @@ object KaganTest {
 
   def doTest(): Unit = {
     val instruction = getElementById[Div]("instruction")
-    instruction.innerHTML = ""
     val success = getElementById[Element]("success")
     val error = getElementById[Element]("error")
     for (i <- 1 to 8) {
       val e = getElementById[Image](i.toString)
       e.onclick = {
         (e1: dom.MouseEvent) =>
+          instruction.innerHTML = ""
           success.textContent = ""
           error.textContent = ""
           val user = getElementById[Heading]("user")
@@ -52,9 +52,9 @@ object KaganTest {
 
   private def provideFeedback(success: Element, error: Element, e: Image, correctID: String): Unit = {
     if (e.id.equals(correctID)) {
-      success.textContent = "You successfully answer the question!"
+      success.textContent = "Вы правильно ответили на вопрос!"
     } else {
-      error.textContent = " Your answer is INCORRECT!"
+      error.textContent = "Вы ответили НЕПРАВИЛЬНО!"
     }
   }
 

@@ -11,7 +11,7 @@ import scala.util.Random
 
 object StroopTestEn {
 
-  private val question = getElementById[Div]("stroop-test")
+  private val question = getElementById[Div]("stroop-test-en")
   private val instruction = getElementById[Div]("instruction")
   // TODO change size of trials
   private val sizeOfTrials = 50
@@ -75,11 +75,11 @@ object StroopTestEn {
         dom.window.onkeyup = { (e: dom.Event) =>
           val event = e.asInstanceOf[KeyboardEvent]
           event.keyCode match {
-            case 67 => {
+            case 66 => {
               userAnswer = 0
               B.showNextQuestion()
             }
-            case 80 => {
+            case 71 => {
               userAnswer = 1
               B.showNextQuestion()
             }
@@ -87,7 +87,7 @@ object StroopTestEn {
               userAnswer = 2
               B.showNextQuestion()
             }
-            case 186 => {
+            case 89 => {
               userAnswer = 3
               B.showNextQuestion()
             }
@@ -97,15 +97,15 @@ object StroopTestEn {
         }
         S.trialNumber match {
           case 1 => {
-            instruction.innerHTML = "Цвета будут написаны черной краской на сером фоне. Вам необходимо будет прочитать слово и нажать на клавиатуре букву, с которой начинается это слово.Например, предъявлено слово \"желтый\"; правильный ответ – нажатие клавиши \"ж\".\n        "
+            instruction.innerHTML = "During the first series of color will be written in black on a gray background. You will need to read the word and press the keyboard letter that begins the word. For example, brought the word \"yellow\"; the correct answer - pressing \"y\"\n"
             generateTrial1()
           }
           case 2 => {
-            instruction.innerHTML = "Вам будут предъявлены прямоугольные карты залитые разной краской. Ваша задача опознать краску и нажать на клавиатуре букву, с которой начинается цвет этой краски. Например, предъявлен прямоугольник красного цвета; правильный ответ - нажатие клавиши \"к\".\n        "
+            instruction.innerHTML = "During the second series will be presented to you a rectangular painted in different colors. Your task is to identify the paint and press the letter on the keyboard, which begins this paint color. For example, the rectangle is painted with red color, then correct answer is to press \"r\""
             generateTrial2()
           }
           case 3 => {
-            instruction.innerHTML = "Вы увидите слова напечатанные краской несоответствующей значениям цветов. Вам необходимо нажать букву, с которой начинается цвет краски, которой напечатано слово. Например, слово «желтый» будет напечатано синей краской. В данном случае правильный ответ – клавиша «с».\n        "
+            instruction.innerHTML = "During the third series you will see the words printed with inappropriate color values. You have to press the letter that begins the color of the paint, which is printed word. For example, the word \"yellow\" is printed in blue paint. In this case, the correct answer - key \"b\".\n"
             generateTrial3()
           }
           case _ => {
@@ -113,7 +113,7 @@ object StroopTestEn {
             val user = getElementById[Heading]("user")
             val userID = user.getAttribute("data-user-id")
             div(
-              h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
+              h4("Thank you for your time. Testing is now finished. Please, press the button Finish Test"),
               form(
                 action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.toString) + "\"",
                 `class` := "form-horizontal",
@@ -136,7 +136,7 @@ object StroopTestEn {
     }
   }
 
-  val colorTexts = Array("синий", "зеленый", "красный", "желтый")
+  val colorTexts = Array("blue", "green", "red", "yellow")
   val colors = Array("blue", "green", "red", "yellow")
   val random = new Random()
 

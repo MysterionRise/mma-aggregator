@@ -39,25 +39,6 @@ object UltraRapidTestEn {
     backend.get
   }
 
-  /**
-   * @param image - current image, that we want to show
-   * @param whatToShow - type of showing (fixation cross, question image, text question, rest)
-   * @param isTesting - boolean flag representing test session or not
-   * @param images - list of images
-   * @param questionType - type of question
-   *                     1 - is it a dog?
-   *                     2 - is it animal?
-   *                     3 - is it car?
-   *                     4 - is it vehicle?
-   *                     5 - is it nature?
-   *                     6 - is it urban?
-   *                     7 - is it indoor scene?
-   *                     8 - is it positive interaction on scene?
-   */
-  case class State(res: (UltraRapidImage, ArrayBuffer[UltraRapidImage]), whatToShow: WhatToShow, isTesting: Boolean,
-                   questionType: Int, numberOfQuestions: Int)
-
-
   def constructArrayBuffer(s: String) = {
     val bigDiv = dom.document.getElementById("big").asInstanceOf[Div]
     val res = new ArrayBuffer[UltraRapidImage]()
@@ -206,9 +187,8 @@ object UltraRapidTestEn {
         } else {
           js.timers.clearInterval(B.interval.get)
           div(
-            h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
+            h4("Thank you for your time. Testing is now finished. Please, press the button Finish Test"),
             form(
-              //              action := "/tests/finishTest?report=\"" + Encoder(B.report.toString.getBytes("UTF-8")).toBase64() + "\"",
               action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.get.answers.toString) + "\"",
               `class` := "form-horizontal",
               method := "POST",
@@ -263,7 +243,7 @@ object UltraRapidTestEn {
           val testQType = socialQuestionTypes.remove(0)
           val app = createSocialApp(testQType)
           val paragraph = getElementById[Paragraph]("countdown")
-          paragraph.textContent = "Осталось: 120 секунд"
+          paragraph.textContent = "Left: 120 seconds"
           var cnt = 120
           interval = js.timers.setInterval(1000)({
             if (cnt < 0) {
@@ -324,7 +304,7 @@ object UltraRapidTestEn {
           val testQType = socialTestQuestionTypes.remove(0)
           val app = createTestSocialApp(testQType)
           val paragraph = getElementById[Paragraph]("countdown")
-          paragraph.textContent = "Осталось: 120 секунд"
+          paragraph.textContent = "Left: 120 seconds"
           var cnt = 120
           interval = js.timers.setInterval(1000)({
             if (cnt < 0) {
@@ -332,7 +312,7 @@ object UltraRapidTestEn {
               clearInterval
               React.render(app.apply(), question)
             } else {
-              paragraph.textContent = "Осталось: " + cnt + " секунд"
+              paragraph.textContent = "Left: " + cnt + " seconds"
               cnt -= 1
             }
           })
@@ -388,7 +368,7 @@ object UltraRapidTestEn {
         } else {
           js.timers.clearInterval(B.interval.get)
           val paragraph = getElementById[Paragraph]("countdown")
-          paragraph.textContent = "Осталось: 120 секунд"
+          paragraph.textContent = "Left: 120 seconds"
           var cnt = 120
           interval = js.timers.setInterval(1000)({
             if (cnt < 0) {
@@ -396,7 +376,7 @@ object UltraRapidTestEn {
               clearInterval
               React.render(realTestApp(), question)
             } else {
-              paragraph.textContent = "Осталось: " + cnt + " секунд"
+              paragraph.textContent = "Left: " + cnt + " seconds"
               cnt -= 1
             }
           })

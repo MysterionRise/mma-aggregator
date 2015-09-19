@@ -7,7 +7,7 @@ import org.scalajs.dom.html._
 
 object GothshildTestEn {
 
-  private val question = getElementById[Div]("gothshild-test")
+  private val question = getElementById[Div]("gothshild-test-en")
   private val instruction = getElementById[Div]("instruction")
 
   def doTest() = {
@@ -77,7 +77,7 @@ object GothshildTestEn {
           val user = getElementById[Heading]("user")
           val userID = user.getAttribute("data-user-id")
           div(
-            h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
+            h4("Thank you for your time. Testing is now finished. Please, press the button Finish Test"),
             form(
               action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.toString) + "\"",
               `class` := "form-horizontal",
@@ -92,7 +92,7 @@ object GothshildTestEn {
           )
         } else {
           div(
-            h4("Какой из элементов содержится в сложном рисунке?"),
+            h4("Which basic element is contained in this figure?"),
             div(
               `class` := "jumbotron",
               width := "700px",
@@ -109,7 +109,7 @@ object GothshildTestEn {
               button(
                 `class` := "btn btn-primary",
                 onClick ==> B.skipQuestion,
-                "Пропустить задание"
+                "Skip task"
               )
             ),
             br,
