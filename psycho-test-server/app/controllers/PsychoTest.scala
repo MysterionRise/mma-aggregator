@@ -97,6 +97,26 @@ object PsychoTest extends Controller {
             // TODO add more stuff to pass here
             Ok(views.html.stroopTest(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
+          case "Ultra rapid categorization ENG" => {
+            // TODO add more stuff to pass here
+            Ok(views.html.ultraRapidTestEn(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+          }
+          case "Gothshild test ENG" => {
+            // TODO add more stuff to pass here
+            Ok(views.html.gothshildTestEn(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+          }
+          case "Stroop test ENG" => {
+            // TODO add more stuff to pass here
+            Ok(views.html.stroopTestEn(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+          }
+          case "Kagan test ENG" => {
+            val kaganImages = new Array[Image](8)
+            for (i <- 1 to 8) {
+              kaganImages(i - 1) = new Image("kagan", 1, i)
+            }
+            val pattern = new Image("kagan", 1, 0)
+            Ok(views.html.kaganTestEn(addedUser, pattern, kaganImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+          }
         }
       }
     )
