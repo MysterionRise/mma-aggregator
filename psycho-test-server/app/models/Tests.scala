@@ -23,16 +23,9 @@ class Tests(tag: Tag) extends Table[Test](tag, "tests") {
   override def * = (id, name, description) <>(Test.tupled, Test.unapply _)
 }
 
-object TestDAO {
-  val dbUri = new URI(Play.current.configuration.getString("slick.dbs.default.db.url").get)
-  val username = dbUri.getUserInfo.split(":")(0)
-  val password = dbUri.getUserInfo.split(":")(1)
-  val dbUrl = s"jdbc:postgresql://${dbUri.getHost}:${dbUri.getPort}${dbUri.getPath}"
-  lazy val db = Database.forURL(dbUrl, driver="org.postgresql.Driver", user = username, password = password)
+object TestDAO extends BaseDAO {
 
   lazy val tests = TableQuery[Tests]
-
-  def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(db.run(a), 5 seconds)
 
   def createSchema = {
     val not = result(MTable.getTables(tests.baseTableRow.tableName))
