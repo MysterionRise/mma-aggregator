@@ -25,6 +25,22 @@ object ScalaJSCode extends js.JSApp {
     if (stroop != null) {
       StroopTest.doTest()
     }
+    val kaganEn = getElementById[Div]("kagan-test-en")
+    if (kaganEn != null) {
+      KaganTestEn.doTest()
+    }
+    val gothshildEn = getElementById[Div]("gothshild-test-en")
+    if (gothshildEn != null) {
+      GothshildTestEn.doTest()
+    }
+    val ultraRapidEn = getElementById[Div]("ultra-rapid-en")
+    if (ultraRapidEn != null) {
+      UltraRapidTestEn.doTest()
+    }
+    val stroopEn = getElementById[Div]("stroop-test-en")
+    if (stroopEn != null) {
+      StroopTestEn.doTest()
+    }
   }
 
   def getElementById[T <: Element](name: String): T = {

@@ -17,7 +17,10 @@ class BaseDAO {
   val username = dbUri.getUserInfo.split(":")(0)
   val password = dbUri.getUserInfo.split(":")(1)
   val dbUrl = s"jdbc:postgresql://${dbUri.getHost}:${dbUri.getPort}${dbUri.getPath}"
+
   protected lazy val db = Database.forURL(dbUrl, driver="org.postgresql.Driver", user = username, password = password)
+
+  def getDB() = db
 
   def result[R](a: DBIOAction[R, NoStream, Nothing]): R = Await.result(db.run(a), 5 seconds)
 

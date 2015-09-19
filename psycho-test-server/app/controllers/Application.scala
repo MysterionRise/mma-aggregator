@@ -1,6 +1,6 @@
 package controllers
 
-import models.{ReportDAO, TestDAO, UserDAO}
+import models.{ReportDAO, TestDAO, UserDAO, BaseDAO}
 import play.api.mvc._
 import slick.driver.PostgresDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -15,6 +15,6 @@ object Application extends Controller {
   }
 
   def tests = Action.async {
-    TestDAO.db.run(TestDAO.tests.result).map(res => Ok(views.html.tests(res.toList, PsychoTest.testForm)))
+    TestDAO.getDB.run(TestDAO.tests.result).map(res => Ok(views.html.tests(res.toList, PsychoTest.testForm)))
   }
 }
