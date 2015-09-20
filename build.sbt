@@ -3,7 +3,7 @@ import sbt.Keys._
 import sbt.Project.projectToRef
 
 lazy val clients = Seq(exampleClient)
-lazy val scalaV = "2.11.6"
+lazy val scalaV = "2.11.7"
 
 lazy val exampleServer = (project in file("psycho-test-server")).settings(
   scalaVersion := scalaV,
@@ -13,8 +13,8 @@ lazy val exampleServer = (project in file("psycho-test-server")).settings(
     "com.vmunier" %% "play-scalajs-scripts" % "0.3.0",
     "org.webjars" % "jquery" % "1.11.1",
     "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
-    "com.typesafe.slick" %% "slick" % "3.0.0",
-    "com.typesafe.play" %% "play-slick" % "1.0.0"
+    "com.typesafe.slick" %% "slick" % "3.0.3",
+    "com.typesafe.play" %% "play-slick" % "1.0.1"
   ),
   herokuAppName in Compile := "psycho-test-framework",
   herokuSkipSubProjects in Compile := false,
@@ -35,7 +35,7 @@ lazy val exampleClient = (project in file("psycho-test-client")).settings(
   jsDependencies += "org.webjars" % "react" % "0.12.1" /
     "react-with-addons.js" commonJSName "React",
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.8.0",
+    "org.scala-js" %%% "scalajs-dom" % "0.8.1",
     "com.github.japgolly.scalajs-react" %%% "core" % "0.8.4",
     "com.github.marklister" %%% "base64" % "0.1.1"
   )).

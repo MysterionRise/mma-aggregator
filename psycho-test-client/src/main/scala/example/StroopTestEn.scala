@@ -141,6 +141,7 @@ object StroopTestEn {
   val random = new Random()
 
   def generateTrial1() = {
+
     val idx = random.nextInt(colorTexts.length)
     correctAnswer = idx
     div(
