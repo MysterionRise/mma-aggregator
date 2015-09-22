@@ -24,7 +24,7 @@ object UltraRapidTestEn {
   private val socialTestQuestionAmount = 5
   private val socialQuestionAmount = 40
   private var backend: scala.Option[Backend] = None
-  private val question = getElementById[Div]("ultra-rapid")
+  private val question = getElementById[Div]("ultra-rapid-en")
   private var interval: js.UndefOr[js.timers.SetIntervalHandle] =
     js.undefined
 
@@ -143,8 +143,8 @@ object UltraRapidTestEn {
         case 2 => customP("На этом изображении есть животное?")
         case 3 => customP("На этом изображении есть легковой автомобиль?")
         case 4 => customP("На этом изображении есть транспортное средство?")
-        case 5 => customP("Это изображение природы?")
-        case 6 => customP("Это изображение объектов, созданных человеком?")
+        case 5 => customP("Is this scene natural?")
+        case 6 => customP("Is this scene artificial (man-made)?")
         case 7 => customP("Событие происходит в помещении?")
         case 8 => customP("Изображено позитивное взаимодействие людей?")
         case _ => p("We don't have any questions for that type!")
