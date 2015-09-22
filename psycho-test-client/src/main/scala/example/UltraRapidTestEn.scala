@@ -139,14 +139,14 @@ object UltraRapidTestEn {
 
     def askQuestion(questionType: Int): ReactElement = {
       questionType match {
-        case 1 => customP("На этом изображении есть собака?")
-        case 2 => customP("На этом изображении есть животное?")
-        case 3 => customP("На этом изображении есть легковой автомобиль?")
-        case 4 => customP("На этом изображении есть транспортное средство?")
+        case 1 => customP("Is there a dog in this scene?")
+        case 2 => customP("Is there an animal in this scene?")
+        case 3 => customP("Is there a car in this scene?")
+        case 4 => customP("Is there a vehicle in this scene?")
         case 5 => customP("Is this scene natural?")
         case 6 => customP("Is this scene artificial (man-made)?")
-        case 7 => customP("Событие происходит в помещении?")
-        case 8 => customP("Изображено позитивное взаимодействие людей?")
+        case 7 => customP("Is this scene happening indoor?")
+        case 8 => customP("Is there a positive interaction (friendship) present in this scene?")
         case _ => p("We don't have any questions for that type!")
       }
     }
@@ -255,13 +255,13 @@ object UltraRapidTestEn {
               cnt -= 1
             }
           })
-          h4("Внимание. Начинается основная серия эксперимента. Напоминаем инструкцию. ", br, br,
-            "Вы увидите фиксационный крест, и после него на доли секунды появится изображение, " +
-              "которое быстро исчезнет. После этого на экране появится вопрос о содержании этого изображения " +
-              "(пример вопроса: сцена происходит в доме?) ", br, br,
-            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
-              "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста.", br, br,
-            "Продолжение теста через 2 минуты")
+          h4("Attention! " +
+            "Basic series of experiment will start soon. Recall the instruction. You will see a fixation cross, " +
+            "and after that the image will appear for a fractions of seconds. ", br, br,
+            "After that you will see a question about the content of the image (sample question: Is the scene happening indoor?)", br, br,
+            "f your answer to this question is yes - click \"space\" immediately after the issue," +
+              "if your answer is no - wait for the next task, namely the appearance of the fixation cross. ", br, br,
+            "The test will continue in 2 minutes.")
         }
       })
         .componentDidMount(f => {
@@ -316,18 +316,18 @@ object UltraRapidTestEn {
               cnt -= 1
             }
           })
-          h4("Инструкция ко второй части эксперимента. " +
-            "Эксперимент состоит из 90 заданий, которые разделены на тренировочную и основную серии. " +
-            "В тренировочной серии Вам будет предложено выполнение 10 заданий с обратной связью о Вашей успешности. ", br, br,
-            "Вы увидите фиксационный крест, и после него на доли секунды появится изображение, которое быстро исчезнет." +
-              " После этого на экране появится вопрос о содержании этого изображения (пример вопроса: сцена происходит в доме?) ", br, br,
-            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
-              "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста. ", br, br,
-            "В тренировочной серии правильность Вашего ответа будет отражена в цвете фиксационного креста, " +
-              "если крест красного цвета – Ваш ответ был неверный, если крест зеленого цвета – Вы ответили правильно.", br, br,
-            " После тренировочной серии начнется основная, её структура идентична тренировочной, " +
-              "однако в ней не будет предоставляться обратная связь о правильности Ваших ответов. ", br, br,
-            "Эксперимент начнется через 2 минуты")
+          h4("Instruction to the second part of the experiment." +
+            "The experiment consists of 90 tasks, which are divided into training and basic series. " +
+            "In training you will be asked to perform 10 tasks with feedback about your success. ", br, br,
+            "You will see a fixation cross, and after that will image on a few milliseconds, which quickly disappears. " +
+              " After that you will see a question about the content of the image (sample question: Is the scene happening indoor?) ", br, br,
+            "If your answer to this question is yes - click \"space\" immediately after the issue, " +
+              "if your answer is no - wait for the next task - the appearance of the fixation cross. ", br, br,
+            "The correctness of your response will be reflected in color of the fixation cross." +
+              "E.g. the red cross - your answer was wrong, if the cross is green - you answered correctly.", br, br,
+            " After the training begins the main series, its structure is identical to the training, " +
+              "but it will not be given any feedback on the correctness of your answers. If you are ready, click Start.", br, br,
+            "The test will continue in 2 minutes.")
         }
       })
         .componentDidMount(f => {
@@ -380,14 +380,13 @@ object UltraRapidTestEn {
               cnt -= 1
             }
           })
-          h4("Внимание! " +
-            "Начинается основная серия эксперимента. Напоминаем инструкцию. Вы увидите фиксационный крест, " +
-            "и после него на доли секунды появится изображение-картинка, которая быстро исчезнет. ", br, br,
-            "После этого на экране появится вопрос о содержании этого изображения (пример вопроса: Это изображение природы?) ", br, br,
-            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
-              "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста.", br, br,
-            "Эксперимент начнется через 2 минуты")
-
+          h4("Attention! Basic series of experiment will start soon. Recall the instruction: ", br, br,
+            "You will see a fixation cross, and after that appears image for fractions of seconds, " +
+              "that quickly disappear. After that you will see a question about the content of the image " +
+              "(sample question: Is the scene artificial (man-made))? ", br, br,
+            "If your answer to this question is yes - click \"space\" immediately after the question appears, " +
+              "if your answer is no - wait for the next task, namely the appearance of the fixation cross. ", br, br,
+            "The test will continue in 2 minutes.")
         }
       })
         .componentDidMount(f => {
