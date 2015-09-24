@@ -86,27 +86,21 @@ object PsychoTest extends Controller {
             Ok(views.html.kaganTest(addedUser, pattern, kaganImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "Ultra rapid categorization" => {
-            // TODO add more stuff to pass here
             Ok(views.html.ultraRapidTest(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "Gothshild test" => {
-            // TODO add more stuff to pass here
             Ok(views.html.gothshildTest(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "Stroop test" => {
-            // TODO add more stuff to pass here
             Ok(views.html.stroopTest(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "Ultra rapid categorization ENG" => {
-            // TODO add more stuff to pass here
             Ok(views.html.ultraRapidTestEn(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "Gothshild test ENG" => {
-            // TODO add more stuff to pass here
             Ok(views.html.gothshildTestEn(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "Stroop test ENG" => {
-            // TODO add more stuff to pass here
             Ok(views.html.stroopTestEn(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "Kagan test ENG" => {
