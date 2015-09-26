@@ -4,6 +4,7 @@ import sbt.Project.projectToRef
 
 lazy val clients = Seq(exampleClient)
 lazy val scalaV = "2.11.7"
+val version = "1.0.0"
 
 lazy val exampleServer = (project in file("psycho-test-server")).settings(
   scalaVersion := scalaV,
