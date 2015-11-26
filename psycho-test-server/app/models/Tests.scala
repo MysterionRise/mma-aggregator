@@ -1,15 +1,9 @@
 package models
 
-import java.net.URI
-
-import play.api.Play
-import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
+
 import scala.collection.mutable.ArrayBuffer
-import scala.concurrent.Await
-import scala.concurrent.duration._
-import scala.slick.driver
 
 case class Test(id: Int, name: String, description: Option[String])
 
