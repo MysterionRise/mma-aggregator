@@ -11,7 +11,7 @@ object GothshildTestEn {
   private val instruction = getElementById[Div]("instruction")
 
   def doTest() = {
-    React.render(buttonApp.apply(), question)
+    ReactDOM.render(buttonApp.apply(), question)
   }
 
   val buttonApp = ReactComponentB[Unit]("StartButton")
@@ -118,7 +118,7 @@ object GothshildTestEn {
         }
         )
         .buildU
-      React.render(gTest.apply(), question)
+      ReactDOM.render(gTest.apply(), question)
       instruction.innerHTML = ""
       time = System.currentTimeMillis()
     }

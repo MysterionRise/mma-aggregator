@@ -310,7 +310,7 @@ object UltraRapidTest {
             if (cnt < 0) {
               paragraph.textContent = "_____"
               clearInterval
-              React.render(app.apply(), question)
+              ReactDOM.render(app.apply(), question)
             } else {
               paragraph.textContent = "Осталось: " + cnt + " секунд"
               cnt -= 1
@@ -374,7 +374,7 @@ object UltraRapidTest {
             if (cnt < 0) {
               paragraph.textContent = "_____"
               clearInterval
-              React.render(realTestApp(), question)
+              ReactDOM.render(realTestApp(), question)
             } else {
               paragraph.textContent = "Осталось: " + cnt + " секунд"
               cnt -= 1
@@ -394,14 +394,14 @@ object UltraRapidTest {
         f.backend.init(f.state, testQuestionTypes, testQuestionAmount)
       })
         .buildU
-      React.render(testApp(), question)
+      ReactDOM.render(testApp(), question)
       getElementById[Div]("instruction").innerHTML = "<p id=\"countdown\">_____</p>"
       $.setState("")
     }
   }
 
   def doTest() = {
-    React.render(buttonApp.apply(), question)
+    ReactDOM.render(buttonApp.apply(), question)
   }
 
   def clearInterval = {

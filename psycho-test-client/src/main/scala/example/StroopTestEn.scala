@@ -19,7 +19,7 @@ object StroopTestEn {
   private var userAnswer = -1
 
   def doTest() = {
-    React.render(buttonApp.apply(), question)
+    ReactDOM.render(buttonApp.apply(), question)
   }
 
   val buttonApp = ReactComponentB[Unit]("StartButton")
@@ -132,7 +132,7 @@ object StroopTestEn {
         .buildU
 
       time = System.currentTimeMillis()
-      React.render(gTest.apply(), question)
+      ReactDOM.render(gTest.apply(), question)
     }
   }
 
