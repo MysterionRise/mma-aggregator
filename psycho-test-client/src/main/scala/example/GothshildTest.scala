@@ -11,24 +11,35 @@ object GothshildTest {
   private val instruction = getElementById[Div]("instruction")
 
   def doTest() = {
-    React.render(buttonApp.apply(), question)
+    ReactDOM.render(buttonApp, question)
   }
 
   val buttonApp = ReactComponentB[Unit]("StartButton")
     .initialState(State(1))
-    .backend(new TestBackend(_))
-    .render((_, S, B) => button(
-    `class` := "btn btn-primary",
-    onClick ==> B.startTest,
-    "Start test!"
-  )
-    )
+    .renderBackend[TestBackend1]
     .buildU
-
 
   case class State(taskNumber: Int)
 
-  class TestBackend($: BackendScope[_, State]) {
+  class TestBackend1() {
+    def render(state: State) =
+      button(
+        `class` := "btn btn-primary",
+        onClick ==> startTest(),
+        "Start test!")
+
+    def startTest() = {
+      val gTest = ReactComponentB[Unit]("StartButton")
+        .initialState(State(1))
+        .renderBackend[TestBackend]
+        .buildU
+      ReactDOM.render(gTest.apply(), question)
+      instruction.innerHTML = ""
+      time = System.currentTimeMillis()
+    }
+  }
+
+  class TestBackend($: BackendScope[Unit, State]) {
     private var time = System.currentTimeMillis()
     private val report: StringBuilder = new StringBuilder
 
@@ -67,62 +78,50 @@ object GothshildTest {
       showNextQuestion()
     }
 
-
-    def startTest(e: ReactEventI) = {
-      val gTest = ReactComponentB[Unit]("StartButton")
-        .initialState(State(1))
-        .backend(new TestBackend(_))
-        .renderBackend[TestBackend]
-//      ((_, S, B) =>
-//        if (S.taskNumber == 31) {
-//          val user = getElementById[Heading]("user")
-//          val userID = user.getAttribute("data-user-id")
-//          div(
-//            h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
-//            form(
-//              action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.toString) + "\"",
-//              `class` := "form-horizontal",
-//              method := "POST",
-//              button(
-//                id := "finish-test",
-//                `type` := "submit",
-//                `class` := "btn btn-primary",
-//                "Finish test"
-//              )
-//            )
-//          )
-//        } else {
-//          div(
-//            h4("Какой из элементов содержится в сложном рисунке?"),
-//            div(
-//              `class` := "jumbotron",
-//              width := "700px",
-//              marginLeft := "auto",
-//              marginRight := "auto",
-//              a(img(src := "/assets/images/gothshild/A.jpg"), onClick ==> B.clickA),
-//              a(img(src := "/assets/images/gothshild/B.jpg"), onClick ==> B.clickB),
-//              a(img(src := "/assets/images/gothshild/V.jpg"), onClick ==> B.clickV),
-//              a(img(src := "/assets/images/gothshild/G.jpg"), onClick ==> B.clickG),
-//              a(img(src := "/assets/images/gothshild/D.jpg"), onClick ==> B.clickD),
-//              br,
-//              br,
-//              br,
-//              button(
-//                `class` := "btn btn-primary",
-//                onClick ==> B.skipQuestion,
-//                "Пропустить задание"
-//              )
-//            ),
-//            br,
-//            img(src := s"/assets/images/gothshild/tasks/${S.taskNumber}.jpg", marginLeft := "auto", marginRight := "auto", display := "block")
-//          )
-//        }
-//        )
-        .buildU
-      ReactDOM.render(gTest.apply(), question)
-      instruction.innerHTML = ""
-      time = System.currentTimeMillis()
-    }
+    def render(state: State) =
+      if (state.taskNumber == 31) {
+        val user = getElementById[Heading]("user")
+        val userID = user.getAttribute("data-user-id")
+        div(
+          h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
+          form(
+            action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.toString) + "\"",
+            `class` := "form-horizontal",
+            method := "POST",
+            button(
+              id := "finish-test",
+              `type` := "submit",
+              `class` := "btn btn-primary",
+              "Finish test"
+            )
+          )
+        )
+      } else {
+        div(
+          h4("Какой из элементов содержится в сложном рисунке?"),
+          div(
+            `class` := "jumbotron",
+            width := "700px",
+            marginLeft := "auto",
+            marginRight := "auto",
+            a(img(src := "/assets/images/gothshild/A.jpg"), onClick ==> clickA),
+            a(img(src := "/assets/images/gothshild/B.jpg"), onClick ==> clickB),
+            a(img(src := "/assets/images/gothshild/V.jpg"), onClick ==> clickV),
+            a(img(src := "/assets/images/gothshild/G.jpg"), onClick ==> clickG),
+            a(img(src := "/assets/images/gothshild/D.jpg"), onClick ==> clickD),
+            br,
+            br,
+            br,
+            button(
+              `class` := "btn btn-primary",
+              onClick ==> skipQuestion(),
+              "Пропустить задание"
+            )
+          ),
+          br,
+          img(src := s"/assets/images/gothshild/tasks/${state.taskNumber}.jpg", marginLeft := "auto", marginRight := "auto", display := "block")
+        )
+      }
   }
 
 }
