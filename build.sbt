@@ -4,7 +4,7 @@ import sbt.Project.projectToRef
 
 lazy val clients = Seq(exampleClient)
 lazy val scalaV = "2.11.7"
-val version = "1.1.0"
+val version = "1.0.0"
 
 lazy val exampleServer = (project in file("psycho-test-server")).settings(
   scalaVersion := scalaV,
@@ -12,10 +12,10 @@ lazy val exampleServer = (project in file("psycho-test-server")).settings(
   pipelineStages := Seq(scalaJSProd, gzip),
   libraryDependencies ++= Seq(
     "com.vmunier" %% "play-scalajs-scripts" % "0.3.0",
-    "org.webjars" % "jquery" % "2.1.4",
-    "org.postgresql" % "postgresql" % "9.4-1205-jdbc41",
-    "com.typesafe.slick" %% "slick" % "3.1.0",
-    "com.typesafe.play" %% "play-slick" % "1.1.1"
+    "org.webjars" % "jquery" % "1.11.1",
+    "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
+    "com.typesafe.slick" %% "slick" % "3.0.3",
+    "com.typesafe.play" %% "play-slick" % "1.0.1"
   ),
   herokuAppName in Compile := "psycho-test-framework",
   herokuSkipSubProjects in Compile := false,
@@ -33,11 +33,11 @@ lazy val exampleClient = (project in file("psycho-test-client")).settings(
   persistLauncher in Test := false,
   sourceMapsDirectories += exampleSharedJs.base / "..",
   unmanagedSourceDirectories in Compile := Seq((scalaSource in Compile).value),
-  jsDependencies += "org.webjars" % "react" % "0.14.2" /
+  jsDependencies += "org.webjars" % "react" % "0.12.1" /
     "react-with-addons.js" commonJSName "React",
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.8.2",
-    "com.github.japgolly.scalajs-react" %%% "core" % "0.10.1",
+    "org.scala-js" %%% "scalajs-dom" % "0.8.1",
+    "com.github.japgolly.scalajs-react" %%% "core" % "0.8.4",
     "com.github.marklister" %%% "base64" % "0.1.1"
   )).
   enablePlugins(ScalaJSPlugin, ScalaJSPlay).
