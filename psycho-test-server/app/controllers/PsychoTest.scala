@@ -111,6 +111,9 @@ object PsychoTest extends Controller {
             val pattern = new Image("kagan", 1, 0)
             Ok(views.html.kaganTestEn(addedUser, pattern, kaganImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
+          case "Ultra rapid categorization v2" => {
+            Ok(views.html.ultraRapidTest2(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+          }
         }
       }
     )

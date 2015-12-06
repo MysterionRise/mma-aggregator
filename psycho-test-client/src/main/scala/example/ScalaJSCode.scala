@@ -41,6 +41,10 @@ object ScalaJSCode extends js.JSApp {
     if (stroopEn != null) {
       StroopTestEn.doTest()
     }
+    val ultraRapid2 = getElementById[Div]("ultra-rapid-2")
+    if (ultraRapid2 != null) {
+      UltraRapid2Test.doTest()
+    }
   }
 
   def getElementById[T <: Element](name: String): T = {
