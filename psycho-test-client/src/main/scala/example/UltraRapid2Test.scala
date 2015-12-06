@@ -1,16 +1,13 @@
 package example
 
+import org.scalajs.dom
+import org.scalajs.dom.Event
+import org.scalajs.dom.html._
 import example.ScalaJSCode._
 import japgolly.scalajs.react._
-import japgolly.scalajs.react.vdom.HtmlStyles.display
-import japgolly.scalajs.react.vdom.HtmlStyles.position
 import japgolly.scalajs.react.vdom.all._
-import org.scalajs.dom
-import org.scalajs.dom._
-import org.scalajs.dom.html._
 import shared.SharedCode._
 import shared.UltraRapidImage
-
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
 import scala.scalajs.js.timers.SetIntervalHandle
