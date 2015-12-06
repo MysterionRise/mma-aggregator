@@ -57,35 +57,53 @@ class Backend(stateController: BackendScope[_, State], var notClicked: Boolean, 
             State(getRandomQuestion(s.res._2, s.questionType), next, s.isTesting,
               s.questionType, s.numberOfQuestions + 1)
           }
-
         }
         case t: TextQuestion => {
           if (s.isTesting) {
-            var nextState: WhatToShow = null
-            val correctAnswer = getCorrectAnswerByName(s.res._1.imageType, s.res._1.imageName, s.questionType)
-            if (notClicked && !correctAnswer) {
-              nextState = t.moveToNext(1)
-            } else if (!notClicked && correctAnswer) {
-              nextState = t.moveToNext(1)
+            if (s.isVersion2) {
+              var nextState: WhatToShow = null
+              val correctAnswer = getCorrectAnswerByName(s.res._1.imageType, s.res._1.imageName, s.questionType)
+              if (notClicked && !correctAnswer) {
+                nextState = t.moveToNext(1)
+              } else if (!notClicked && correctAnswer) {
+                nextState = t.moveToNext(1)
+              } else {
+                nextState = t.moveToNext(0)
+              }
+              notClicked = true
+              clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
+              State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
             } else {
-              nextState = t.moveToNext(0)
+              var nextState: WhatToShow = null
+              val correctAnswer = getCorrectAnswerByName(s.res._1.imageType, s.res._1.imageName, s.questionType)
+              if (notClicked && !correctAnswer) {
+                nextState = t.moveToNext(1)
+              } else if (!notClicked && correctAnswer) {
+                nextState = t.moveToNext(1)
+              } else {
+                nextState = t.moveToNext(0)
+              }
+              notClicked = true
+              clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
+              State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
             }
-            notClicked = true
-            clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
-            State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
           } else {
-            val nextState = t.moveToNext(2)
-            val correctAnswer = getCorrectAnswerByName(s.res._1.imageType, s.res._1.imageName, s.questionType)
-            clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
-            if (notClicked && !correctAnswer) {
-              report.get.addAnswerToReport(extractImageType(s.res._1), 1, s.questionType)
-            } else if (!notClicked && correctAnswer) {
-              report.get.addAnswerToReport(extractImageType(s.res._1), 2, s.questionType)
+            if (s.isVersion2) {
+
             } else {
-              report.get.addAnswerToReport(extractImageType(s.res._1), 3, s.questionType)
+              val nextState = t.moveToNext(2)
+              val correctAnswer = getCorrectAnswerByName(s.res._1.imageType, s.res._1.imageName, s.questionType)
+              clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
+              if (notClicked && !correctAnswer) {
+                report.get.addAnswerToReport(extractImageType(s.res._1), 1, s.questionType)
+              } else if (!notClicked && correctAnswer) {
+                report.get.addAnswerToReport(extractImageType(s.res._1), 2, s.questionType)
+              } else {
+                report.get.addAnswerToReport(extractImageType(s.res._1), 3, s.questionType)
+              }
+              notClicked = true
+              State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
             }
-            notClicked = true
-            State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
           }
         }
         case w: WhatToShow => {

@@ -20,4 +20,14 @@ import scala.collection.mutable.ArrayBuffer
   *                     8 - is it positive interaction on scene?
   */
 case class State(res: (UltraRapidImage, ArrayBuffer[UltraRapidImage]), whatToShow: WhatToShow, isTesting: Boolean,
-                  questionType: Int, numberOfQuestions: Int)
+                  questionType: Int, numberOfQuestions: Int) {
+
+  var isVersion2: Boolean = false
+
+  def this(res: (UltraRapidImage, ArrayBuffer[UltraRapidImage]), whatToShow: WhatToShow, isTesting: Boolean,
+           questionType: Int, numberOfQuestions: Int, isVersion2: Boolean) {
+    this(res, whatToShow, isTesting, questionType, numberOfQuestions, false)
+    this.isVersion2 = isVersion2
+  }
+
+}

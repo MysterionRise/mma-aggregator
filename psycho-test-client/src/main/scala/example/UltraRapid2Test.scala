@@ -23,7 +23,7 @@ object UltraRapid2Test {
   private val socialTestQuestionAmount = 5
   private val socialQuestionAmount = 40
   private var backend: scala.Option[Backend] = None
-  private val question = getElementById[Div]("ultra-rapid")
+  private val question = getElementById[Div]("ultra-rapid-2")
   private var interval: js.UndefOr[js.timers.SetIntervalHandle] =
     js.undefined
 
@@ -153,7 +153,7 @@ object UltraRapid2Test {
     def createSocialApp(testQType: Int) = {
       ReactComponentB[Unit]("RealSocialSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), false,
-        testQType, 0))
+        testQType, 0, true))
         .backend(getBackend(_))
         .render((_, S, B) => {
         val user = getElementById[Heading]("user")
@@ -167,14 +167,15 @@ object UltraRapid2Test {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650, marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) =>
-                  if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
+              dom.document.onclick = {
+                (e: dom.MouseEvent) =>
+                  if (S.whatToShow.isInstanceOf[TextQuestion]) {
                     B.notClicked = false
                     B.showPicture(socialQuestionTypes, socialQuestionAmount)
                   }
               }
-              askQuestion(S.questionType)
+              button("Question := " + S.questionType)
+//              askQuestion(S.questionType)
             }
             case Rest(_, _) => {
               dom.document.onkeypress = {
@@ -212,7 +213,7 @@ object UltraRapid2Test {
     def createTestSocialApp(testQType: Int) = {
       ReactComponentB[Unit]("TestSocialSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), true,
-        testQType, 0))
+        testQType, 0, true))
         .backend(getBackend(_))
         .render((_, S, B) => {
         if (S.questionType > 0) {
@@ -222,14 +223,15 @@ object UltraRapid2Test {
             case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650, marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) =>
-                  if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
+              dom.document.onclick = {
+                (e: dom.MouseEvent) =>
+                  if (S.whatToShow.isInstanceOf[TextQuestion]) {
                     B.notClicked = false
                     B.showPicture(socialTestQuestionTypes, socialTestQuestionAmount)
                   }
               }
-              askQuestion(S.questionType)
+              button("Question := " + S.questionType)
+//              askQuestion(S.questionType)
             }
             case Rest(_, _) => {
               dom.document.onkeypress = {
@@ -275,7 +277,7 @@ object UltraRapid2Test {
       val realTestQType = questionTypes.remove(0)
       val realTestApp = ReactComponentB[Unit]("RealSession")
         .initialState(State(getRandomQuestion(testStrings, realTestQType), FixationCross(500, false), false,
-        realTestQType, 0))
+        realTestQType, 0, true))
         .backend(getBackend(_))
         .render((_, S, B) => {
         if (S.questionType > 0) {
@@ -283,14 +285,15 @@ object UltraRapid2Test {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) =>
-                  if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
+              dom.document.onclick = {
+                (e: dom.MouseEvent) =>
+                  if (S.whatToShow.isInstanceOf[TextQuestion]) {
                     B.notClicked = false
                     B.showPicture(questionTypes, questionAmount)
                   }
               }
-              askQuestion(S.questionType)
+              button("Question := " + S.questionType)
+//              askQuestion(S.questionType)
             }
             case Rest(_, _) => {
               dom.document.onkeypress = {
@@ -338,7 +341,7 @@ object UltraRapid2Test {
       val testQType = testQuestionTypes.remove(0)
       val testApp = ReactComponentB[Unit]("TestSession")
         .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, false), true,
-        testQType, 0))
+        testQType, 0, true))
         .backend(sc => getBackend(sc))
         .render((_, S, B) => {
         if (S.questionType > 0) {
@@ -348,14 +351,15 @@ object UltraRapid2Test {
             case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) =>
-                  if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
+              dom.document.onclick = {
+                (e: dom.MouseEvent) =>
+                  if (S.whatToShow.isInstanceOf[TextQuestion]) {
                     B.notClicked = false
                     B.showPicture(testQuestionTypes, testQuestionAmount)
                   }
               }
-              askQuestion(S.questionType)
+              button("Question := " + S.questionType)
+              //              askQuestion(S.questionType)
             }
             case Rest(_, _) => {
               // reduce number of questions to be asked for this type of a question
