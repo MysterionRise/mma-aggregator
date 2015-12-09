@@ -171,7 +171,7 @@ object UltraRapidTestEn {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.notClicked = false
+                    B.clicked = false
                     B.showPicture(socialQuestionTypes, socialQuestionAmount)
                   }
               }
@@ -225,7 +225,7 @@ object UltraRapidTestEn {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.notClicked = false
+                    B.clicked = false
                     B.showPicture(socialTestQuestionTypes, socialTestQuestionAmount)
                   }
               }
@@ -286,7 +286,7 @@ object UltraRapidTestEn {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.notClicked = false
+                    B.clicked = false
                     B.showPicture(questionTypes, questionAmount)
                   }
               }
@@ -351,7 +351,7 @@ object UltraRapidTestEn {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) =>
                   if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.notClicked = false
+                    B.clicked = false
                     B.showPicture(testQuestionTypes, testQuestionAmount)
                   }
               }

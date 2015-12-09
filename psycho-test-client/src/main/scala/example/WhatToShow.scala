@@ -38,3 +38,7 @@ case class CorrectAnswerCross(duration: Int, isSocial: Boolean) extends WhatToSh
 case class IncorrectAnswerCross(duration: Int, isSocial: Boolean) extends WhatToShow(duration) {
   override def moveToNext(param: Int): WhatToShow = new Rest(new Random().nextInt(1500) + 500, isSocial)
 }
+
+case class NoNextState(duration: Int) extends WhatToShow(duration) {
+  override def moveToNext(param: Int): WhatToShow = NoNextState(-1)
+}

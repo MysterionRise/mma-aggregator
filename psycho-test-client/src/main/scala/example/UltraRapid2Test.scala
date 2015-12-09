@@ -152,7 +152,7 @@ object UltraRapid2Test {
 
     def createSocialApp(testQType: Int) = {
       ReactComponentB[Unit]("RealSocialSession")
-        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), false,
+        .initialState(StateObj.apply(getRandomQuestion(testStrings, testQType), FixationCross(500, true), false,
         testQType, 0, true))
         .backend(getBackend(_))
         .render((_, S, B) => {
@@ -167,16 +167,18 @@ object UltraRapid2Test {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650, marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
-              dom.document.onclick = {
+              B.clicked = false
+              dom.document.onmousedown = {
                 (e: dom.MouseEvent) =>
                   if (S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.notClicked = false
+                    B.clicked = true
                     B.showPicture(socialQuestionTypes, socialQuestionAmount)
                   }
               }
               button("Question := " + S.questionType)
 //              askQuestion(S.questionType)
             }
+            case NoNextState(_) => button("Question := " + S.questionType)
             case Rest(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
@@ -212,7 +214,7 @@ object UltraRapid2Test {
 
     def createTestSocialApp(testQType: Int) = {
       ReactComponentB[Unit]("TestSocialSession")
-        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, true), true,
+        .initialState(StateObj.apply(getRandomQuestion(testStrings, testQType), FixationCross(500, true), true,
         testQType, 0, true))
         .backend(getBackend(_))
         .render((_, S, B) => {
@@ -223,16 +225,18 @@ object UltraRapid2Test {
             case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650, marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
-              dom.document.onclick = {
+              B.clicked = false
+              dom.document.onmousedown = {
                 (e: dom.MouseEvent) =>
                   if (S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.notClicked = false
+                    B.clicked = true
                     B.showPicture(socialTestQuestionTypes, socialTestQuestionAmount)
                   }
               }
               button("Question := " + S.questionType)
 //              askQuestion(S.questionType)
             }
+            case NoNextState(_) => button("Question := " + S.questionType)
             case Rest(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
@@ -276,7 +280,7 @@ object UltraRapid2Test {
 
       val realTestQType = questionTypes.remove(0)
       val realTestApp = ReactComponentB[Unit]("RealSession")
-        .initialState(State(getRandomQuestion(testStrings, realTestQType), FixationCross(500, false), false,
+        .initialState(StateObj.apply(getRandomQuestion(testStrings, realTestQType), FixationCross(500, false), false,
         realTestQType, 0, true))
         .backend(getBackend(_))
         .render((_, S, B) => {
@@ -285,16 +289,18 @@ object UltraRapid2Test {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
-              dom.document.onclick = {
+              B.clicked = false
+              dom.document.onmousedown = {
                 (e: dom.MouseEvent) =>
                   if (S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.notClicked = false
+                    B.clicked = true
                     B.showPicture(questionTypes, questionAmount)
                   }
               }
               button("Question := " + S.questionType)
 //              askQuestion(S.questionType)
             }
+            case NoNextState(_) => button("Question := " + S.questionType)
             case Rest(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
@@ -340,7 +346,7 @@ object UltraRapid2Test {
 
       val testQType = testQuestionTypes.remove(0)
       val testApp = ReactComponentB[Unit]("TestSession")
-        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, false), true,
+        .initialState(StateObj.apply(getRandomQuestion(testStrings, testQType), FixationCross(500, false), true,
         testQType, 0, true))
         .backend(sc => getBackend(sc))
         .render((_, S, B) => {
@@ -351,16 +357,18 @@ object UltraRapid2Test {
             case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
-              dom.document.onclick = {
+              B.clicked = false
+              dom.document.onmousedown = {
                 (e: dom.MouseEvent) =>
                   if (S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.notClicked = false
+                    B.clicked = true
                     B.showPicture(testQuestionTypes, testQuestionAmount)
                   }
               }
               button("Question := " + S.questionType)
               //              askQuestion(S.questionType)
             }
+            case NoNextState(_) => button("Question := " + S.questionType)
             case Rest(_, _) => {
               // reduce number of questions to be asked for this type of a question
               dom.document.onkeypress = {

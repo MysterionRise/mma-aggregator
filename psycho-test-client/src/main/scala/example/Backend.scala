@@ -10,7 +10,7 @@ import shared.UltraRapidImage
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
 
-class Backend(stateController: BackendScope[_, State], var notClicked: Boolean, var report: scala.Option[Report]) {
+class Backend(stateController: BackendScope[_, State], var clicked: Boolean, var report: scala.Option[Report]) {
 
   val user = getElementById[Heading]("user")
   val userID: String = user.getAttribute("data-user-id")
@@ -21,6 +21,10 @@ class Backend(stateController: BackendScope[_, State], var notClicked: Boolean, 
                           questionTypes: ArrayBuffer[Int], questionMargin: Int): Unit = {
     js.timers.clearInterval(interval.get)
     this.interval = js.timers.setInterval(duration)(showPicture(questionTypes, questionMargin))
+  }
+
+  def clearInterval(interval: js.UndefOr[js.timers.SetIntervalHandle]): Unit = {
+    js.timers.clearInterval(interval.get)
   }
 
   def fromBooleanToInt(b: Boolean): Int = if (b) 1 else 0
@@ -61,50 +65,44 @@ class Backend(stateController: BackendScope[_, State], var notClicked: Boolean, 
         case t: TextQuestion => {
           if (s.isTesting) {
             if (s.isVersion2) {
-              var nextState: WhatToShow = null
-              val correctAnswer = getCorrectAnswerByName(s.res._1.imageType, s.res._1.imageName, s.questionType)
-              if (notClicked && !correctAnswer) {
-                nextState = t.moveToNext(1)
-              } else if (!notClicked && correctAnswer) {
-                nextState = t.moveToNext(1)
-              } else {
-                nextState = t.moveToNext(0)
-              }
-              notClicked = true
-              clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
-              State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
+              clearInterval(interval)
+              StateObj.apply(s.res, NoNextState(-1), s.isTesting, s.questionType, s.numberOfQuestions, true)
             } else {
               var nextState: WhatToShow = null
               val correctAnswer = getCorrectAnswerByName(s.res._1.imageType, s.res._1.imageName, s.questionType)
-              if (notClicked && !correctAnswer) {
+              if (clicked && !correctAnswer) {
                 nextState = t.moveToNext(1)
-              } else if (!notClicked && correctAnswer) {
+              } else if (!clicked && correctAnswer) {
                 nextState = t.moveToNext(1)
               } else {
                 nextState = t.moveToNext(0)
               }
-              notClicked = true
+              clicked = true
               clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
               State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
             }
           } else {
             if (s.isVersion2) {
-
+              clearInterval(interval)
+              StateObj.apply(s.res, NoNextState(-1), s.isTesting, s.questionType, s.numberOfQuestions, true)
             } else {
               val nextState = t.moveToNext(2)
               val correctAnswer = getCorrectAnswerByName(s.res._1.imageType, s.res._1.imageName, s.questionType)
               clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
-              if (notClicked && !correctAnswer) {
+              if (clicked && !correctAnswer) {
                 report.get.addAnswerToReport(extractImageType(s.res._1), 1, s.questionType)
-              } else if (!notClicked && correctAnswer) {
+              } else if (!clicked && correctAnswer) {
                 report.get.addAnswerToReport(extractImageType(s.res._1), 2, s.questionType)
               } else {
                 report.get.addAnswerToReport(extractImageType(s.res._1), 3, s.questionType)
               }
-              notClicked = true
+              clicked = true
               State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
             }
           }
+        }
+        case n: NoNextState => {
+          StateObj.apply(s.res, NoNextState(-1), s.isTesting, s.questionType, s.numberOfQuestions, s.isVersion2)
         }
         case w: WhatToShow => {
           val nextState = w.moveToNext(fromBooleanToInt(s.isTesting))
