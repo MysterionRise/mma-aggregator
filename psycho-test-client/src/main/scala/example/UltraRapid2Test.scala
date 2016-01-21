@@ -22,16 +22,16 @@ object UltraRapid2Test {
   private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
   private val socialTestQuestionAmount = 5
   private val socialQuestionAmount = 40
-  private var backend: scala.Option[Backend] = None
+  private var backend: scala.Option[Backend2] = None
   private val question = getElementById[Div]("ultra-rapid-2")
   private var interval: js.UndefOr[js.timers.SetIntervalHandle] =
     js.undefined
 
-  private def getBackend(sc: BackendScope[_, State]): Backend = {
+  private def getBackend(sc: BackendScope[_, State]): Backend2 = {
     backend match {
-      case None => backend = Some(new Backend(sc, true, None))
+      case None => backend = Some(new Backend2(sc, true, None))
       case Some(x) => {
-        val b = new Backend(sc, true, Some(x.report.get))
+        val b = new Backend2(sc, true, Some(x.report.get))
         backend = Some(b)
       }
     }
