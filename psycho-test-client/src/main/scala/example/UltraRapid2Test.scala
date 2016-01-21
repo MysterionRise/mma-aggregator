@@ -175,10 +175,16 @@ object UltraRapid2Test {
                     B.showPicture(socialQuestionTypes, socialQuestionAmount)
                   }
               }
-              button("Question := " + S.questionType)
-//              askQuestion(S.questionType)
+              div(
+                h4("Question := " + S.questionType),
+                button("Yes")
+              )
+              //              askQuestion(S.questionType)
             }
-            case NoNextState(_) => button("Question := " + S.questionType)
+            case NoNextState(_) => {
+              // todo wait for click on button
+              button("Question := " + S.questionType)
+            }
             case Rest(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
@@ -233,10 +239,16 @@ object UltraRapid2Test {
                     B.showPicture(socialTestQuestionTypes, socialTestQuestionAmount)
                   }
               }
-              button("Question := " + S.questionType)
-//              askQuestion(S.questionType)
+              div(
+                h4("Question := " + S.questionType),
+                button("Yes")
+              )
+              //              askQuestion(S.questionType)
             }
-            case NoNextState(_) => button("Question := " + S.questionType)
+            case NoNextState(_) => {
+              // todo wait for click on button
+              button("Question := " + S.questionType)
+            }
             case Rest(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
@@ -297,10 +309,16 @@ object UltraRapid2Test {
                     B.showPicture(questionTypes, questionAmount)
                   }
               }
-              button("Question := " + S.questionType)
-//              askQuestion(S.questionType)
+              div(
+                h4("Question := " + S.questionType),
+                button("Yes")
+              )
+              //              askQuestion(S.questionType)
             }
-            case NoNextState(_) => button("Question := " + S.questionType)
+            case NoNextState(_) => {
+              // todo wait for click on button
+              button("Question := " + S.questionType)
+            }
             case Rest(_, _) => {
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
@@ -365,10 +383,16 @@ object UltraRapid2Test {
                     B.showPicture(testQuestionTypes, testQuestionAmount)
                   }
               }
-              button("Question := " + S.questionType)
+              div(
+                h4("Question := " + S.questionType),
+                button("Yes")
+              )
               //              askQuestion(S.questionType)
             }
-            case NoNextState(_) => button("Question := " + S.questionType)
+            case NoNextState(_) => {
+              // todo wait for click on button
+              button("Question := " + S.questionType)
+            }
             case Rest(_, _) => {
               // reduce number of questions to be asked for this type of a question
               dom.document.onkeypress = {
