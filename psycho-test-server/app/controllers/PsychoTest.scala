@@ -21,6 +21,7 @@ object PsychoTest extends Controller {
       "nationality" -> nonEmptyText(maxLength = 200),
       "gender" -> nonEmptyText(maxLength = 200),
       "age" -> number(min = 0),
+      "driving-license" -> seq
       "test" -> nonEmptyText
     )(UserReq.apply)(UserReq.unapply)
 
