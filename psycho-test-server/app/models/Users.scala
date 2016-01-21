@@ -3,7 +3,8 @@ package models
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 
-case class User(var id: Option[Int], name: String, email: String, gender: String, nationality: String, age: Int, testId: Int)
+case class User(var id: Option[Int], name: String, email: String, gender: String, nationality: String, age: Int,
+                drivingLicense: String, drivingExperience: Int, pet: String, testId: Int)
 
 class Users(tag: Tag) extends Table[User](tag, "users") {
   def id = column[Int]("user_id", O.PrimaryKey, O.AutoInc)
@@ -20,7 +21,13 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
 
   def testId = column[Int]("test_id")
 
-  override def * = (id.?, name, email, gender, nationality, age, testId) <>(User.tupled, User.unapply _)
+  def drivingLicense = column[String]("driving-license")
+
+  def drivingExperience = column[Int]("driving-experience")
+
+  def pet = column[String]("pet")
+
+  override def * = (id.?, name, email, gender, nationality, age, drivingLicense, drivingExperience, pet, testId) <>(User.tupled, User.unapply _)
 }
 
 object UserDAO extends BaseDAO {

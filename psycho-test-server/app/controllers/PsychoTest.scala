@@ -10,7 +10,8 @@ import shared.{UltraRapidImage, Image}
 
 import scala.collection.mutable.ArrayBuffer
 
-case class UserReq(email: String, name: String, nationality: String, gender: String, age: Int, testName: String)
+case class UserReq(email: String, name: String, nationality: String, gender: String, age: Int, license: String,
+                   time: Int, pet: String, testName: String)
 
 object PsychoTest extends Controller {
 
@@ -21,7 +22,9 @@ object PsychoTest extends Controller {
       "nationality" -> nonEmptyText(maxLength = 200),
       "gender" -> nonEmptyText(maxLength = 200),
       "age" -> number(min = 0),
-      "driving-license" -> seq
+      "driving-license" -> nonEmptyText(maxLength = 10),
+      "driving-time" -> number(min = 0),
+      "pet" -> nonEmptyText(maxLength = 10),
       "test" -> nonEmptyText
     )(UserReq.apply)(UserReq.unapply)
 
@@ -74,7 +77,7 @@ object PsychoTest extends Controller {
         BadRequest(views.html.tests(TestDAO.findAll, errors)),
       user => {
         val addedUser: User = new User(None, user.name, user.email, user.gender, user.nationality,
-          user.age, Integer.parseInt(user.testName.split("#")(0)))
+          user.age, user.license, user.time, user.pet, Integer.parseInt(user.testName.split("#")(0)))
         val id = UserDAO.addUser(addedUser)
         addedUser.id = Some(id)
         user.testName.split("#")(1) match {
