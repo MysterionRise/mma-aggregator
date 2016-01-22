@@ -183,7 +183,10 @@ object UltraRapid2Test {
             }
             case NoNextState(_) => {
               // todo wait for click on button
-              button("Question := " + S.questionType)
+              div(
+                h4("Question := " + S.questionType),
+                button("Yes")
+              )
             }
             case Rest(_, _) => {
               dom.document.onkeypress = {
@@ -247,7 +250,10 @@ object UltraRapid2Test {
             }
             case NoNextState(_) => {
               // todo wait for click on button
-              button("Question := " + S.questionType)
+              div(
+                h4("Question := " + S.questionType),
+                button("Yes")
+              )
             }
             case Rest(_, _) => {
               dom.document.onkeypress = {
@@ -317,7 +323,10 @@ object UltraRapid2Test {
             }
             case NoNextState(_) => {
               // todo wait for click on button
-              button("Question := " + S.questionType)
+              div(
+                h4("Question := " + S.questionType),
+                button("Yes")
+              )
             }
             case Rest(_, _) => {
               dom.document.onkeypress = {
@@ -391,7 +400,10 @@ object UltraRapid2Test {
             }
             case NoNextState(_) => {
               // todo wait for click on button
-              button("Question := " + S.questionType)
+              div(
+                h4("Question := " + S.questionType),
+                button("Yes")
+              )
             }
             case Rest(_, _) => {
               // reduce number of questions to be asked for this type of a question
