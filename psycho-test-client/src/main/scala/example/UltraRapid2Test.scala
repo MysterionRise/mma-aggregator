@@ -185,6 +185,7 @@ object UltraRapid2Test {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
+                textarea("Enter your answer"),
                 button("Yes")
               )
             }
@@ -252,6 +253,7 @@ object UltraRapid2Test {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
+                textarea("Enter your answer"),
                 button("Yes")
               )
             }
@@ -325,6 +327,7 @@ object UltraRapid2Test {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
+                textarea("Enter your answer"),
                 button("Yes")
               )
             }
@@ -402,6 +405,7 @@ object UltraRapid2Test {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
+                textarea("Enter your answer"),
                 button("Yes")
               )
             }
