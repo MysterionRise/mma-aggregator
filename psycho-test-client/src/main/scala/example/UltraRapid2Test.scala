@@ -175,18 +175,15 @@ object UltraRapid2Test {
                     B.showPicture(socialQuestionTypes, socialQuestionAmount)
                   }
               }
-              div(
-                h4("Question := " + S.questionType),
-                button("Yes")
-              )
+              div()
               //              askQuestion(S.questionType)
             }
             case NoNextState(_) => {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
-                textarea("Enter your answer", rows := 10, cols := 70, `class`:="form-control"),
-                button("Yes", `class`:="btn btn-primary")
+                textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
+                button("Yes", `class` := "btn btn-primary")
               )
             }
             case Rest(_, _) => {
@@ -243,18 +240,15 @@ object UltraRapid2Test {
                     B.showPicture(socialTestQuestionTypes, socialTestQuestionAmount)
                   }
               }
-              div(
-                h4("Question := " + S.questionType),
-                button("Yes")
-              )
+              div()
               //              askQuestion(S.questionType)
             }
             case NoNextState(_) => {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
-                textarea("Enter your answer", rows := 10, cols := 70, `class`:="form-control"),
-                button("Yes", `class`:="btn btn-primary")
+                textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
+                button("Yes", `class` := "btn btn-primary")
               )
             }
             case Rest(_, _) => {
@@ -317,18 +311,15 @@ object UltraRapid2Test {
                     B.showPicture(questionTypes, questionAmount)
                   }
               }
-              div(
-                h4("Question := " + S.questionType),
-                button("Yes")
-              )
+              div()
               //              askQuestion(S.questionType)
             }
             case NoNextState(_) => {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
-                textarea("Enter your answer", rows := 10, cols := 70, `class`:="form-control"),
-                button("Yes", `class`:="btn btn-primary")
+                textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
+                button("Yes", `class` := "btn btn-primary")
               )
             }
             case Rest(_, _) => {
@@ -395,18 +386,15 @@ object UltraRapid2Test {
                     B.showPicture(testQuestionTypes, testQuestionAmount)
                   }
               }
-              div(
-                h4("Question := " + S.questionType),
-                button("Yes")
-              )
+              div()
               //              askQuestion(S.questionType)
             }
             case NoNextState(_) => {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
-                textarea("Enter your answer", rows := 10, cols := 70, `class`:="form-control"),
-                button("Yes", `class`:="btn btn-primary")
+                textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
+                button("Yes", `class` := "btn btn-primary")
               )
             }
             case Rest(_, _) => {
