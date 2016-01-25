@@ -185,8 +185,8 @@ object UltraRapid2Test {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
-                textarea("Enter your answer"),
-                button("Yes")
+                textarea("Enter your answer", rows := 10, cols := 70, `class`:="form-control"),
+                button("Yes", `class`:="btn btn-primary")
               )
             }
             case Rest(_, _) => {
@@ -253,8 +253,8 @@ object UltraRapid2Test {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
-                textarea("Enter your answer"),
-                button("Yes")
+                textarea("Enter your answer", rows := 10, cols := 70, `class`:="form-control"),
+                button("Yes", `class`:="btn btn-primary")
               )
             }
             case Rest(_, _) => {
@@ -327,8 +327,8 @@ object UltraRapid2Test {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
-                textarea("Enter your answer"),
-                button("Yes")
+                textarea("Enter your answer", rows := 10, cols := 70, `class`:="form-control"),
+                button("Yes", `class`:="btn btn-primary")
               )
             }
             case Rest(_, _) => {
@@ -405,8 +405,8 @@ object UltraRapid2Test {
               // todo wait for click on button
               div(
                 h4("Question := " + S.questionType),
-                textarea("Enter your answer"),
-                button("Yes")
+                textarea("Enter your answer", rows := 10, cols := 70, `class`:="form-control"),
+                button("Yes", `class`:="btn btn-primary")
               )
             }
             case Rest(_, _) => {
