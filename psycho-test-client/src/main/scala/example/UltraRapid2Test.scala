@@ -183,8 +183,9 @@ object UltraRapid2Test {
               div(
                 h4("Question := " + S.questionType),
                 textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
-                button("Yes", `class` := "btn btn-primary")
+                button("Yes", `class` := "btn btn-primary", onClick ==> B.nextImage)
               )
+
             }
             case Rest(_, _) => {
               dom.document.onkeypress = {
@@ -248,7 +249,7 @@ object UltraRapid2Test {
               div(
                 h4("Question := " + S.questionType),
                 textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
-                button("Yes", `class` := "btn btn-primary")
+                button("Yes", `class` := "btn btn-primary", onClick ==> B.nextImage)
               )
             }
             case Rest(_, _) => {
@@ -319,7 +320,7 @@ object UltraRapid2Test {
               div(
                 h4("Question := " + S.questionType),
                 textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
-                button("Yes", `class` := "btn btn-primary")
+                button("Yes", `class` := "btn btn-primary", onClick ==> B.nextImage)
               )
             }
             case Rest(_, _) => {
@@ -394,7 +395,7 @@ object UltraRapid2Test {
               div(
                 h4("Question := " + S.questionType),
                 textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
-                button("Yes", `class` := "btn btn-primary")
+                button("Yes", `class` := "btn btn-primary", onClick ==> B.nextImage)
               )
             }
             case Rest(_, _) => {

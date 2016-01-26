@@ -2,15 +2,24 @@ package example
 
 import example.ScalaJSCode._
 import example.UltraRapidTest._
-import japgolly.scalajs.react.BackendScope
+import japgolly.scalajs.react._
 import org.scalajs.dom
 import org.scalajs.dom.html._
 import shared.UltraRapidImage
 
 import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
+import scala.util.Random
 
 class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, var report: scala.Option[Report]) {
+
+  def nextImage(e: ReactEventI) = {
+    // todo need to save report properly
+    // todo need to pass state properly
+    stateController.modState(s => StateObj.apply(null,
+      new Rest(new Random().nextInt(1500) + 500, false), false, 0, 0, false))
+  }
+
 
   val user = getElementById[Heading]("user")
   val userID: String = user.getAttribute("data-user-id")
