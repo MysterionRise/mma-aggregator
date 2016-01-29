@@ -16,8 +16,13 @@ class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, va
   def nextImage(e: ReactEventI) = {
     // todo need to save report properly
     // todo need to pass state properly
-    stateController.modState(s => StateObj.apply(null,
-      new Rest(new Random().nextInt(1500) + 500, false), false, 0, 0, false))
+    stateController.modState(s => StateObj.apply(
+      null,
+      new Rest(new Random().nextInt(1500) + 500, false),
+      false,
+      0,
+      0,
+      false))
   }
 
 
