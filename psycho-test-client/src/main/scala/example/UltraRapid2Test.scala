@@ -14,14 +14,7 @@ import scala.scalajs.js.timers.SetIntervalHandle
 
 object UltraRapid2Test {
 
-  private val testQuestionAmount = 5
-  private val questionAmount = 70
-  private val testQuestionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
-  private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
-  private val socialTestQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
-  private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
-  private val socialTestQuestionAmount = 5
-  private val socialQuestionAmount = 40
+  private val testQuestionAmount = 27
   private var backend: scala.Option[Backend2] = None
   private val question = getElementById[Div]("ultra-rapid-2")
   private var interval: js.UndefOr[js.timers.SetIntervalHandle] =
@@ -73,16 +66,10 @@ object UltraRapid2Test {
     val cross = dom.document.createElement("img").asInstanceOf[Image]
     cross.src = "/assets/images/cross.png"
     getElementById[Div]("preload-div").appendChild(cross)
-    val crossGreen = dom.document.createElement("img").asInstanceOf[Image]
-    crossGreen.src = "/assets/images/cross-correct.png"
-    getElementById[Div]("preload-div").appendChild(crossGreen)
-    val crossRed = dom.document.createElement("img").asInstanceOf[Image]
-    crossRed.src = "/assets/images/cross-incorrect.png"
-    getElementById[Div]("preload-div").appendChild(crossRed)
     util.Random.shuffle(res)
   }
 
-  private val testStrings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
+  private val strings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
 
   def customP(innerText: String): ReactElement = {
     div(
@@ -97,27 +84,10 @@ object UltraRapid2Test {
     )
   }
 
-  /**
-   * Mapping for targets non-targets in questions
-   */
-  val mapping = new Array[Set[Int]](10)
-  mapping(1) = Set(1, 2, 3)
-  mapping(2) = Set(2, 3, 4)
-  mapping(3) = Set(1, 3, 4)
-  mapping(4) = Set(1, 2, 4)
-  mapping(5) = Set(5, 6)
-  mapping(6) = Set(5, 6)
-  mapping(7) = Set(7)
-  mapping(8) = Set(7)
-
-  def getRandomQuestion(images: ArrayBuffer[UltraRapidImage], qType: Int): (UltraRapidImage, ArrayBuffer[UltraRapidImage]) = {
-    val s = mapping.apply(qType)
+  def getRandomQuestion(images: ArrayBuffer[UltraRapidImage]): (UltraRapidImage, ArrayBuffer[UltraRapidImage]) = {
     var idx = generateRandomIndex(images.length)
-    var cnt = 0
-    // todo fix if we don't have targets or non-targets for this type of a question
-    while (images(idx).preloaded && !s.contains(Integer.parseInt(images(idx).imageType)) && cnt < images.length) {
+    while (!images(idx).preloaded) {
       idx = generateRandomIndex(images.length)
-      cnt += 1
     }
     val img = images.remove(idx)
     (img, images)
@@ -138,74 +108,75 @@ object UltraRapid2Test {
 
     def startTest(e: ReactEventI) = {
 
-      val testQType = testQuestionTypes.remove(0)
+      val questionTypes = new ArrayBuffer[Int]()
+      questionTypes.append(0)
       val testApp = ReactComponentB[Unit]("TestSession")
-        .initialState(StateObj.apply(getRandomQuestion(testStrings, testQType), FixationCross(500, false), true,
-        testQType, 0, true))
+        .initialState(StateObj.apply(getRandomQuestion(strings), FixationCross(500, false), true,
+        1, testQuestionAmount, true))
         .backend(sc => getBackend(sc))
         .render((_, S, B) => {
-        if (S.questionType > 0) {
-          S.whatToShow match {
-            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case ImageQuestion(_, _) => img(src := "/assets/images/test2/open_experiment/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
-            case TextQuestion(_, _) => {
-              B.clicked = false
-              dom.document.onmousedown = {
-                (e: dom.MouseEvent) =>
-                  if (S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.clicked = true
-                    B.showPicture(testQuestionTypes, testQuestionAmount)
-                  }
-              }
-              div()
-              //              askQuestion(S.questionType)
+        S.whatToShow match {
+          case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
+          case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png", marginLeft := "auto", marginRight := "auto", display := "block")
+          case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
+          case ImageQuestion(_, _) => img(src := "/assets/images/test2/open_experiment/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
+          case TextQuestion(_, _) => {
+            B.clicked = false
+            dom.document.onmousedown = {
+              (e: dom.MouseEvent) =>
+                if (S.whatToShow.isInstanceOf[TextQuestion]) {
+                  B.clicked = true
+                  B.showPicture(questionTypes, testQuestionAmount)
+                }
             }
-            case NoNextState(_) => {
-              // todo wait for click on button
-              div(
-                h4("Question := " + S.questionType),
-                textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
-                button("Yes", `class` := "btn btn-primary", onClick ==> B.nextImage)
-              )
-            }
-            case Rest(_, _) => {
-              // reduce number of questions to be asked for this type of a question
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) => {}
-              }
-              h1()
-            }
+            div()
+            //              askQuestion(S.questionType)
           }
-        } else {
-          js.timers.clearInterval(B.interval.get)
-          val paragraph = getElementById[Paragraph]("countdown")
-          paragraph.textContent = "Осталось: 120 секунд"
-//          var cnt = 120
-//          interval = js.timers.setInterval(1000)({
-//            if (cnt < 0) {
-//              paragraph.textContent = "_____"
-//              clearInterval
-//              React.render(realTestApp(), question)
-//            } else {
-//              paragraph.textContent = "Осталось: " + cnt + " секунд"
-//              cnt -= 1
-//            }
-//          })
+          case NoNextState(_) => {
+            // todo wait for click on button
+            div(
+              h4("Question := " + S.questionType),
+              textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
+              button("Yes", `class` := "btn btn-primary", onClick ==> B.nextImage)
+            )
+          }
+          case Rest(_, _) => {
+            // reduce number of questions to be asked for this type of a question
+            dom.document.onkeypress = {
+              (e: dom.KeyboardEvent) => {}
+            }
+            h1()
 
-          h4("Внимание! " +
-            "Начинается основная серия эксперимента. Напоминаем инструкцию. Вы увидите фиксационный крест, " +
-            "и после него на доли секунды появится изображение-картинка, которая быстро исчезнет. ", br, br,
-            "После этого на экране появится вопрос о содержании этого изображения (пример вопроса: Это изображение природы?) ", br, br,
-            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
-              "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста.", br, br,
-            "Эксперимент начнется через 2 минуты")
-
+          }
         }
+        //        else {
+        //          js.timers.clearInterval(B.interval.get)
+        //          val paragraph = getElementById[Paragraph]("countdown")
+        //          paragraph.textContent = "Осталось: 120 секунд"
+        ////          var cnt = 120
+        ////          interval = js.timers.setInterval(1000)({
+        ////            if (cnt < 0) {
+        ////              paragraph.textContent = "_____"
+        ////              clearInterval
+        ////              React.render(realTestApp(), question)
+        ////            } else {
+        ////              paragraph.textContent = "Осталось: " + cnt + " секунд"
+        ////              cnt -= 1
+        ////            }
+        ////          })
+        //
+        //          h4("Внимание! " +
+        //            "Начинается основная серия эксперимента. Напоминаем инструкцию. Вы увидите фиксационный крест, " +
+        //            "и после него на доли секунды появится изображение-картинка, которая быстро исчезнет. ", br, br,
+        //            "После этого на экране появится вопрос о содержании этого изображения (пример вопроса: Это изображение природы?) ", br, br,
+        //            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
+        //              "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста.", br, br,
+        //            "Эксперимент начнется через 2 минуты")
+        //
+        //        }
       })
         .componentDidMount(f => {
-        f.backend.init(f.state, testQuestionTypes, testQuestionAmount)
+        f.backend.init(f.state, questionTypes, testQuestionAmount)
       })
         .buildU
       React.render(testApp(), question)
