@@ -53,7 +53,7 @@ object UltraRapid2Test {
       val image = UltraRapidImage(pair.split(",")(0), pair.split(",")(1), false)
       res.append(image)
       val newChild = dom.document.createElement("img").asInstanceOf[Image]
-      newChild.src = "/assets/images/ultraRapid/" + image.imageName + ".jpg"
+      newChild.src = "/assets/images/test2/open_experiment/" + image.imageName + ".jpg"
       // TODO wait till 0.8.2 release
       newChild.addEventListener("load", { e: Event => {
         loaded += 1
@@ -136,235 +136,7 @@ object UltraRapid2Test {
 
   class TestBackend($: BackendScope[_, String]) {
 
-    def askQuestion(questionType: Int): ReactElement = {
-      questionType match {
-        case 1 => customP("На этом изображении есть собака?")
-        case 2 => customP("На этом изображении есть животное?")
-        case 3 => customP("На этом изображении есть легковой автомобиль?")
-        case 4 => customP("На этом изображении есть транспортное средство?")
-        case 5 => customP("Это изображение природы?")
-        case 6 => customP("Это изображение объектов, созданных человеком?")
-        case 7 => customP("Событие происходит в помещении?")
-        case 8 => customP("Изображено позитивное взаимодействие людей?")
-        case _ => p("We don't have any questions for that type!")
-      }
-    }
-
-    def createSocialApp(testQType: Int) = {
-      ReactComponentB[Unit]("RealSocialSession")
-        .initialState(StateObj.apply(getRandomQuestion(testStrings, testQType), FixationCross(500, true), false,
-        testQType, 0, true))
-        .backend(getBackend(_))
-        .render((_, S, B) => {
-        val user = getElementById[Heading]("user")
-        var userID: String = user.getAttribute("data-user-id")
-        // TODO for testing purposes only
-        if (userID.isEmpty) {
-          userID = "123"
-        }
-        if (S.questionType > 0) {
-          S.whatToShow match {
-            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650, marginLeft := "auto", marginRight := "auto", display := "block")
-            case TextQuestion(_, _) => {
-              B.clicked = false
-              dom.document.onmousedown = {
-                (e: dom.MouseEvent) =>
-                  if (S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.clicked = true
-                    B.showPicture(socialQuestionTypes, socialQuestionAmount)
-                  }
-              }
-              div()
-              //              askQuestion(S.questionType)
-            }
-            case NoNextState(_) => {
-              // todo wait for click on button
-              div(
-                h4("Question := " + S.questionType),
-                textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
-                button("Yes", `class` := "btn btn-primary", onClick ==> B.nextImage)
-              )
-
-            }
-            case Rest(_, _) => {
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) => {}
-              }
-              h1()
-            }
-          }
-        } else {
-          js.timers.clearInterval(B.interval.get)
-          div(
-            h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
-            form(
-              //              action := "/tests/finishTest?report=\"" + Encoder(B.report.toString.getBytes("UTF-8")).toBase64() + "\"",
-              action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.get.answers.toString) + "\"",
-              `class` := "form-horizontal",
-              method := "POST",
-              button(
-                id := "finish-test",
-                `type` := "submit",
-                `class` := "btn btn-primary",
-                "Finish test"
-              )
-            )
-          )
-
-        }
-      })
-        .componentDidMount(f => {
-        f.backend.init(f.state, socialQuestionTypes, socialQuestionAmount)
-      })
-        .buildU
-    }
-
-    def createTestSocialApp(testQType: Int) = {
-      ReactComponentB[Unit]("TestSocialSession")
-        .initialState(StateObj.apply(getRandomQuestion(testStrings, testQType), FixationCross(500, true), true,
-        testQType, 0, true))
-        .backend(getBackend(_))
-        .render((_, S, B) => {
-        if (S.questionType > 0) {
-          S.whatToShow match {
-            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", width := 650, marginLeft := "auto", marginRight := "auto", display := "block")
-            case TextQuestion(_, _) => {
-              B.clicked = false
-              dom.document.onmousedown = {
-                (e: dom.MouseEvent) =>
-                  if (S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.clicked = true
-                    B.showPicture(socialTestQuestionTypes, socialTestQuestionAmount)
-                  }
-              }
-              div()
-              //              askQuestion(S.questionType)
-            }
-            case NoNextState(_) => {
-              // todo wait for click on button
-              div(
-                h4("Question := " + S.questionType),
-                textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
-                button("Yes", `class` := "btn btn-primary", onClick ==> B.nextImage)
-              )
-            }
-            case Rest(_, _) => {
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) => {}
-              }
-              h1()
-            }
-          }
-        } else {
-          js.timers.clearInterval(B.interval.get)
-          val testQType = socialQuestionTypes.remove(0)
-          val app = createSocialApp(testQType)
-          val paragraph = getElementById[Paragraph]("countdown")
-          paragraph.textContent = "Осталось: 120 секунд"
-          var cnt = 120
-          interval = js.timers.setInterval(1000)({
-            if (cnt < 0) {
-              paragraph.textContent = "_____"
-              clearInterval
-              React.render(app.apply(), question)
-            } else {
-              paragraph.textContent = "Осталось: " + cnt + " секунд"
-              cnt -= 1
-            }
-          })
-          h4("Внимание. Начинается основная серия эксперимента. Напоминаем инструкцию. ", br, br,
-            "Вы увидите фиксационный крест, и после него на доли секунды появится изображение, " +
-              "которое быстро исчезнет. После этого на экране появится вопрос о содержании этого изображения " +
-              "(пример вопроса: сцена происходит в доме?) ", br, br,
-            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
-              "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста.", br, br,
-            "Продолжение теста через 2 минуты")
-        }
-      })
-        .componentDidMount(f => {
-        f.backend.init(f.state, socialTestQuestionTypes, socialTestQuestionAmount)
-      })
-        .buildU
-    }
-
     def startTest(e: ReactEventI) = {
-
-      val realTestQType = questionTypes.remove(0)
-      val realTestApp = ReactComponentB[Unit]("RealSession")
-        .initialState(StateObj.apply(getRandomQuestion(testStrings, realTestQType), FixationCross(500, false), false,
-        realTestQType, 0, true))
-        .backend(getBackend(_))
-        .render((_, S, B) => {
-        if (S.questionType > 0) {
-          S.whatToShow match {
-            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
-            case TextQuestion(_, _) => {
-              B.clicked = false
-              dom.document.onmousedown = {
-                (e: dom.MouseEvent) =>
-                  if (S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.clicked = true
-                    B.showPicture(questionTypes, questionAmount)
-                  }
-              }
-              div()
-              //              askQuestion(S.questionType)
-            }
-            case NoNextState(_) => {
-              // todo wait for click on button
-              div(
-                h4("Question := " + S.questionType),
-                textarea("Enter your answer", rows := 10, cols := 70, `class` := "form-control"),
-                button("Yes", `class` := "btn btn-primary", onClick ==> B.nextImage)
-              )
-            }
-            case Rest(_, _) => {
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) => {}
-              }
-              h1()
-            }
-          }
-        } else {
-          js.timers.clearInterval(B.interval.get)
-          val testQType = socialTestQuestionTypes.remove(0)
-          val app = createTestSocialApp(testQType)
-          val paragraph = getElementById[Paragraph]("countdown")
-          paragraph.textContent = "Осталось: 120 секунд"
-          var cnt = 120
-          interval = js.timers.setInterval(1000)({
-            if (cnt < 0) {
-              paragraph.textContent = "_____"
-              clearInterval
-              React.render(app.apply(), question)
-            } else {
-              paragraph.textContent = "Осталось: " + cnt + " секунд"
-              cnt -= 1
-            }
-          })
-          h4("Инструкция ко второй части эксперимента. " +
-            "Эксперимент состоит из 90 заданий, которые разделены на тренировочную и основную серии. " +
-            "В тренировочной серии Вам будет предложено выполнение 10 заданий с обратной связью о Вашей успешности. ", br, br,
-            "Вы увидите фиксационный крест, и после него на доли секунды появится изображение, которое быстро исчезнет." +
-              " После этого на экране появится вопрос о содержании этого изображения (пример вопроса: сцена происходит в доме?) ", br, br,
-            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
-              "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста. ", br, br,
-            "В тренировочной серии правильность Вашего ответа будет отражена в цвете фиксационного креста, " +
-              "если крест красного цвета – Ваш ответ был неверный, если крест зеленого цвета – Вы ответили правильно.", br, br,
-            " После тренировочной серии начнется основная, её структура идентична тренировочной, " +
-              "однако в ней не будет предоставляться обратная связь о правильности Ваших ответов. ", br, br,
-            "Эксперимент начнется через 2 минуты")
-        }
-      })
-        .componentDidMount(f => {
-        f.backend.init(f.state, questionTypes, questionAmount)
-      })
-        .buildU
 
       val testQType = testQuestionTypes.remove(0)
       val testApp = ReactComponentB[Unit]("TestSession")
@@ -377,7 +149,7 @@ object UltraRapid2Test {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ImageQuestion(_, _) => img(src := "/assets/images/test2/open_experiment/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
               B.clicked = false
               dom.document.onmousedown = {
@@ -410,17 +182,18 @@ object UltraRapid2Test {
           js.timers.clearInterval(B.interval.get)
           val paragraph = getElementById[Paragraph]("countdown")
           paragraph.textContent = "Осталось: 120 секунд"
-          var cnt = 120
-          interval = js.timers.setInterval(1000)({
-            if (cnt < 0) {
-              paragraph.textContent = "_____"
-              clearInterval
-              React.render(realTestApp(), question)
-            } else {
-              paragraph.textContent = "Осталось: " + cnt + " секунд"
-              cnt -= 1
-            }
-          })
+//          var cnt = 120
+//          interval = js.timers.setInterval(1000)({
+//            if (cnt < 0) {
+//              paragraph.textContent = "_____"
+//              clearInterval
+//              React.render(realTestApp(), question)
+//            } else {
+//              paragraph.textContent = "Осталось: " + cnt + " секунд"
+//              cnt -= 1
+//            }
+//          })
+
           h4("Внимание! " +
             "Начинается основная серия эксперимента. Напоминаем инструкцию. Вы увидите фиксационный крест, " +
             "и после него на доли секунды появится изображение-картинка, которая быстро исчезнет. ", br, br,

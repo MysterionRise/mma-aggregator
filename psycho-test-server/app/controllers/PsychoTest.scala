@@ -71,6 +71,15 @@ object PsychoTest extends Controller {
     res
   }
 
+  def readOpenExperimentImages(): ArrayBuffer[UltraRapidImage] = {
+    val res = new ArrayBuffer[UltraRapidImage]()
+    // adding open experiment to cache
+    for (i <- 1 to 27) {
+      res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i)))
+    }
+    res
+  }
+
   def startTest() = Action { implicit req =>
     testForm.bindFromRequest.fold(
       errors =>
@@ -116,12 +125,11 @@ object PsychoTest extends Controller {
             Ok(views.html.kaganTestEn(addedUser, pattern, kaganImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "Ultra rapid categorization v2" => {
-            Ok(views.html.ultraRapidTest2(addedUser, readAllUltraRapidImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+            Ok(views.html.ultraRapidTest2(addedUser, readOpenExperimentImages())).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
         }
       }
     )
-
   }
 
   def extractUserName(s: String) = s.substring(1, s.indexOf("="))
