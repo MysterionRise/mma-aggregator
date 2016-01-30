@@ -1,7 +1,6 @@
 package example
 
 import example.ScalaJSCode._
-import example.UltraRapidTest._
 import japgolly.scalajs.react._
 import org.scalajs.dom
 import org.scalajs.dom.html._
@@ -13,18 +12,16 @@ import scala.util.Random
 
 class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, var report: scala.Option[Report]) {
 
-  def nextImage(e: ReactEventI) = {
-    // todo need to save report properly
-    // todo need to pass state properly
-    stateController.modState(s => StateObj.apply(
-      null,
-      new Rest(new Random().nextInt(1500) + 500, false),
-      false,
-      0,
-      0,
-      false))
+  def nextImage(e: ReactEventI): Unit = {
+    println("next image")
+    val next = new Rest(new Random().nextInt(1500) + 500, false)
+    stateController.modState(s => {
+      clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
+      State(UltraRapid2Test.getRandomQuestion(s.res._2),
+        next, s.isTesting,
+        s.questionType, s.numberOfQuestions + 1)
+    })
   }
-
 
   val user = getElementById[Heading]("user")
   val userID: String = user.getAttribute("data-user-id")
@@ -43,52 +40,30 @@ class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, va
 
   def fromBooleanToInt(b: Boolean): Int = if (b) 1 else 0
 
-  def getCorrectAnswerByName(imageType: String, imageName: String, questionType: Int): Boolean = {
-    if (questionType == 7) {
-      imageName.split("\\.")(0).split("_")(1).equals("1")
-    } else if (questionType == 8) {
-      imageName.split("\\.")(0).split("_")(2).equals("1")
-    } else {
-      imageType.startsWith(String.valueOf(questionType))
-    }
-  }
-
   def extractImageType(image: UltraRapidImage): Int = Integer.parseInt(image.imageType)
 
   def showPicture(questionTypes: ArrayBuffer[Int], questionMargin: Int) =
     stateController.modState(s => {
       s.whatToShow match {
         case r: Rest => {
+          println("rest")
           val next = r.moveToNext(fromBooleanToInt(s.isTesting))
           clearAndSetInterval(interval, next.getDuration, questionTypes, questionMargin)
-          if (s.numberOfQuestions == questionMargin) {
-            if (questionTypes.length == 0) {
-              State((UltraRapidImage("", "", false), s.res._2), next, s.isTesting,
-                0, 0)
-            } else {
-              val qType = questionTypes.remove(0)
-              State(getRandomQuestion(s.res._2, qType), next, s.isTesting,
-                qType, 0)
-            }
-          } else {
-            State(getRandomQuestion(s.res._2, s.questionType), next, s.isTesting,
-              s.questionType, s.numberOfQuestions + 1)
-          }
+          println(s.res._2.length)
+          State(UltraRapid2Test.getRandomQuestion(s.res._2), next, s.isTesting,
+            s.questionType, s.numberOfQuestions + 1)
         }
         case t: TextQuestion => {
-          if (s.isTesting) {
-            clearInterval(interval)
-            StateObj.apply(s.res, NoNextState(-1), s.isTesting, s.questionType, s.numberOfQuestions, true)
-          } else {
-            clearInterval(interval)
-            StateObj.apply(s.res, NoNextState(-1), s.isTesting, s.questionType, s.numberOfQuestions, true)
-
-          }
+          println("text question")
+          clearInterval(interval)
+          StateObj.apply(s.res, NoNextState(-1), s.isTesting, s.questionType, s.numberOfQuestions, true)
         }
         case n: NoNextState => {
+          println("no next state")
           StateObj.apply(s.res, NoNextState(-1), s.isTesting, s.questionType, s.numberOfQuestions, s.isVersion2)
         }
         case w: WhatToShow => {
+          println(w)
           val nextState = w.moveToNext(fromBooleanToInt(s.isTesting))
           clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
           State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
