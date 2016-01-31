@@ -62,7 +62,7 @@ class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, va
           clearAndSetInterval(interval, next.getDuration, questionTypes, questionMargin)
           debugTime = System.currentTimeMillis()
           if (!s.res._2.isEmpty)
-            State(UltraRapid2Test.getRandomQuestion(s.res._2), next, s.isTesting,
+            State(GlobalRecognitionTest.getRandomQuestion(s.res._2), next, s.isTesting,
               s.questionType, s.numberOfQuestions - 1)
           else
             State((null, null), next, s.isTesting,

@@ -125,7 +125,10 @@ object PsychoTest extends Controller {
             Ok(views.html.kaganTestEn(addedUser, pattern, kaganImages)).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "Тест Глобальное узнавание" => {
-            Ok(views.html.ultraRapidTest2(addedUser, readOpenExperimentImages())).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+            Ok(views.html.globalRecognitionTest(addedUser, readOpenExperimentImages())).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+          }
+          case "New test" => {
+            Ok(views.html.multiChoiceTest(addedUser, readOpenExperimentImages())).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
         }
       }

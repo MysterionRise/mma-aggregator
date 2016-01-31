@@ -12,11 +12,11 @@ import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
 import scala.scalajs.js.timers.SetIntervalHandle
 
-object UltraRapid2Test {
+object GlobalRecognitionTest {
 
   private val testQuestionAmount = 29
   private var backend: scala.Option[Backend2] = None
-  private val question = getElementById[Div]("ultra-rapid-2")
+  private val question = getElementById[Div]("global-recognition")
   private val interval: js.UndefOr[js.timers.SetIntervalHandle] = js.undefined
 
   private def getBackend(sc: BackendScope[_, State]): Backend2 = {

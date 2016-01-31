@@ -41,9 +41,13 @@ object ScalaJSCode extends js.JSApp {
     if (stroopEn != null) {
       StroopTestEn.doTest()
     }
-    val ultraRapid2 = getElementById[Div]("ultra-rapid-2")
-    if (ultraRapid2 != null) {
-      UltraRapid2Test.doTest()
+    val globalRecognition = getElementById[Div]("global-recognition")
+    if (globalRecognition != null) {
+      GlobalRecognitionTest.doTest()
+    }
+    val multiChoice = getElementById[Div]("multi-choice-test")
+    if (multiChoice != null) {
+      MultiRecognitionTest.doTest()
     }
   }
 
