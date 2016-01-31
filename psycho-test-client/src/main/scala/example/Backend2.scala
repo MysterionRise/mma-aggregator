@@ -23,7 +23,6 @@ class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, va
   def nextImage(e: ReactEventI): Unit = {
     e.preventDefault()
     val next = new Rest(new Random().nextInt(1500) + 500, false)
-    println(res)
     stateController.modState(s => {
       clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
       State((null, s.res._2),
@@ -59,8 +58,12 @@ class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, va
           res = ""
           val next = r.moveToNext(fromBooleanToInt(s.isTesting))
           clearAndSetInterval(interval, next.getDuration, questionTypes, questionMargin)
-          State(UltraRapid2Test.getRandomQuestion(s.res._2), next, s.isTesting,
-            s.questionType, s.numberOfQuestions - 1)
+          if (!s.res._2.isEmpty)
+            State(UltraRapid2Test.getRandomQuestion(s.res._2), next, s.isTesting,
+              s.questionType, s.numberOfQuestions - 1)
+          else
+            State((null, null), next, s.isTesting,
+              s.questionType, -1)
         }
         case t: TextQuestion => {
           clearInterval(interval)

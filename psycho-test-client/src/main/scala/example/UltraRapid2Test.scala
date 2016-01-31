@@ -71,9 +71,12 @@ object UltraRapid2Test {
   private val strings = constructArrayBuffer(getElementById[Div]("images").getAttribute("data-images"))
 
   def getRandomQuestion(images: ArrayBuffer[UltraRapidImage]): (UltraRapidImage, ArrayBuffer[UltraRapidImage]) = {
-    val idx = generateRandomIndex(images.length)
-    val img = images.remove(idx)
-    (img, images)
+    if (!images.isEmpty) {
+      val idx = generateRandomIndex(images.length)
+      val img = images.remove(idx)
+      (img, images)
+    } else
+      (null, null)
   }
 
   val buttonApp = ReactComponentB[Unit]("StartButton")
@@ -98,7 +101,6 @@ object UltraRapid2Test {
         val user = getElementById[Heading]("user")
         val userID: String = user.getAttribute("data-user-id")
         if (S.numberOfQuestions > 0) {
-          println(S.numberOfQuestions)
           S.whatToShow match {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case ImageQuestion(_, _) => img(src := "/assets/images/test2/open_experiment/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
