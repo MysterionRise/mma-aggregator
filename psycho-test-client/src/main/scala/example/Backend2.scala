@@ -10,28 +10,25 @@ import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
 import scala.util.Random
 
-class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, var report: scala.Option[Report]) {
+class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, var report: scala.Option[Report2]) {
 
   var res: String = ""
+  var questionId: Int = 0
+  var time: Long = 0
 
   def addText(e: ReactEventI) = {
     res = e.target.value
   }
 
-  def saveResponse(s: String) = {
-    println(s)
-  }
-
   def nextImage(e: ReactEventI): Unit = {
     e.preventDefault()
-    println("next image")
     val next = new Rest(new Random().nextInt(1500) + 500, false)
     println(res)
     stateController.modState(s => {
       clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
-      State(UltraRapid2Test.getRandomQuestion(s.res._2),
+      State((null, s.res._2),
         next, s.isTesting,
-        s.questionType, s.numberOfQuestions + 1)
+        s.questionType, s.numberOfQuestions)
     })
   }
 
@@ -58,24 +55,23 @@ class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, va
     stateController.modState(s => {
       s.whatToShow match {
         case r: Rest => {
-          println("rest")
+          report.get.addAnswerToReport(questionId, res, System.currentTimeMillis() - time)
+          res = ""
           val next = r.moveToNext(fromBooleanToInt(s.isTesting))
           clearAndSetInterval(interval, next.getDuration, questionTypes, questionMargin)
-          println(s.res._2.length)
           State(UltraRapid2Test.getRandomQuestion(s.res._2), next, s.isTesting,
-            s.questionType, s.numberOfQuestions + 1)
+            s.questionType, s.numberOfQuestions - 1)
         }
         case t: TextQuestion => {
-          println("text question")
           clearInterval(interval)
           StateObj.apply(s.res, NoNextState(-1), s.isTesting, s.questionType, s.numberOfQuestions, true)
         }
         case n: NoNextState => {
-          println("no next state")
           StateObj.apply(s.res, NoNextState(-1), s.isTesting, s.questionType, s.numberOfQuestions, s.isVersion2)
         }
         case w: WhatToShow => {
-          println(w)
+          time = System.currentTimeMillis()
+          questionId = Integer.valueOf(s.res._1.imageName)
           val nextState = w.moveToNext(fromBooleanToInt(s.isTesting))
           clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
           State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
@@ -86,7 +82,7 @@ class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, va
   def init(state: State, questionTypes: ArrayBuffer[Int], questionMargin: Int) = {
     dom.document.cookie = ""
     report match {
-      case None => report = Some(new Report(userID))
+      case None => report = Some(new Report2(userID))
       case _ =>
     }
     interval = js.timers.setInterval(state.whatToShow.getDuration)(showPicture(questionTypes, questionMargin))

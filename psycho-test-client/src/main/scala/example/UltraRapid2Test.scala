@@ -95,35 +95,53 @@ object UltraRapid2Test {
         1, testQuestionAmount, true))
         .backend(sc => getBackend(sc))
         .render((_, S, B) => {
-        S.whatToShow match {
-          case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
-          case ImageQuestion(_, _) => img(src := "/assets/images/test2/open_experiment/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
-          case TextQuestion(_, _) => {
-            div()
+        val user = getElementById[Heading]("user")
+        val userID: String = user.getAttribute("data-user-id")
+        if (S.numberOfQuestions > 0) {
+          println(S.numberOfQuestions)
+          S.whatToShow match {
+            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ImageQuestion(_, _) => img(src := "/assets/images/test2/open_experiment/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
+            case TextQuestion(_, _) => {
+              div()
+            }
+            case NoNextState(_) => {
+              div(
+                `class` := "bs-component",
+                form(
+                  `class` := "form-horizontal",
+                  onSubmit ==> B.nextImage,
+                  textarea(id := "response", placeholder := "Введите свой ответ!",
+                    onChange ==> B.addText,
+                    rows := 10, cols := 70, `class` := "form-control"),
+                  button("Продолжить!", `class` := "btn btn-primary")
+                )
+              )
+            }
+            case Rest(_, _) => {
+              // reduce number of questions to be asked for this type of a question
+              dom.document.onkeypress = {
+                (e: dom.KeyboardEvent) => {}
+              }
+              div()
+            }
           }
-          case NoNextState(_) => {
-            div(
-              `class` := "bs-component",
-              form(
-                `class` := "form-horizontal",
-                onSubmit ==> B.nextImage,
-                textarea(id := "response", placeholder := "Введите свой ответ!",
-                  onChange ==> B.addText,
-                  rows := 10, cols := 70, `class` := "form-control"),
-                button("Продолжить!", `class` := "btn btn-primary")
+        } else {
+          js.timers.clearInterval(B.interval.get)
+          div(
+            h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
+            form(
+              action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.get.answers.toString) + "\"",
+              `class` := "form-horizontal",
+              method := "POST",
+              button(
+                id := "finish-test",
+                `type` := "submit",
+                `class` := "btn btn-primary",
+                "Finish test"
               )
             )
-          }
-          case Rest(_, _) => {
-            if (S.numberOfQuestions < 0) {
-              println(" test ended, save report")
-            }
-            // reduce number of questions to be asked for this type of a question
-            dom.document.onkeypress = {
-              (e: dom.KeyboardEvent) => {}
-            }
-            div()
-          }
+          )
         }
       })
         .componentDidMount(f => {
