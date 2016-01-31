@@ -115,6 +115,7 @@ object UltraRapid2Test {
                   onSubmit ==> B.nextImage,
                   textarea(id := "response", placeholder := "Введите свой ответ!",
                     onChange ==> B.addText,
+                    autoFocus := true,
                     rows := 10, cols := 70, `class` := "form-control"),
                   button("Продолжить!", `class` := "btn btn-primary")
                 )
