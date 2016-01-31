@@ -74,7 +74,7 @@ object PsychoTest extends Controller {
   def readOpenExperimentImages(): ArrayBuffer[UltraRapidImage] = {
     val res = new ArrayBuffer[UltraRapidImage]()
     // adding open experiment to cache
-    for (i <- 1 to 27) {
+    for (i <- 1 to 29) {
       res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i)))
     }
     res

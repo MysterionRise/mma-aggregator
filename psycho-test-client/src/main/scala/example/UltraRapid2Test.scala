@@ -14,7 +14,7 @@ import scala.scalajs.js.timers.SetIntervalHandle
 
 object UltraRapid2Test {
 
-  private val testQuestionAmount = 27
+  private val testQuestionAmount = 29
   private var backend: scala.Option[Backend2] = None
   private val question = getElementById[Div]("ultra-rapid-2")
   private val interval: js.UndefOr[js.timers.SetIntervalHandle] = js.undefined
@@ -113,7 +113,7 @@ object UltraRapid2Test {
                 form(
                   `class` := "form-horizontal",
                   onSubmit ==> B.nextImage,
-                  textarea(id := "response", placeholder := "Введите свой ответ!",
+                  textarea(id := "response", placeholder := "Опишите увиденное изображение!",
                     onChange ==> B.addText,
                     autoFocus := true,
                     rows := 10, cols := 70, `class` := "form-control"),
