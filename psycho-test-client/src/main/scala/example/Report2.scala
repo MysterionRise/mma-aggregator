@@ -3,13 +3,13 @@ package example
 import scala.collection.mutable.ArrayBuffer
 
 class Report2(userName: String) {
-  val answers = new ArrayBuffer[(Int, String, Long)]()
+  val answers = new ArrayBuffer[(Int, String, Long, Long)]()
 
-  def addAnswerToReport(questionId: Int, response: String, time: Long) = {
-    answers += ((questionId, response, time))
+  def addAnswerToReport(questionId: Int, response: String, time: Long, debugtime: Long) = {
+    answers += ((questionId, response, time, debugtime))
   }
 
-  def createReport(answers: ArrayBuffer[(Int, String, Long)]): String = {
+  def createReport(answers: ArrayBuffer[(Int, String, Long, Long)]): String = {
     answers.size match {
       case 0 => ""
       case n: Int => {

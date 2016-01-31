@@ -15,6 +15,8 @@ class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, va
   var res: String = ""
   var questionId: Int = 0
   var time: Long = 0
+  var debugTime: Long = 0
+  var debugtime: Long = 0
 
   def addText(e: ReactEventI) = {
     res = e.target.value
@@ -54,10 +56,11 @@ class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, va
     stateController.modState(s => {
       s.whatToShow match {
         case r: Rest => {
-          report.get.addAnswerToReport(questionId, res, System.currentTimeMillis() - time)
+          report.get.addAnswerToReport(questionId, res, System.currentTimeMillis() - time, debugtime)
           res = ""
           val next = r.moveToNext(fromBooleanToInt(s.isTesting))
           clearAndSetInterval(interval, next.getDuration, questionTypes, questionMargin)
+          debugTime = System.currentTimeMillis()
           if (!s.res._2.isEmpty)
             State(UltraRapid2Test.getRandomQuestion(s.res._2), next, s.isTesting,
               s.questionType, s.numberOfQuestions - 1)
@@ -65,7 +68,17 @@ class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, va
             State((null, null), next, s.isTesting,
               s.questionType, -1)
         }
+        case f: FixationCross => {
+          time = System.currentTimeMillis()
+          debugTime = System.currentTimeMillis()
+          questionId = Integer.valueOf(s.res._1.imageName)
+          val nextState = f.moveToNext(fromBooleanToInt(s.isTesting))
+          clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
+          State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
+        }
         case t: TextQuestion => {
+          debugtime = (System.currentTimeMillis() - debugTime)
+          println(debugtime)
           clearInterval(interval)
           StateObj.apply(s.res, NoNextState(-1), s.isTesting, s.questionType, s.numberOfQuestions, true)
         }
