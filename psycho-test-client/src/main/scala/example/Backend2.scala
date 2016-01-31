@@ -12,9 +12,21 @@ import scala.util.Random
 
 class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, var report: scala.Option[Report]) {
 
+  var res: String = ""
+
+  def addText(e: ReactEventI) = {
+    res = e.target.value
+  }
+
+  def saveResponse(s: String) = {
+    println(s)
+  }
+
   def nextImage(e: ReactEventI): Unit = {
+    e.preventDefault()
     println("next image")
     val next = new Rest(new Random().nextInt(1500) + 500, false)
+    println(res)
     stateController.modState(s => {
       clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
       State(UltraRapid2Test.getRandomQuestion(s.res._2),

@@ -104,16 +104,25 @@ object UltraRapid2Test {
           case NoNextState(_) => {
             div(
               `class` := "bs-component",
-              textarea(placeholder := "Введите свой ответ!", rows := 10, cols := 70, `class` := "form-control"),
-              button("Yes", `class` := "btn btn-primary", onClick ==> B.nextImage)
+              form(
+                `class` := "form-horizontal",
+                onSubmit ==> B.nextImage,
+                textarea(id := "response", placeholder := "Введите свой ответ!",
+                  onChange ==> B.addText,
+                  rows := 10, cols := 70, `class` := "form-control"),
+                button("Продолжить!", `class` := "btn btn-primary")
+              )
             )
           }
           case Rest(_, _) => {
+            if (S.numberOfQuestions < 0) {
+              println(" test ended, save report")
+            }
             // reduce number of questions to be asked for this type of a question
             dom.document.onkeypress = {
               (e: dom.KeyboardEvent) => {}
             }
-            h1("Отдых")
+            div()
           }
         }
       })
