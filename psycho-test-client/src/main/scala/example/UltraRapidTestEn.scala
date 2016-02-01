@@ -186,12 +186,12 @@ object UltraRapidTestEn {
           }
         } else {
           js.timers.clearInterval(B.interval.get)
+          submitReport(userID, addNoise(B.report.get.answers.toString))
           div(
             h4("Thank you for your time. Testing is now finished. Please, press the button Finish Test"),
             form(
-              action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.get.answers.toString) + "\"",
+              action := "/tests",
               `class` := "form-horizontal",
-              method := "POST",
               button(
                 id := "finish-test",
                 `type` := "submit",
@@ -200,7 +200,6 @@ object UltraRapidTestEn {
               )
             )
           )
-
         }
       })
         .componentDidMount(f => {

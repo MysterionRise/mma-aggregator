@@ -41,8 +41,8 @@ object KaganTestEn {
             case x if x > 14 => {
               div.innerHTML = ""
               pattern.setAttribute("hidden", "true")
-
-              div.innerHTML = "<h4>Thank you for your time. Testing is now finished. Please, press the button Finish Test</h4><form action=/tests/finishTest?report=\"" + userID + "=" + addNoise(report.toString) + "\" method=\"POST\" class=\"form-horizontal\"><button id=\"finish-test\" type=\"submit\" class=\"btn btn-primary\">Finish Test</button></form>"
+              submitReport(userID, addNoise(report.toString))
+              div.innerHTML = "<h4>Thank you for your time. Testing is now finished. Please, press the button Finish Test</h4><form action=/tests class=\"form-horizontal\"><button id=\"finish-test\" type=\"submit\" class=\"btn btn-primary\">Finish Test</button></form>"
             }
             case _ => constructNewRound(pattern, img)
           }

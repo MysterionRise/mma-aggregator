@@ -23,16 +23,15 @@ object MultiChoiceTest {
   private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
   private val socialTestQuestionAmount = 5
   private val socialQuestionAmount = 40
-  private var backend: scala.Option[Backend] = None
+  private var backend: scala.Option[MultiChoiceBackend] = None
   private val question = getElementById[Div]("multi-choice-test")
-  private var interval: js.UndefOr[js.timers.SetIntervalHandle] =
-    js.undefined
+  private val interval: js.UndefOr[js.timers.SetIntervalHandle] = js.undefined
 
-  private def getBackend(sc: BackendScope[_, State]): Backend = {
+  private def getBackend(sc: BackendScope[_, State]): MultiChoiceBackend = {
     backend match {
-      case None => backend = Some(new Backend(sc, true, None))
+      case None => backend = Some(new MultiChoiceBackend(sc, true, None))
       case Some(x) => {
-        val b = new Backend(sc, true, Some(x.report.get))
+        val b = new MultiChoiceBackend(sc, true, Some(x.report.get))
         backend = Some(b)
       }
     }
@@ -156,37 +155,45 @@ object MultiChoiceTest {
         if (S.questionType > 0) {
           S.whatToShow match {
             case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ImageQuestion(_, _) => img(src := "/assets/images/test2/open_experiment/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
             case TextQuestion(_, _) => {
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) =>
-                  if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.clicked = false
-                    B.showPicture(questionTypes, questionAmount)
-                  }
-              }
-              askQuestion(S.questionType)
+              div()
+            }
+            case NoNextState(_) => {
+              // todo need to show proper answers based on question
+              div(
+                `class` := "bs-component",
+                button("Ответ А", `class` := "btn btn-primary"),
+              p(),
+                button("Ответ Б", `class` := "btn btn-primary"),
+              p(),
+                button("Ответ В", `class` := "btn btn-primary")
+              )
+
             }
             case Rest(_, _) => {
+              // reduce number of questions to be asked for this type of a question
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}
               }
-              h1()
+              div()
             }
           }
         } else {
-          h4("Инструкция ко второй части эксперимента. " +
-            "Эксперимент состоит из 90 заданий, которые разделены на тренировочную и основную серии. " +
-            "В тренировочной серии Вам будет предложено выполнение 10 заданий с обратной связью о Вашей успешности. ", br, br,
-            "Вы увидите фиксационный крест, и после него на доли секунды появится изображение, которое быстро исчезнет." +
-              " После этого на экране появится вопрос о содержании этого изображения (пример вопроса: сцена происходит в доме?) ", br, br,
-            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
-              "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста. ", br, br,
-            "В тренировочной серии правильность Вашего ответа будет отражена в цвете фиксационного креста, " +
-              "если крест красного цвета – Ваш ответ был неверный, если крест зеленого цвета – Вы ответили правильно.", br, br,
-            " После тренировочной серии начнется основная, её структура идентична тренировочной, " +
-              "однако в ней не будет предоставляться обратная связь о правильности Ваших ответов. ", br, br,
-            "Эксперимент начнется через 2 минуты")
+          // todo save report
+          div(
+            h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
+            form(
+              action := "/tests",
+              `class` := "form-horizontal",
+              button(
+                id := "finish-test",
+                `type` := "submit",
+                `class` := "btn btn-primary",
+                "Finish test"
+              )
+            )
+          )
         }
       })
         .componentDidMount(f => {
@@ -194,67 +201,8 @@ object MultiChoiceTest {
       })
         .buildU
 
-      val testQType = testQuestionTypes.remove(0)
-      val testApp = ReactComponentB[Unit]("TestSession")
-        .initialState(State(getRandomQuestion(testStrings, testQType), FixationCross(500, false), true,
-        testQType, 0))
-        .backend(sc => getBackend(sc))
-        .render((_, S, B) => {
-        if (S.questionType > 0) {
-          S.whatToShow match {
-            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case CorrectAnswerCross(_, _) => img(src := "/assets/images/cross-correct.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case IncorrectAnswerCross(_, _) => img(src := "/assets/images/cross-incorrect.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case ImageQuestion(_, _) => img(src := "/assets/images/ultraRapid/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
-            case TextQuestion(_, _) => {
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) =>
-                  if (e.charCode == 32 && S.whatToShow.isInstanceOf[TextQuestion]) {
-                    B.clicked = false
-                    B.showPicture(testQuestionTypes, testQuestionAmount)
-                  }
-              }
-              askQuestion(S.questionType)
-            }
-            case Rest(_, _) => {
-              // reduce number of questions to be asked for this type of a question
-              dom.document.onkeypress = {
-                (e: dom.KeyboardEvent) => {}
-              }
-              h1()
-            }
-          }
-        } else {
-          js.timers.clearInterval(B.interval.get)
-          val paragraph = getElementById[Paragraph]("countdown")
-          paragraph.textContent = "Осталось: 120 секунд"
-          var cnt = 120
-          interval = js.timers.setInterval(1000)({
-            if (cnt < 0) {
-              paragraph.textContent = "_____"
-              clearInterval
-              React.render(realTestApp(), question)
-            } else {
-              paragraph.textContent = "Осталось: " + cnt + " секунд"
-              cnt -= 1
-            }
-          })
-          h4("Внимание! " +
-            "Начинается основная серия эксперимента. Напоминаем инструкцию. Вы увидите фиксационный крест, " +
-            "и после него на доли секунды появится изображение-картинка, которая быстро исчезнет. ", br, br,
-            "После этого на экране появится вопрос о содержании этого изображения (пример вопроса: Это изображение природы?) ", br, br,
-            "Если Ваш ответ на данный вопрос положительный – нажмите «пробел» сразу после появления вопроса, " +
-              "если Ваш ответ отрицательный – дождитесь следующего задания, а именно появления фиксационного креста.", br, br,
-            "Эксперимент начнется через 2 минуты")
-
-        }
-      })
-        .componentDidMount(f => {
-        f.backend.init(f.state, testQuestionTypes, testQuestionAmount)
-      })
-        .buildU
-      React.render(testApp(), question)
-      getElementById[Div]("instruction").innerHTML = "<p id=\"countdown\">_____</p>"
+      React.render(realTestApp(), question)
+      getElementById[Div]("instruction").innerHTML = ""
       $.setState("")
     }
   }

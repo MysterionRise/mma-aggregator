@@ -1,5 +1,6 @@
 package example
 
+import org.scalajs.dom.ext.Ajax
 import org.scalajs.dom.html.Div
 import org.scalajs.dom.raw.Element
 import scala.scalajs.js
@@ -57,6 +58,12 @@ object ScalaJSCode extends js.JSApp {
 
   def addNoise(s: String): String = {
     Encoder(s.getBytes("UTF-8")).toBase64()
+  }
+
+  def submitReport(userID: String, report: String) = {
+    println("doing post")
+    val x = Ajax.post("/tests/finishTest", userID + "=" + report)
+    println("test")
   }
 
 }

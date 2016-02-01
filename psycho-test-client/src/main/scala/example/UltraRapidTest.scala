@@ -185,13 +185,12 @@ object UltraRapidTest {
           }
         } else {
           js.timers.clearInterval(B.interval.get)
+          submitReport(userID, addNoise(B.report.get.answers.toString))
           div(
             h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
             form(
-              //              action := "/tests/finishTest?report=\"" + Encoder(B.report.toString.getBytes("UTF-8")).toBase64() + "\"",
-              action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.get.answers.toString) + "\"",
+              action := "/tests",
               `class` := "form-horizontal",
-              method := "POST",
               button(
                 id := "finish-test",
                 `type` := "submit",

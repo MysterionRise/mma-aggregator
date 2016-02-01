@@ -10,7 +10,7 @@ class Reports(tag: Tag) extends Table[Report](tag, "reports") {
 
   def name = column[Int]("user_id")
 
-  def report = column[String]("report", O.SqlType("VARCHAR(10000)"))
+  def report = column[String]("report", O.SqlType("VARCHAR(100000)"))
 
   override def * = (id.?, name, report) <>(Report.tupled, Report.unapply _)
 }

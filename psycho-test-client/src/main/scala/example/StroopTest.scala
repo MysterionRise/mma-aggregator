@@ -112,12 +112,12 @@ object StroopTest {
             dom.window.onkeyup = { (e: dom.Event) => }
             val user = getElementById[Heading]("user")
             val userID = user.getAttribute("data-user-id")
+            submitReport(userID, addNoise(B.report.toString))
             div(
               h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
               form(
-                action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.toString) + "\"",
+                action := "/tests",
                 `class` := "form-horizontal",
-                method := "POST",
                 button(
                   id := "finish-test",
                   `type` := "submit",

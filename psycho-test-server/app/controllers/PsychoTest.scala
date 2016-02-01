@@ -135,9 +135,10 @@ object PsychoTest extends Controller {
     )
   }
 
-  def extractUserName(s: String) = s.substring(1, s.indexOf("="))
+  def extractUserName(s: String) = s.substring(0, s.indexOf("="))
 
-  def finishTest(report: String) = Action { implicit req =>
+  def finishTest = Action { implicit req =>
+    val report = req.body.asText.get
     val userID = extractUserName(report)
     ReportDAO.addReport(new Report(None, Integer.parseInt(userID), report.substring(report.indexOf("=") + 1, report.length - 1)))
     Ok(views.html.index("You successfully finish testing! Go and check more new tests!"))

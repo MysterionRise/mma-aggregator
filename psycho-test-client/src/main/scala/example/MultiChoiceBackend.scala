@@ -10,7 +10,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.scalajs.js
 import scala.util.Random
 
-class Backend2(stateController: BackendScope[_, State], var clicked: Boolean, var report: scala.Option[Report2]) {
+class MultiChoiceBackend(stateController: BackendScope[_, State], var clicked: Boolean, var report: scala.Option[Report2]) {
 
   var res: String = ""
   var questionId: Int = 0

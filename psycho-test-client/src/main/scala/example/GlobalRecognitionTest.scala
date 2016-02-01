@@ -15,15 +15,15 @@ import scala.scalajs.js.timers.SetIntervalHandle
 object GlobalRecognitionTest {
 
   private val testQuestionAmount = 29
-  private var backend: scala.Option[Backend2] = None
+  private var backend: scala.Option[GlobalRecognitionBackend] = None
   private val question = getElementById[Div]("global-recognition")
   private val interval: js.UndefOr[js.timers.SetIntervalHandle] = js.undefined
 
-  private def getBackend(sc: BackendScope[_, State]): Backend2 = {
+  private def getBackend(sc: BackendScope[_, State]): GlobalRecognitionBackend = {
     backend match {
-      case None => backend = Some(new Backend2(sc, true, None))
+      case None => backend = Some(new GlobalRecognitionBackend(sc, true, None))
       case Some(x) => {
-        val b = new Backend2(sc, true, Some(x.report.get))
+        val b = new GlobalRecognitionBackend(sc, true, Some(x.report.get))
         backend = Some(b)
       }
     }
@@ -131,12 +131,12 @@ object GlobalRecognitionTest {
           }
         } else {
           js.timers.clearInterval(B.interval.get)
+          submitReport(userID, addNoise(B.report.get.answers.toString))
           div(
             h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
             form(
-              action := "/tests/finishTest?report=\"" + userID + "=" + addNoise(B.report.get.answers.toString) + "\"",
+              action := "/tests",
               `class` := "form-horizontal",
-              method := "POST",
               button(
                 id := "finish-test",
                 `type` := "submit",
