@@ -47,7 +47,7 @@ object ScalaJSCode extends js.JSApp {
     }
     val multiChoice = getElementById[Div]("multi-choice-test")
     if (multiChoice != null) {
-      MultiRecognitionTest.doTest()
+      MultiChoiceTest.doTest()
     }
   }
 
