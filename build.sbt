@@ -36,7 +36,7 @@ lazy val exampleClient = (project in file("psycho-test-client")).settings(
   jsDependencies += "org.webjars" % "react" % "0.12.1" /
     "react-with-addons.js" commonJSName "React",
   libraryDependencies ++= Seq(
-    "org.scala-js" %%% "scalajs-dom" % "0.8.1",
+    "org.scala-js" %%% "scalajs-dom" % "0.9.0",
     "com.github.japgolly.scalajs-react" %%% "core" % "0.8.4",
     "com.github.marklister" %%% "base64" % "0.1.1"
   )).
