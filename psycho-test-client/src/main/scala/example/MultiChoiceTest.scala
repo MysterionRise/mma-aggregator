@@ -15,14 +15,8 @@ import scala.scalajs.js.timers.SetIntervalHandle
 
 object MultiChoiceTest {
 
-  private val testQuestionAmount = 5
   private val questionAmount = 70
-  private val testQuestionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
-  private val socialTestQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
-  private val socialQuestionTypes = util.Random.shuffle(ArrayBuffer(7, 8))
-  private val socialTestQuestionAmount = 5
-  private val socialQuestionAmount = 40
   private var backend: scala.Option[MultiChoiceBackend] = None
   private val question = getElementById[Div]("multi-choice-test")
   private val interval: js.UndefOr[js.timers.SetIntervalHandle] = js.undefined
@@ -130,17 +124,17 @@ object MultiChoiceTest {
 
   class TestBackend($: BackendScope[_, String]) {
 
-    def askQuestion(questionType: Int): ReactElement = {
+    def askQuestion(questionType: String): String = {
       questionType match {
-        case 1 => customP("На этом изображении есть собака?")
-        case 2 => customP("На этом изображении есть животное?")
-        case 3 => customP("На этом изображении есть легковой автомобиль?")
-        case 4 => customP("На этом изображении есть транспортное средство?")
-        case 5 => customP("Это изображение природы?")
-        case 6 => customP("Это изображение объектов, созданных человеком?")
-        case 7 => customP("Событие происходит в помещении?")
-        case 8 => customP("Изображено позитивное взаимодействие людей?")
-        case _ => p("We don't have any questions for that type!")
+        case "1" => "На этом изображении есть собака?"
+        case "2" => "На этом изображении есть животное?"
+        case "3" => "На этом изображении есть легковой автомобиль?"
+        case "4" => "На этом изображении есть транспортное средство?"
+        case "5" => "Это изображение природы?"
+        case "6" => "Это изображение объектов, созданных человеком?"
+        case "7" => "Событие происходит в помещении?"
+        case "8" => "Изображено позитивное взаимодействие людей?"
+        case _ => "We don't have any questions for that type!"
       }
     }
 
@@ -163,12 +157,23 @@ object MultiChoiceTest {
               // todo need to show proper answers based on question
               div(
                 `class` := "bs-component",
-                button("Ответ А", `class` := "btn btn-primary"),
-              p(),
-                button("Ответ Б", `class` := "btn btn-primary"),
-              p(),
-                button("Ответ В", `class` := "btn btn-primary")
-              )
+                form(
+                  `class` := "form-horizontal",
+                  onSubmit ==> B.nextImage1,
+                  button(askQuestion(S.res._1.imageType), `class` := "btn btn-primary")
+                ),
+                p(),
+                form(
+                  `class` := "form-horizontal",
+                  onSubmit ==> B.nextImage2,
+                  button(askQuestion(S.res._1.imageType), `class` := "btn btn-primary")
+                ),
+                p(),
+                form(
+                  `class` := "form-horizontal",
+                  onSubmit ==> B.nextImage3,
+                  button(askQuestion(S.res._1.imageType), `class` := "btn btn-primary")
+                ))
 
             }
             case Rest(_, _) => {

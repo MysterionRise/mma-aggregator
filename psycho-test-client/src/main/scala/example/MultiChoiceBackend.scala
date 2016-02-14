@@ -17,19 +17,70 @@ class MultiChoiceBackend(stateController: BackendScope[_, State], var clicked: B
   var time: Long = 0
   var debugTime: Long = 0
   var debugtime: Long = 0
+  var currentInterval: Int = 0
+  val random = new Random()
 
   def addText(e: ReactEventI) = {
     res = e.target.value
   }
 
-  def nextImage(e: ReactEventI): Unit = {
+  def nextImage1(e: ReactEventI): Unit = {
     e.preventDefault()
-    val next = new Rest(new Random().nextInt(1500) + 500, false)
+    val next = new Rest(random.nextInt(1500) + 500, false)
     stateController.modState(s => {
-      clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
-      State((null, s.res._2),
-        next, s.isTesting,
-        s.questionType, s.numberOfQuestions)
+      if (random.nextBoolean) {
+        val next = new Rest(random.nextInt(1500) + 500, false)
+        clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
+        State((null, s.res._2),
+          next, s.isTesting,
+          s.questionType, s.numberOfQuestions)
+      } else {
+        val next = new ImageQuestion(currentInterval * 2, false)
+        clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
+        State((s.res._1, s.res._2),
+          next, s.isTesting,
+          s.questionType, s.numberOfQuestions)
+      }
+    })
+  }
+
+  def nextImage2(e: ReactEventI): Unit = {
+    e.preventDefault()
+    val next = new Rest(random.nextInt(1500) + 500, false)
+    stateController.modState(s => {
+      if (random.nextBoolean) {
+        val next = new Rest(random.nextInt(1500) + 500, false)
+        clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
+        State((null, s.res._2),
+          next, s.isTesting,
+          s.questionType, s.numberOfQuestions)
+      } else {
+        val next = new ImageQuestion(currentInterval * 2, false)
+        clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
+        State((s.res._1, s.res._2),
+          next, s.isTesting,
+          s.questionType, s.numberOfQuestions)
+      }
+    })
+  }
+
+  def nextImage3(e: ReactEventI): Unit = {
+    e.preventDefault()
+    val next = new Rest(random.nextInt(1500) + 500, false)
+    stateController.modState(s => {
+      if (random.nextBoolean) {
+        val next = new Rest(random.nextInt(1500) + 500, false)
+        clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
+        State((null, s.res._2),
+          next, s.isTesting,
+          s.questionType, s.numberOfQuestions)
+      } else {
+        val next = new ImageQuestion(currentInterval * 2, false)
+        clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
+        State((s.res._1, s.res._2),
+          next, s.isTesting,
+          s.questionType, s.numberOfQuestions)
+      }
     })
   }
 
@@ -73,6 +124,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, State], var clicked: B
           debugTime = System.currentTimeMillis()
           questionId = Integer.valueOf(s.res._1.imageName)
           val nextState = f.moveToNext(fromBooleanToInt(s.isTesting))
+          currentInterval = nextState.getDuration
           clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
           State(s.res, nextState, s.isTesting, s.questionType, s.numberOfQuestions)
         }
