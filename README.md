@@ -12,3 +12,5 @@ $ open http://localhost:9000
 sbt stage deployHeroku
 ```
 
+Link for tests: http://psycho-test-framework.herokuapp.com/tests
+
