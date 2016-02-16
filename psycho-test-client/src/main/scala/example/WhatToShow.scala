@@ -40,3 +40,7 @@ case class IncorrectAnswerCross(duration: Int, isSocial: Boolean) extends WhatTo
 case class NoNextState(duration: Int) extends WhatToShow(duration) {
   override def moveToNext(param: Int): WhatToShow = NoNextState(-1)
 }
+
+case class Mask(duration: Int, isSocial: Boolean) extends WhatToShow(duration) {
+  override def moveToNext(param: Int): WhatToShow = ???
+}
