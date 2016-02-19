@@ -21,7 +21,7 @@ object MultiChoiceTest {
   private val question = getElementById[Div]("multi-choice-test")
   private val interval: js.UndefOr[js.timers.SetIntervalHandle] = js.undefined
 
-  private def getBackend(sc: BackendScope[_, State]): MultiChoiceBackend = {
+  private def getBackend(sc: BackendScope[_, MultiChoiceState]): MultiChoiceBackend = {
     backend match {
       case None => backend = Some(new MultiChoiceBackend(sc, true, None))
       case Some(x) => {
@@ -142,18 +142,15 @@ object MultiChoiceTest {
 
       val realTestQType = questionTypes.remove(0)
       val realTestApp = ReactComponentB[Unit]("RealSession")
-        .initialState(State(getRandomQuestion(testStrings, realTestQType), FixationCross(500, false), false,
+        .initialState(MultiChoiceState(getRandomQuestion(testStrings, realTestQType), Cross(500),
         realTestQType, 0))
         .backend(getBackend(_))
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
-            case FixationCross(_, _) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
-            case ImageQuestion(_, _) => img(src := "/assets/images/test2/open_experiment/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
-            case TextQuestion(_, _) => {
-              div()
-            }
-            case NoNextState(_) => {
+            case Cross(_) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ImageQ(_) => img(src := "/assets/images/test2/open_experiment/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ChoiceQuestion(_) => {
               // todo need to show proper answers based on question
               div(
                 `class` := "bs-component",
@@ -176,7 +173,7 @@ object MultiChoiceTest {
                 ))
 
             }
-            case Rest(_, _) => {
+            case RestPeriod(_) => {
               // reduce number of questions to be asked for this type of a question
               dom.document.onkeypress = {
                 (e: dom.KeyboardEvent) => {}

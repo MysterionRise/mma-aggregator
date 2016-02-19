@@ -34,3 +34,5 @@ object StateObj {
     state
   }
 }
+
+case class MultiChoiceState(res: (UltraRapidImage, ArrayBuffer[UltraRapidImage]), whatToShow: WhatToShow2, questionType: Int, numberOfQuestions: Int)
