@@ -148,6 +148,7 @@ object MultiChoiceTest {
         .render((_, S, B) => {
         if (S.questionType > 0) {
           S.whatToShow match {
+            case Mask(_) => img(src := "/assets/images/mask.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case Cross(_) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
             case ImageQ(_) => img(src := "/assets/images/test2/open_experiment/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
             case ChoiceQuestion(_) => {

@@ -131,12 +131,6 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
           clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
           MultiChoiceState(s.res, nextState, s.questionType, s.numberOfQuestions)
         }
-//        case t: TextQuestion => {
-//          debugtime = (System.currentTimeMillis() - debugTime)
-//          println(debugtime)
-//          clearInterval(interval)
-//          MultiChoiceState(s.res, NoNextState(-1), s.questionType, s.numberOfQuestions, true)
-//        }
         case n: ChoiceQuestion => {
           MultiChoiceState(s.res, ChoiceQuestion(-1), s.questionType, s.numberOfQuestions)
         }
