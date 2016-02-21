@@ -36,7 +36,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
           next,
           s.questionType, s.numberOfQuestions)
       } else {
-        val next = new ImageQ(currentInterval * 2)
+        val next = new Cross(currentInterval * 2)
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((s.res._1, s.res._2),
           next,
@@ -57,7 +57,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
           next,
           s.questionType, s.numberOfQuestions)
       } else {
-        val next = new ImageQ(currentInterval * 2)
+        val next = new Cross(currentInterval * 2)
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((s.res._1, s.res._2),
           next,
@@ -78,7 +78,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
           next,
           s.questionType, s.numberOfQuestions)
       } else {
-        val next = new ImageQ(currentInterval * 2)
+        val next = new Cross(currentInterval * 2)
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((s.res._1, s.res._2),
           next,
