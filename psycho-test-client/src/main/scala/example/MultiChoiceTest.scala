@@ -124,7 +124,35 @@ object MultiChoiceTest {
 
   class TestBackend($: BackendScope[_, String]) {
 
-    def askQuestion(questionType: String): String = {
+    def askQuestion1(questionType: String): String = {
+      questionType match {
+        case "1" => "На этом изображении есть собака?"
+        case "2" => "На этом изображении есть животное?"
+        case "3" => "На этом изображении есть легковой автомобиль?"
+        case "4" => "На этом изображении есть транспортное средство?"
+        case "5" => "Это изображение природы?"
+        case "6" => "Это изображение объектов, созданных человеком?"
+        case "7" => "Событие происходит в помещении?"
+        case "8" => "Изображено позитивное взаимодействие людей?"
+        case _ => "We don't have any questions for that type!"
+      }
+    }
+
+    def askQuestion2(questionType: String): String = {
+      questionType match {
+        case "1" => "На этом изображении есть собака?"
+        case "2" => "На этом изображении есть животное?"
+        case "3" => "На этом изображении есть легковой автомобиль?"
+        case "4" => "На этом изображении есть транспортное средство?"
+        case "5" => "Это изображение природы?"
+        case "6" => "Это изображение объектов, созданных человеком?"
+        case "7" => "Событие происходит в помещении?"
+        case "8" => "Изображено позитивное взаимодействие людей?"
+        case _ => "We don't have any questions for that type!"
+      }
+    }
+
+    def askQuestion3(questionType: String): String = {
       questionType match {
         case "1" => "На этом изображении есть собака?"
         case "2" => "На этом изображении есть животное?"
@@ -158,19 +186,19 @@ object MultiChoiceTest {
                 form(
                   `class` := "form-horizontal",
                   onSubmit ==> B.nextImage1,
-                  button(askQuestion(S.res._1.imageType), `class` := "btn btn-primary")
+                  button(askQuestion1(S.res._1.imageType), `class` := "btn btn-primary")
                 ),
                 p(),
                 form(
                   `class` := "form-horizontal",
                   onSubmit ==> B.nextImage2,
-                  button(askQuestion(S.res._1.imageType), `class` := "btn btn-primary")
+                  button(askQuestion2(S.res._1.imageType), `class` := "btn btn-primary")
                 ),
                 p(),
                 form(
                   `class` := "form-horizontal",
                   onSubmit ==> B.nextImage3,
-                  button(askQuestion(S.res._1.imageType), `class` := "btn btn-primary")
+                  button(askQuestion3(S.res._1.imageType), `class` := "btn btn-primary")
                 ))
 
             }

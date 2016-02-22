@@ -80,6 +80,15 @@ object PsychoTest extends Controller {
     res
   }
 
+  def readMultiChoiceImages(): ArrayBuffer[UltraRapidImage] = {
+    val res = new ArrayBuffer[UltraRapidImage]()
+    // adding open experiment to cache
+    for (i <- 1 to 29) {
+      res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i)))
+    }
+    res
+  }
+
   def startTest() = Action { implicit req =>
     testForm.bindFromRequest.fold(
       errors =>
@@ -128,7 +137,7 @@ object PsychoTest extends Controller {
             Ok(views.html.globalRecognitionTest(addedUser, readOpenExperimentImages())).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
           case "New test" => {
-            Ok(views.html.multiChoiceTest(addedUser, readOpenExperimentImages())).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
+            Ok(views.html.multiChoiceTest(addedUser, readMultiChoiceImages())).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
         }
       }
