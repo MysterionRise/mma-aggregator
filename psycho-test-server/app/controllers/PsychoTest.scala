@@ -80,11 +80,25 @@ object PsychoTest extends Controller {
     res
   }
 
+  /**
+    * 1 - горный пейзаж
+    * 2 - морской берег
+    * 3 - поля
+    *
+    * 1 - городская сцена
+    * 2 - интерьер дома
+    * 3 - памятники культуры, древние постройки
+    * @return
+    */
   def readMultiChoiceImages(): ArrayBuffer[UltraRapidImage] = {
     val res = new ArrayBuffer[UltraRapidImage]()
-    // adding open experiment to cache
-    for (i <- 1 to 29) {
-      res.append(new UltraRapidImage(String.valueOf(i), String.valueOf(i)))
+    // adding multi choice images to cache
+    for (i <- 1 to 6) {
+      for (j <- 1 to 3) {
+        for (k <- 1 to 10) {
+          res.append(new UltraRapidImage(s"${i}_${j}", s"$k"))
+        }
+      }
     }
     res
   }
