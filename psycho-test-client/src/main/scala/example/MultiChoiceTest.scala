@@ -15,7 +15,7 @@ import scala.scalajs.js.timers.SetIntervalHandle
 
 object MultiChoiceTest {
 
-  private val questionAmount = 70
+  private val questionAmount = 5
   private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private var backend: scala.Option[MultiChoiceBackend] = None
   private val question = getElementById[Div]("multi-choice-test")
@@ -189,7 +189,9 @@ object MultiChoiceTest {
           realTestQType, 0))
         .backend(getBackend(_))
         .render((_, S, B) => {
-          if (S.questionType > 0) {
+          val user = getElementById[Heading]("user")
+          val userID: String = user.getAttribute("data-user-id")
+          if (S.numberOfQuestions > 0) {
             S.whatToShow match {
               case Mask(_) => img(src := "/assets/images/mask.png", marginLeft := "auto", marginRight := "auto", display := "block")
               case Cross(_) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
@@ -225,7 +227,8 @@ object MultiChoiceTest {
               }
             }
           } else {
-            // todo save report
+            js.timers.clearInterval(B.interval.get)
+            submitReport(userID, addNoise(B.report.get.answers.toString))
             div(
               h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
               form(
