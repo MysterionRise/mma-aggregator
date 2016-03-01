@@ -15,7 +15,7 @@ import scala.scalajs.js.timers.SetIntervalHandle
 
 object MultiChoiceTest {
 
-  private val questionAmount = 5
+  private val questionAmount = 70
   private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private var backend: scala.Option[MultiChoiceBackend] = None
   private val question = getElementById[Div]("multi-choice-test")
@@ -86,8 +86,8 @@ object MultiChoiceTest {
   }
 
   /**
-    * Mapping for targets non-targets in questions
-    */
+   * Mapping for targets non-targets in questions
+   */
   val mapping = new Array[Set[Int]](10)
   mapping(1) = Set(1, 2, 3)
   mapping(2) = Set(2, 3, 4)
@@ -116,10 +116,10 @@ object MultiChoiceTest {
     .initialState("")
     .backend(new TestBackend(_))
     .render((_, S, B) => button(
-      `class` := "btn btn-primary",
-      onClick ==> B.startTest,
-      "Start test!"
-    )
+    `class` := "btn btn-primary",
+    onClick ==> B.startTest,
+    "Start test!"
+  )
     )
     .buildU
 
@@ -135,16 +135,16 @@ object MultiChoiceTest {
     )
 
     /**
-      * mapping(0) = Set(0, 1, 2)
-      * mapping(1) = Set(1, 2, 3)
-      * mapping(2) = Set(0, 2, 3)
-      * mapping(3) = Set(0, 1, 3)
-      * mapping(4) = Set(4, 5)
-      * mapping(5) = Set(4, 5)
-      *
-      * @param questionType
-      * @return
-      */
+     * mapping(0) = Set(0, 1, 2)
+     * mapping(1) = Set(1, 2, 3)
+     * mapping(2) = Set(0, 2, 3)
+     * mapping(3) = Set(0, 1, 3)
+     * mapping(4) = Set(4, 5)
+     * mapping(5) = Set(4, 5)
+     *
+     * @param questionType
+     * @return
+     */
     def askQuestion1(questionType: String): String = {
       questionType.charAt(0) match {
         case '1' => questions(0)
@@ -186,67 +186,68 @@ object MultiChoiceTest {
       val realTestQType = questionTypes.remove(0)
       val realTestApp = ReactComponentB[Unit]("RealSession")
         .initialState(MultiChoiceState(getRandomQuestion(testStrings, realTestQType), Cross(500),
-          realTestQType, 0))
+        realTestQType, 0))
         .backend(getBackend(_))
         .render((_, S, B) => {
-          val user = getElementById[Heading]("user")
-          val userID: String = user.getAttribute("data-user-id")
-          if (S.numberOfQuestions > 0) {
-            S.whatToShow match {
-              case Mask(_) => img(src := "/assets/images/mask.png", marginLeft := "auto", marginRight := "auto", display := "block")
-              case Cross(_) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
-              case ImageQ(_) => img(src := "/assets/images/multiChoice/" + S.res._1.imageType.split("_").mkString("/") + "/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
-              case ChoiceQuestion(_) => {
-                div(
-                  `class` := "bs-component",
-                  form(
-                    `class` := "form-horizontal",
-                    onSubmit ==> B.nextImage1,
-                    button(askQuestion1(S.res._1.imageType), `class` := "btn btn-primary")
-                  ),
-                  p(),
-                  form(
-                    `class` := "form-horizontal",
-                    onSubmit ==> B.nextImage2,
-                    button(askQuestion2(S.res._1.imageType), `class` := "btn btn-primary")
-                  ),
-                  p(),
-                  form(
-                    `class` := "form-horizontal",
-                    onSubmit ==> B.nextImage3,
-                    button(askQuestion3(S.res._1.imageType), `class` := "btn btn-primary")
-                  ))
+        val user = getElementById[Heading]("user")
+        val userID: String = user.getAttribute("data-user-id")
+        if (S.questionType > 0) {
+          S.whatToShow match {
+            case Mask(_) => img(src := "/assets/images/mask.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case Cross(_) => img(src := "/assets/images/cross.png", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ImageQ(_) => img(src := "/assets/images/multiChoice/" + S.res._1.imageType.split("_").mkString("/") + "/" + S.res._1.imageName + ".jpg", marginLeft := "auto", marginRight := "auto", display := "block")
+            case ChoiceQuestion(_) => {
+              div(
+                `class` := "bs-component",
+                form(
+                  `class` := "form-horizontal",
+                  onSubmit ==> B.nextImage1,
+                  button(askQuestion1(S.res._1.imageType), `class` := "btn btn-primary")
+                ),
+                p(),
+                form(
+                  `class` := "form-horizontal",
+                  onSubmit ==> B.nextImage2,
+                  button(askQuestion2(S.res._1.imageType), `class` := "btn btn-primary")
+                ),
+                p(),
+                form(
+                  `class` := "form-horizontal",
+                  onSubmit ==> B.nextImage3,
+                  button(askQuestion3(S.res._1.imageType), `class` := "btn btn-primary")
+                ))
 
-              }
-              case RestPeriod(_) => {
-                // reduce number of questions to be asked for this type of a question
-                dom.document.onkeypress = {
-                  (e: dom.KeyboardEvent) => {}
-                }
-                div()
-              }
             }
-          } else {
-            js.timers.clearInterval(B.interval.get)
-            submitReport(userID, addNoise(B.report.get.answers.toString))
-            div(
-              h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
-              form(
-                action := "/tests",
-                `class` := "form-horizontal",
-                button(
-                  id := "finish-test",
-                  `type` := "submit",
-                  `class` := "btn btn-primary",
-                  "Finish test"
-                )
+            case RestPeriod(_) => {
+              // reduce number of questions to be asked for this type of a question
+              dom.document.onkeypress = {
+                (e: dom.KeyboardEvent) => {}
+              }
+              div()
+            }
+          }
+        } else {
+          js.timers.clearInterval(B.interval.get)
+          submitReport(userID, addNoise(B.report.get.answers.toString))
+          // todo save report
+          div(
+            h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
+            form(
+              action := "/tests",
+              `class` := "form-horizontal",
+              button(
+                id := "finish-test",
+                `type` := "submit",
+                `class` := "btn btn-primary",
+                "Finish test"
               )
             )
-          }
-        })
+          )
+        }
+      })
         .componentDidMount(f => {
-          f.backend.init(f.state, questionTypes, questionAmount)
-        })
+        f.backend.init(f.state, questionTypes, questionAmount)
+      })
         .buildU
 
       React.render(realTestApp(), question)

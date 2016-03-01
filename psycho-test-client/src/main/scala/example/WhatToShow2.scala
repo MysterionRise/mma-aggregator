@@ -19,7 +19,7 @@ case class Cross(duration: Int) extends WhatToShow2(duration) {
 }
 
 case class ImageQ(duration: Int) extends WhatToShow2(duration) {
-  override def moveToNext(): WhatToShow2 = new Mask(500)
+  override def moveToNext(): WhatToShow2 = new Mask(120)
 }
 
 case class RestPeriod(duration: Int) extends WhatToShow2(duration) {
