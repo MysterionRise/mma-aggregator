@@ -22,6 +22,9 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
   var currentImageDuration = 33
   var currentImageDurationInd = 0
   val durations = List(33, 53, 80, 105, 500)
+  var correctAnswer1 = false
+  var correctAnswer2 = false
+  var correctAnswer3 = false
 
   def addText(e: ReactEventI) = {
     res = e.target.value
@@ -30,7 +33,6 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
   def nextImage1(e: ReactEventI): Unit = {
     e.preventDefault()
     stateController.modState(s => {
-      val correctAnswer = true
       //      s.res._1.imageType.charAt(0) match {
       //        case '1' => correctAnswer = true
       //        case '2' => correctAnswer = true
@@ -40,7 +42,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
       //        case '6' => correctAnswer = true
       //        case _ =>
       //      }
-      if (correctAnswer) {
+      if (correctAnswer1) {
         val next = new RestPeriod(random.nextInt(1500) + 500)
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((null, s.res._2),
@@ -62,8 +64,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
   def nextImage2(e: ReactEventI): Unit = {
     e.preventDefault()
     stateController.modState(s => {
-      val correctAnswer = false
-      if (correctAnswer) {
+      if (correctAnswer2) {
         val next = new RestPeriod(random.nextInt(1500) + 500)
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((null, s.res._2),
@@ -85,8 +86,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
   def nextImage3(e: ReactEventI): Unit = {
     e.preventDefault()
     stateController.modState(s => {
-      val correctAnswer = false
-      if (correctAnswer) {
+      if (correctAnswer3) {
         val next = new RestPeriod(random.nextInt(1500) + 500)
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((null, s.res._2),
