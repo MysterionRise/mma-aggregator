@@ -12,42 +12,26 @@ import scala.util.Random
 
 class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var clicked: Boolean, var report: scala.Option[Report2]) {
 
-  var res: String = ""
-  var questionId: Int = 0
   var time: Long = 0
   var debugTime: Long = 0
   var debugtime: Long = 0
   var currentInterval: Int = 0
   val random = new Random()
-  var currentImageDuration = 33
   var currentImageDurationInd = 0
   val durations = List(33, 53, 80, 105, 500)
-  var correctAnswer1 = false
-  var correctAnswer2 = false
-  var correctAnswer3 = false
+  var questionId = ""
 
-  def addText(e: ReactEventI) = {
-    res = e.target.value
-  }
+  def nextCorrectAnswer: Int = new Random().nextInt(3) + 1
 
   def nextImage1(e: ReactEventI): Unit = {
     e.preventDefault()
     stateController.modState(s => {
-      //      s.res._1.imageType.charAt(0) match {
-      //        case '1' => correctAnswer = true
-      //        case '2' => correctAnswer = true
-      //        case '3' => correctAnswer = true
-      //        case '4' => correctAnswer = true
-      //        case '5' => correctAnswer = true
-      //        case '6' => correctAnswer = true
-      //        case _ =>
-      //      }
-      if (correctAnswer1) {
+      if (s.correctAnswer == 1) {
         val next = new RestPeriod(random.nextInt(1500) + 500)
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((null, s.res._2),
           next,
-          s.questionType, s.numberOfQuestions)
+          s.questionType, s.numberOfQuestions, nextCorrectAnswer)
       } else {
         val next = new Cross(500)
         if (currentImageDurationInd < 4)
@@ -56,7 +40,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((s.res._1, s.res._2),
           next,
-          s.questionType, s.numberOfQuestions)
+          s.questionType, s.numberOfQuestions, nextCorrectAnswer)
       }
     })
   }
@@ -64,12 +48,12 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
   def nextImage2(e: ReactEventI): Unit = {
     e.preventDefault()
     stateController.modState(s => {
-      if (correctAnswer2) {
+      if (s.correctAnswer == 2) {
         val next = new RestPeriod(random.nextInt(1500) + 500)
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((null, s.res._2),
           next,
-          s.questionType, s.numberOfQuestions)
+          s.questionType, s.numberOfQuestions, nextCorrectAnswer)
       } else {
         val next = new Cross(500)
         if (currentImageDurationInd < 4)
@@ -78,7 +62,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((s.res._1, s.res._2),
           next,
-          s.questionType, s.numberOfQuestions)
+          s.questionType, s.numberOfQuestions, nextCorrectAnswer)
       }
     })
   }
@@ -86,12 +70,12 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
   def nextImage3(e: ReactEventI): Unit = {
     e.preventDefault()
     stateController.modState(s => {
-      if (correctAnswer3) {
+      if (s.correctAnswer == 3) {
         val next = new RestPeriod(random.nextInt(1500) + 500)
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((null, s.res._2),
           next,
-          s.questionType, s.numberOfQuestions)
+          s.questionType, s.numberOfQuestions, nextCorrectAnswer)
       } else {
         val next = new Cross(500)
         if (currentImageDurationInd < 4)
@@ -100,7 +84,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
         clearAndSetInterval(interval, next.getDuration, new ArrayBuffer[Int](), s.res._2.length)
         MultiChoiceState((s.res._1, s.res._2),
           next,
-          s.questionType, s.numberOfQuestions)
+          s.questionType, s.numberOfQuestions, nextCorrectAnswer)
       }
     })
   }
@@ -128,39 +112,37 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
     stateController.modState(s => {
       s.whatToShow match {
         case r: RestPeriod => {
-          currentImageDuration = 33
+          report.get.addAnswerToReport(s.questionType, questionId, durations(currentImageDurationInd), debugtime)
           currentImageDurationInd = 0
-          report.get.addAnswerToReport(questionId, res, System.currentTimeMillis() - time, debugtime)
-          res = ""
           val next = r.moveToNext()
           clearAndSetInterval(interval, next.getDuration, questionTypes, questionMargin)
           debugTime = System.currentTimeMillis()
           if (!s.res._2.isEmpty)
             MultiChoiceState(GlobalRecognitionTest.getRandomQuestion(s.res._2), next,
-              s.questionType, s.numberOfQuestions - 1)
+              s.questionType, s.numberOfQuestions - 1, s.correctAnswer)
           else
             MultiChoiceState((null, null), next,
-              s.questionType, -1)
+              s.questionType, -1, s.correctAnswer)
         }
         case f: Cross => {
           time = System.currentTimeMillis()
           debugTime = System.currentTimeMillis()
-          questionId = Integer.valueOf(s.res._1.imageName)
+          questionId = s.res._1.imageType
           val nextState = f.moveToNext()
           currentInterval = nextState.getDuration
           println(currentInterval)
           clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
-          MultiChoiceState(s.res, nextState, s.questionType, s.numberOfQuestions)
+          MultiChoiceState(s.res, nextState, s.questionType, s.numberOfQuestions, s.correctAnswer)
         }
         case n: ChoiceQuestion => {
-          MultiChoiceState(s.res, ChoiceQuestion(-1), s.questionType, s.numberOfQuestions)
+          MultiChoiceState(s.res, ChoiceQuestion(-1), s.questionType, s.numberOfQuestions, s.correctAnswer)
         }
         case w: WhatToShow2 => {
           time = System.currentTimeMillis()
-          questionId = Integer.valueOf(s.res._1.imageName)
+          questionId = s.res._1.imageType
           val nextState = w.moveToNext()
           clearAndSetInterval(interval, nextState.getDuration, questionTypes, questionMargin)
-          MultiChoiceState(s.res, nextState, s.questionType, s.numberOfQuestions)
+          MultiChoiceState(s.res, nextState, s.questionType, s.numberOfQuestions, s.correctAnswer)
         }
       }
     })

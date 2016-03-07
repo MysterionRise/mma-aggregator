@@ -3,6 +3,7 @@ package example
 import scala.collection.mutable.ArrayBuffer
 
 class Report2(userName: String) {
+
   val answers = new ArrayBuffer[(Int, String, Long, Long)]()
 
   def addAnswerToReport(questionId: Int, response: String, time: Long, debugtime: Long) = {

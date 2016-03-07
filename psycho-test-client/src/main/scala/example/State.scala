@@ -35,4 +35,4 @@ object StateObj {
   }
 }
 
-case class MultiChoiceState(res: (UltraRapidImage, ArrayBuffer[UltraRapidImage]), whatToShow: WhatToShow2, questionType: Int, numberOfQuestions: Int)
+case class MultiChoiceState(res: (UltraRapidImage, ArrayBuffer[UltraRapidImage]), whatToShow: WhatToShow2, questionType: Int, numberOfQuestions: Int, correctAnswer: Int)

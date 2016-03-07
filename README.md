@@ -14,5 +14,5 @@ sbt stage deployHeroku
 
 ## Useful links:
 
-- http://psycho-test-framework.herokuapp.com/tests
+http://psycho-test-framework.herokuapp.com/tests
 
