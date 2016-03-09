@@ -134,6 +134,21 @@ object MultiChoiceTest {
       "Природный объект/Горы/Леса/Поля",
       "Объект, созданный руками человека"
     )
+    val questions1 = List[String](
+      "Поезд",
+      "Поезд",
+      "Медведь",
+      "Медведь",
+      "Объект, созданный руками человека",
+      "Природный объект/Горы/Леса/Поля"
+    )
+    val questions2 = List[String](
+      "Легковой автомобиль",
+      "Легковой автомобиль",
+      "Собака",
+      "Собака"
+    )
+
     def askQuestion(questionType: String, id: Int, correctAnswer: Int): String = {
       if (id == correctAnswer) {
         questionType.charAt(0) match {
@@ -148,20 +163,20 @@ object MultiChoiceTest {
       } else if (correctAnswer != 2) {
         if (id % 2 == 1) {
           questionType.charAt(0) match {
-            case '1' => questions(2)
-            case '2' => questions(2)
-            case '3' => questions(0)
-            case '4' => questions(0)
-            case '5' => questions(5)
-            case '6' => questions(4)
+            case '1' => questions1(0)
+            case '2' => questions1(1)
+            case '3' => questions1(2)
+            case '4' => questions1(3)
+            case '5' => questions1(4)
+            case '6' => questions1(5)
             case _ => "-------------------"
           }
         } else {
           questionType.charAt(0) match {
-            case '1' => questions(3)
-            case '2' => questions(3)
-            case '3' => questions(1)
-            case '4' => questions(1)
+            case '1' => questions2(0)
+            case '2' => questions2(1)
+            case '3' => questions2(2)
+            case '4' => questions2(3)
             //        case '5' => questions(4)
             //        case '6' => questions(5)
             case _ => ""
@@ -170,20 +185,20 @@ object MultiChoiceTest {
       } else {
         if (id > correctAnswer) {
           questionType.charAt(0) match {
-            case '1' => questions(2)
-            case '2' => questions(2)
-            case '3' => questions(0)
-            case '4' => questions(0)
-            case '5' => questions(5)
-            case '6' => questions(4)
+            case '1' => questions1(0)
+            case '2' => questions1(1)
+            case '3' => questions1(2)
+            case '4' => questions1(3)
+            case '5' => questions1(4)
+            case '6' => questions1(5)
             case _ => "-------------------"
           }
         } else {
           questionType.charAt(0) match {
-            case '1' => questions(3)
-            case '2' => questions(3)
-            case '3' => questions(3)
-            case '4' => questions(1)
+            case '1' => questions2(0)
+            case '2' => questions2(1)
+            case '3' => questions2(2)
+            case '4' => questions2(3)
             //        case '5' => questions(4)
             //        case '6' => questions(5)
             case _ => ""
