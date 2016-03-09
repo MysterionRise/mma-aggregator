@@ -150,7 +150,7 @@ object PsychoTest extends Controller {
           case "Тест Глобальное узнавание" => {
             Ok(views.html.globalRecognitionTest(addedUser, readOpenExperimentImages())).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
-          case "New test" => {
+          case "Тест быстрой категоризации" => {
             Ok(views.html.multiChoiceTest(addedUser, readMultiChoiceImages())).withNewSession.discardingCookies(DiscardingCookie("PLAY_SESSION", "/tests"))
           }
         }

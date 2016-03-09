@@ -16,7 +16,7 @@ import scala.util.Random
 
 object MultiChoiceTest {
 
-  private val questionAmount = 70
+  private val questionAmount = 180
   private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private var backend: scala.Option[MultiChoiceBackend] = None
   private val question = getElementById[Div]("multi-choice-test")
@@ -127,40 +127,28 @@ object MultiChoiceTest {
   class TestBackend($: BackendScope[_, String]) {
 
     val questions = List[String](
-      "На этом изображении есть собака?",
-      "На этом изображении есть животное?",
-      "На этом изображении есть легковой автомобиль?",
-      "На этом изображении есть транспортное средство?",
-      "Это изображение природы?",
-      "Это изображение объектов, созданных человеком?"
+      "Cобака",
+      "Животное",
+      "Легковой автомобиль",
+      "Транспортное средство",
+      "Природный объект/Горы/Леса/Поля",
+      "Объект, созданный руками человека"
     )
-
-    /**
-      * mapping(0) = Set(0, 1, 2)
-      * mapping(1) = Set(1, 2, 3)
-      * mapping(2) = Set(0, 2, 3)
-      * mapping(3) = Set(0, 1, 3)
-      * mapping(4) = Set(4, 5)
-      * mapping(5) = Set(4, 5)
-      *
-      * @param questionType
-      * @return
-      */
     def askQuestion(questionType: String, id: Int, correctAnswer: Int): String = {
       if (id == correctAnswer) {
         questionType.charAt(0) match {
-          case '1' => "w" + questions(0)
-          case '2' => "w" + questions(1)
-          case '3' => "w" + questions(2)
-          case '4' => "w" + questions(3)
-          case '5' => "w" + questions(4)
-          case '6' => "w" + questions(5)
+          case '1' => questions(0)
+          case '2' => questions(1)
+          case '3' => questions(2)
+          case '4' => questions(3)
+          case '5' => questions(4)
+          case '6' => questions(5)
           case _ => "-------------------"
         }
       } else if (correctAnswer != 2) {
         if (id % 2 == 1) {
           questionType.charAt(0) match {
-            case '1' => questions(1)
+            case '1' => questions(2)
             case '2' => questions(2)
             case '3' => questions(0)
             case '4' => questions(0)
@@ -170,9 +158,9 @@ object MultiChoiceTest {
           }
         } else {
           questionType.charAt(0) match {
-            case '1' => questions(2)
+            case '1' => questions(3)
             case '2' => questions(3)
-            case '3' => questions(3)
+            case '3' => questions(1)
             case '4' => questions(1)
             //        case '5' => questions(4)
             //        case '6' => questions(5)
@@ -182,7 +170,7 @@ object MultiChoiceTest {
       } else {
         if (id > correctAnswer) {
           questionType.charAt(0) match {
-            case '1' => questions(1)
+            case '1' => questions(2)
             case '2' => questions(2)
             case '3' => questions(0)
             case '4' => questions(0)
@@ -192,7 +180,7 @@ object MultiChoiceTest {
           }
         } else {
           questionType.charAt(0) match {
-            case '1' => questions(2)
+            case '1' => questions(3)
             case '2' => questions(3)
             case '3' => questions(3)
             case '4' => questions(1)
@@ -209,7 +197,7 @@ object MultiChoiceTest {
       val realTestQType = questionTypes.remove(0)
       val realTestApp = ReactComponentB[Unit]("RealSession")
         .initialState(MultiChoiceState(getRandomQuestion(testStrings, realTestQType), Cross(500),
-          realTestQType, 5, new Random().nextInt(3) + 1))
+          realTestQType, questionAmount, new Random().nextInt(3) + 1))
         .backend(getBackend(_))
         .render((_, S, B) => {
           val user = getElementById[Heading]("user")
@@ -222,6 +210,7 @@ object MultiChoiceTest {
               case ChoiceQuestion(_) => {
                 div(
                   `class` := "bs-component",
+                  p("Что было изображено на картинке?"),
                   form(
                     `class` := "form-horizontal",
                     onSubmit ==> B.nextImage1,
@@ -252,7 +241,6 @@ object MultiChoiceTest {
           } else {
             js.timers.clearInterval(B.interval.get)
             submitReport(userID, addNoise(B.report.get.answers.toString))
-            // todo save report
             div(
               h4("Спасибо за выполненную работу. Тестирование закончено. Нажмите, пожалуйста, кнопку Finish Test"),
               form(
