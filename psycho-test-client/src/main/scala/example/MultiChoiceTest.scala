@@ -229,21 +229,38 @@ object MultiChoiceTest {
                   `class` := "bs-component",
                   p("Что было изображено на картинке?"),
                   form(
+                    marginLeft := "auto",
+                    marginRight := "auto",
                     `class` := "form-horizontal",
                     onSubmit ==> B.nextImage1,
-                    button(askQuestion(S.res._1.imageType, 1, S.correctAnswer), `class` := "btn btn-primary")
+                    button(
+                      askQuestion(S.res._1.imageType, 1, S.correctAnswer),
+                      `class` := "btn btn-primary",
+                      marginLeft := "auto",
+                      marginRight := "auto")
                   ),
                   p(),
                   form(
+                    marginLeft := "auto",
+                    marginRight := "auto",
                     `class` := "form-horizontal",
                     onSubmit ==> B.nextImage2,
-                    button(askQuestion(S.res._1.imageType, 2, S.correctAnswer), `class` := "btn btn-primary")
+                    button(askQuestion(S.res._1.imageType, 2, S.correctAnswer),
+                      `class` := "btn btn-primary",
+                      marginLeft := "auto",
+                      marginRight := "auto")
                   ),
                   p(),
                   form(
+                    marginLeft := "auto",
+                    marginRight := "auto",
                     `class` := "form-horizontal",
                     onSubmit ==> B.nextImage3,
-                    button(askQuestion(S.res._1.imageType, 3, S.correctAnswer), `class` := "btn btn-primary")
+                    button(askQuestion(S.res._1.imageType, 3, S.correctAnswer),
+                      `class` := "btn btn-primary",
+                      marginLeft := "auto",
+                      marginRight := "auto")
+
                   ))
 
               }
