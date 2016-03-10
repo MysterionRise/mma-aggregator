@@ -179,8 +179,8 @@ object MultiChoiceTest {
             case '2' => questions2(1)
             case '3' => questions2(2)
             case '4' => questions2(3)
-            case '5' => questions(4)
-            case '6' => questions(5)
+            case '5' => questions2(4)
+            case '6' => questions2(5)
             case _ => ""
           }
         }
@@ -201,8 +201,8 @@ object MultiChoiceTest {
             case '2' => questions2(1)
             case '3' => questions2(2)
             case '4' => questions2(3)
-            case '5' => questions(4)
-            case '6' => questions(5)
+            case '5' => questions2(4)
+            case '6' => questions2(5)
             case _ => ""
           }
         }
