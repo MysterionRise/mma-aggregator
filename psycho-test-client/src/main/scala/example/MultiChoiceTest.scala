@@ -127,26 +127,28 @@ object MultiChoiceTest {
   class TestBackend($: BackendScope[_, String]) {
 
     val questions = List[String](
-      "Cобака",
-      "Животное",
-      "Легковой автомобиль",
-      "Транспортное средство",
-      "Природный объект/Горы/Леса/Поля",
-      "Объект, созданный руками человека"
+      "Cобака                     ",
+      "Животное                   ",
+      "Легковой автомобиль        ",
+      "Транспортное средство      ",
+      "Природные объекты          ",
+      "Городские постройки        "
     )
     val questions1 = List[String](
-      "Поезд",
-      "Поезд",
-      "Медведь",
-      "Медведь",
-      "Объект, созданный руками человека",
-      "Природный объект/Горы/Леса/Поля"
+      "Поезд                      ",
+      "Поезд                      ",
+      "Медведь                    ",
+      "Медведь                    ",
+      "Природные объекты          ",
+      "Городские постройки        "
     )
     val questions2 = List[String](
-      "Легковой автомобиль",
-      "Легковой автомобиль",
-      "Собака",
-      "Собака"
+      "Легковой автомобиль        ",
+      "Легковой автомобиль        ",
+      "Собака                     ",
+      "Собака                     ",
+      "Посмотреть картинку еще раз",
+      "Посмотреть картинку еще раз"
     )
 
     def askQuestion(questionType: String, id: Int, correctAnswer: Int): String = {
@@ -177,8 +179,8 @@ object MultiChoiceTest {
             case '2' => questions2(1)
             case '3' => questions2(2)
             case '4' => questions2(3)
-            //        case '5' => questions(4)
-            //        case '6' => questions(5)
+            case '5' => questions(4)
+            case '6' => questions(5)
             case _ => ""
           }
         }
@@ -199,8 +201,8 @@ object MultiChoiceTest {
             case '2' => questions2(1)
             case '3' => questions2(2)
             case '4' => questions2(3)
-            //        case '5' => questions(4)
-            //        case '6' => questions(5)
+            case '5' => questions(4)
+            case '6' => questions(5)
             case _ => ""
           }
         }
