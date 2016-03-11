@@ -124,6 +124,19 @@ object MultiChoiceTest {
     )
     .buildU
 
+  def customP(innerText: String): ReactElement = {
+    div(
+      p(
+        innerText,
+        position := "absolute",
+        top := "50%",
+        left := "50%",
+        marginRight := "-50%",
+        transform := "translate(-50%, -50%)"
+      )
+    )
+  }
+
   class TestBackend($: BackendScope[_, String]) {
 
     val questions = List[String](
@@ -227,7 +240,7 @@ object MultiChoiceTest {
               case ChoiceQuestion(_) => {
                 div(
                   `class` := "bs-component",
-                  p("Что было изображено на картинке?"),
+                  customP("Что было изображено на картинке?"),
                   form(
                     textAlign := "center",
                     `class` := "form-horizontal",
