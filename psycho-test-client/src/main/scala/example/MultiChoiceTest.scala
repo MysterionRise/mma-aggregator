@@ -16,7 +16,7 @@ import scala.util.Random
 
 object MultiChoiceTest {
 
-  private val questionAmount = 5
+  private val questionAmount = 180
   private val questionTypes = util.Random.shuffle(ArrayBuffer(1, 2, 3, 4, 5, 6))
   private var backend: scala.Option[MultiChoiceBackend] = None
   private val question = getElementById[Div]("multi-choice-test")
