@@ -112,7 +112,7 @@ class MultiChoiceBackend(stateController: BackendScope[_, MultiChoiceState], var
     stateController.modState(s => {
       s.whatToShow match {
         case r: RestPeriod => {
-          report.get.addAnswerToReport(s.questionType, (endTime - startTime).toString, durations(currentImageDurationInd), System.currentTimeMillis() - debugTime)
+          report.get.addAnswerToReport(s.res._1.imageType, (endTime - startTime).toString, durations(currentImageDurationInd), System.currentTimeMillis() - debugTime)
           currentImageDurationInd = 0
           val next = r.moveToNext()
           clearAndSetInterval(interval, next.getDuration, questionTypes, questionMargin)
