@@ -13,10 +13,10 @@ object StroopTest {
 
   private val question = getElementById[Div]("stroop-test")
   private val instruction = getElementById[Div]("instruction")
-  // TODO change size of trials
   private val sizeOfTrials = 50
   private var correctAnswer = -1
   private var userAnswer = -1
+  private var prevTrialInd = -1
 
   def doTest() = {
     React.render(buttonApp.apply(), question)
@@ -141,7 +141,11 @@ object StroopTest {
   val random = new Random()
 
   def generateTrial1() = {
-    val idx = random.nextInt(colorTexts.length)
+    var idx = random.nextInt(colorTexts.length)
+    while (prevTrialInd == idx) {
+      idx = random.nextInt(colorTexts.length)
+    }
+    prevTrialInd = idx
     correctAnswer = idx
     div(
       height := "30%",
@@ -155,7 +159,11 @@ object StroopTest {
   }
 
   def generateTrial2() = {
-    val idx = random.nextInt(colorTexts.length)
+    var idx = random.nextInt(colorTexts.length)
+    while (prevTrialInd == idx) {
+      idx = random.nextInt(colorTexts.length)
+    }
+    prevTrialInd = idx
     correctAnswer = idx
     div(
       height := "30%",
@@ -167,11 +175,13 @@ object StroopTest {
   }
 
   def generateTrial3() = {
-    val idx = random.nextInt(colorTexts.length)
+    var idx = random.nextInt(colorTexts.length)
     var colorIdx = idx
-    while (colorIdx == idx) {
+    while (colorIdx == idx && idx == prevTrialInd) {
       colorIdx = random.nextInt(colors.length)
+      idx = random.nextInt(colorTexts.length)
     }
+    prevTrialInd = idx
     correctAnswer = colorIdx
     div(
       height := "30%",
