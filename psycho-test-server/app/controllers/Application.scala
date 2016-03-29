@@ -5,8 +5,11 @@ import play.api.mvc._
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import javax.inject.Inject
 
-object Application extends Controller {
+import be.objectify.deadbolt.scala.DeadboltActions
+
+class Application @Inject()(deadbolt: DeadboltActions) extends Controller {
 
   def index = Action {
     TestDAO.createSchema

@@ -3,9 +3,9 @@
 # ~~~~
 
 # Home page
-GET         /                       controllers.Application.index
+GET         /                       @controllers.Application.index
 
-GET         /tests                  controllers.Application.tests
+GET         /tests                  @controllers.Application.tests
 
 POST        /tests/startTest        controllers.PsychoTest.startTest
 
@@ -14,4 +14,4 @@ POST        /tests/finishTest       controllers.PsychoTest.finishTest
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file           controllers.Assets.at(path="/public", file)
 
-GET         /dashboard              controllers.Application.dashboard
+GET         /dashboard              @controllers.Application.dashboard
