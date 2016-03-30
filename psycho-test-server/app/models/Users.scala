@@ -32,7 +32,7 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
 
 object UserDAO extends BaseDAO {
 
-  private val users = TableQuery[Users]
+  lazy val users = TableQuery[Users]
 
   def createSchema = {
     val not = result(MTable.getTables(users.baseTableRow.tableName))

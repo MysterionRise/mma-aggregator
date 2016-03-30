@@ -9,7 +9,9 @@ import javax.inject.Inject
 
 import be.objectify.deadbolt.scala.DeadboltActions
 
-class Application @Inject()(deadbolt: DeadboltActions) extends Controller {
+//@Inject()(deadbolt: DeadboltActions)
+
+class Application extends Controller {
 
   def index = Action {
     TestDAO.createSchema
@@ -22,7 +24,7 @@ class Application @Inject()(deadbolt: DeadboltActions) extends Controller {
     TestDAO.getDB.run(TestDAO.tests.result).map(res => Ok(views.html.tests(res.toList, PsychoTest.testForm)))
   }
 
-  def dashboard = Action {
-    Ok(views.html.index("Dashboard template"))
+  def dashboard = Action.async {
+    ReportDAO.getReports.map(res => Ok(views.html.dashboard(res)))
   }
 }

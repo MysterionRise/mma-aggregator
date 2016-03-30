@@ -14,7 +14,7 @@ lazy val exampleServer = (project in file("psycho-test-server")).settings(
     "com.vmunier" %% "play-scalajs-scripts" % "0.3.0",
     "org.webjars" % "jquery" % "1.11.1",
     "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
-    "com.typesafe.slick" %% "slick" % "3.0.3",
+    "com.typesafe.slick" %% "slick" % "3.1.1",
     "com.typesafe.play" %% "play-slick" % "1.0.1",
     "be.objectify" %% "deadbolt-scala" % "2.5.0"
   ),

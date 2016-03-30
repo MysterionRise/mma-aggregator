@@ -1,0 +1,24 @@
+@(list: Seq[(Int, String, Int)])
+
+@main("Dashboard") {
+
+<h1>Tests dashboard</h1>
+
+<table class="table table-striped table-hover ">
+    <thead>
+    <tr>
+        <th>Email</th>
+        <th>TestId</th>
+    </tr>
+    </thead>
+    <tbody>
+    @list.map { u =>
+    <tr class="info">
+        <td>@u._2</td>
+        <td><span class="badge">@u._3</span></td>
+    </tr>
+    }
+    </tbody>
+</table>
+
+}

@@ -27,4 +27,11 @@ object ReportDAO extends BaseDAO {
 
   def addReport(report: Report) = db.run(DBIO.seq(reports += report))
 
+  def getReports = {
+    val q = for {
+      (r, u) <- reports join UserDAO.users on (_.name === _.id)
+    } yield (r.id, u.email, u.testId)
+    db.run(q.result)
+  }
+
 }
