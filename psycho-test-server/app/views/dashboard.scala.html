@@ -18,9 +18,9 @@
     </tr>
     </thead>
     <tbody>
-    @list.map { u =>
+    @list.reverse.map { u =>
     <tr class="info">
-        <td>@u._2.hashCode()</td>
+        <td>@u._2</td>
         <td><span class="badge">@u._3</span></td>
     </tr>
     }
