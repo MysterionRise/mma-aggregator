@@ -15,8 +15,7 @@ lazy val exampleServer = (project in file("psycho-test-server")).settings(
     "org.webjars" % "jquery" % "1.11.1",
     "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
     "com.typesafe.slick" %% "slick" % "3.1.1",
-    "com.typesafe.play" %% "play-slick" % "1.0.1",
-    "be.objectify" %% "deadbolt-scala" % "2.5.0"
+    "com.typesafe.play" %% "play-slick" % "1.0.1"
   ),
   herokuAppName in Compile := "psycho-test-framework",
   herokuSkipSubProjects in Compile := false,

@@ -2,6 +2,12 @@
 
 @main("Dashboard") {
 
+<dl id="user">
+    <dd>
+        <a href="@routes.Application.logout">Logout</a>
+    </dd>
+</dl>
+
 <h1>Tests dashboard</h1>
 
 <table class="table table-striped table-hover ">
@@ -14,7 +20,7 @@
     <tbody>
     @list.map { u =>
     <tr class="info">
-        <td>@u._2</td>
+        <td>@u._2.hashCode()</td>
         <td><span class="badge">@u._3</span></td>
     </tr>
     }
